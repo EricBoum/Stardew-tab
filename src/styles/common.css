@@ -1,0 +1,6 @@
+.text-mouse {
+    cursor: url("@/assets/image/cursor/text.png"), auto;
+}
+.pointer {
+    cursor: url("@/assets/image/cursor/pointer.png"), auto;
+}

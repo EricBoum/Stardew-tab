@@ -1,0 +1,14 @@
+* {
+    cursor: url("@/assets/image/cursor/auto.png"), auto;
+}
+html {
+    background-image: url("@/assets/image/bg/bg.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
