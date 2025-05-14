@@ -1,8 +1,8 @@
 <template>
-  <div class="SearchInput w-1/2 h-[50px] bg-[#EFBD73] relative">
+  <div class="SearchInput w-1/2 h-[50px] mt-[25%] bg-[#EFBD73] relative">
     <EngineSelection v-model="engineValue" />
     <StardewInput v-model="inputValue" @stardewEnter="toSearch" />
-    <QuickJump />
+    <QuickJump :list="quickJumpList" @jump="toSearch" />
   </div>
 </template>
 
@@ -10,15 +10,48 @@
 import StardewInput from './StardewInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const'
 
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
+const quickJumpList = ref<Array<any>>([])
 
-const toSearch = () => {
-  window.open(`${ engineValue.value.url }${ inputValue.value }`)
+const toSearch = (e: { title: string } = {title: ''}): void => {
+  const keyWords = e.title || inputValue.value
+  window.open(`${ engineValue.value.url }${ keyWords }`)
 }
+const getQuickJumpList = (): void => {
+  if (!inputValue.value) {
+    quickJumpList.value = []
+    return
+  }
+  // 暂时只支持百度搜索推荐
+  BaiduSuggest()
+}
+const BaiduSuggest = (): void => {
+  const callbackName = '__baidu_cb'
+  const query = encodeURIComponent(inputValue.value)
+  const script = document.createElement('script')
+  // @ts-ignore
+  window[callbackName] = (response: any): void => {
+    if (response?.s) {
+      quickJumpList.value = response.s.map((item: string) => ( {title: item} ))
+    } else {
+      quickJumpList.value = []
+    }
+    if (document.body.contains(script)) {
+      document.body.removeChild(script)
+    }
+  }
+
+  script.src = `https://suggestion.baidu.com/su?wd=${ query }&cb=${ callbackName }`
+  document.body.appendChild(script)
+}
+
+watch(inputValue, () => {
+  getQuickJumpList()
+})
 </script>
 
 <style lang="less" scoped>

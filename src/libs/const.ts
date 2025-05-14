@@ -18,3 +18,23 @@ export const SEARCH_ENGINES: SEARCH_ITEM[] = [
     logo: GoogleLogo
   }
 ]
+
+export interface INFORMATION {
+  season: string;
+  week: string;
+  time: {
+    hour: number | string;
+    minute: number | string;
+    second: number | string;
+  }
+}
+
+export const WEEK_LIST: string[] = [
+  '星期日',
+  '星期一',
+  '星期二',
+  '星期三',
+  '星期四',
+  '星期五',
+  '星期六'
+]
