@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchInput w-1/2 h-[50px] mt-[25%] bg-[#EFBD73] relative">
+  <div class="SearchInput w-1/2 h-[50px] mt-[40vh] bg-[#EFBD73] relative">
     <EngineSelection v-model="engineValue" />
     <StardewInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />

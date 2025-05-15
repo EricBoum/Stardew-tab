@@ -33,19 +33,38 @@ const information = reactive<INFORMATION>({
 // 初始化
 const init = (): void => {
   const now = new Date()
-  getWeek(now.getDay())
-  getSeasonByMonth(now.getMonth())
-  getTime() // 立刻执行一次，确保第一次渲染就有时间
-  timer.value = window.setInterval(getTime, 1000)
+  getWeek(now.getDay()) // 获取当前周
+  getSeasonByMonth(now.getMonth()) // 获取当前季节
+  startTime() // 开始时间
 }
+// 处理标签页可见性变化,节省性能
+const handleVisibilityChange = (): void => {
+  if (document.hidden) {
+    stopTime()
+  } else {
+    startTime()
+  }
+}
+
 // 获取当前季节
 const getSeasonByMonth = (month: number): void => {
   const seasons = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
   information.season = seasons[month]
 }
+
 // 获取当前周
 const getWeek = (day: number): void => {
   information.week = WEEK_LIST[day]
+}
+
+// 开始时间
+const startTime = () => {
+  getTime()
+  timer.value = window.setInterval(getTime, 1000)
+}
+// 停止时间
+const stopTime = () => {
+  timer.value && clearInterval(timer.value)
 }
 // 获取时间(每秒更新)
 const getTime = (): void => {
@@ -58,12 +77,12 @@ const getTime = (): void => {
 
 onMounted(() => {
   init()
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onUnmounted(() => {
-  if (timer.value) {
-    clearInterval(timer.value)
-  }
+  stopTime()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>
 <style lang="less" scoped>

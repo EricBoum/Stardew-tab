@@ -9,12 +9,21 @@
 </template>
 
 <script setup lang="ts">
-// BatteryManager 是标准浏览器内置类型，VSCode/WebStorm 会自动识别
 import { onMounted, reactive } from 'vue'
 
 interface Battery {
   isCharge: boolean
   electricQuantity: number
+}
+interface BatteryManager {
+  charging: boolean
+  chargingTime: number
+  dischargingTime: number
+  level: number
+  onchargingchange: () => void
+  onchargingtimechange: () => void
+  ondischargingtimechange: () => void
+  onlevelchange: () => void
 }
 
 const battery = reactive<Battery>({
@@ -39,6 +48,9 @@ const listenBattery = () => {
   window.navigator.getBattery().then((fn: BatteryManager) => {
     changeBattery(fn)
     fn.onchargingchange = () => {
+      changeBattery(fn)
+    }
+    fn.onlevelchange = () => {
       changeBattery(fn)
     }
   })
