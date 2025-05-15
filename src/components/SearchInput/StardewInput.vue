@@ -143,7 +143,7 @@ onMounted(() => {
   font-size: 20px;
   position: relative;
   background-color: transparent;
-  color: #50302C;
+  color: var(--text-color);
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
   &::-webkit-scrollbar {

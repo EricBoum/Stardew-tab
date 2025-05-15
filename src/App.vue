@@ -16,7 +16,7 @@ import InfoBoard from '@/components/InfoBoard/index.vue'
 import SearchInput from '@/components/SearchInput/index.vue'
 // import GrassLand from '@/components/GrassLand/index.vue'
 import Battery from '@/components/Battery/index.vue'
-import { onMounted, onUnmounted, reactive, ref } from 'vue'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { type INFORMATION, WEEK_LIST } from '@/libs/const'
 
 const timer = ref<number | null>(null)
@@ -32,9 +32,6 @@ const information = reactive<INFORMATION>({
 
 // 初始化
 const init = (): void => {
-  const now = new Date()
-  getWeek(now.getDay()) // 获取当前周
-  getSeasonByMonth(now.getMonth()) // 获取当前季节
   startTime() // 开始时间
 }
 // 处理标签页可见性变化,节省性能
@@ -46,17 +43,6 @@ const handleVisibilityChange = (): void => {
   }
 }
 
-// 获取当前季节
-const getSeasonByMonth = (month: number): void => {
-  const seasons = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
-  information.season = seasons[month]
-}
-
-// 获取当前周
-const getWeek = (day: number): void => {
-  information.week = WEEK_LIST[day]
-}
-
 // 开始时间
 const startTime = () => {
   getTime()
@@ -66,13 +52,24 @@ const startTime = () => {
 const stopTime = () => {
   timer.value && clearInterval(timer.value)
 }
-// 获取时间(每秒更新)
+// 获取最新时间(每秒更新)
 const getTime = (): void => {
   const now = new Date()
+  getWeek(now.getDay()) // 获取当前周
+  getSeasonByMonth(now.getMonth()) // 获取当前季节
   const pad = (n: number): string => n.toString().padStart(2, '0') // 填充0
   information.time.hour = pad(now.getHours())
   information.time.minute = pad(now.getMinutes())
   information.time.second = pad(now.getSeconds())
+}
+// 获取当前季节
+const getSeasonByMonth = (month: number): void => {
+  const seasons = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
+  information.season = seasons[month]
+}
+// 获取当前周
+const getWeek = (day: number): void => {
+  information.week = WEEK_LIST[day]
 }
 
 onMounted(() => {

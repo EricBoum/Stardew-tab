@@ -1,22 +1,69 @@
 <template>
-  <div class="InfoBoard absolute top-[30px] right-0 w-[200px] h-[150px] bg-blue-500">
-    {{ props.information.season }}
-    {{ props.information.week }}
-    {{ props.information.time.hour }}
-    {{ props.information.time.minute }}
-    {{ props.information.time.second }}
+  <div class="InfoBoard absolute top-[30px] right-0 w-[230px] h-[129px]">
+    <img :style="{transform: `rotate(${getPointerRotate}deg)`}" class="time-pointer absolute w-[20px] top-[53px] left-[64px]" src="@/assets/image/time-pointer.png" alt="">
+    <p class="info-text h-[33px] leading-[33px] top-[13px]">
+      {{ props.information.week }}
+    </p>
+    <img class="w-[36px] h-[27px] absolute top-[51px] right-[97px]" :src="getSeasonImage" alt="">
+    <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage" alt="">
+    <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
+      {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
+    </p>
   </div>
 </template>
 
 <script setup lang="ts">
-import { type INFORMATION } from '@/libs/const'
+import { computed } from 'vue'
+import { type INFORMATION, SEASON } from '@/libs/const'
 
 const props = defineProps<{
   information: INFORMATION
 }>()
+
+// 根据当前时间返回刻度
+const getPointerRotate = computed(() => {
+  const hour = Number(props.information.time.hour)
+  const minute = Number(props.information.time.minute)
+  const totalMinutes = hour * 60 + minute
+  return (totalMinutes / 1440) * 180
+})
+// 获取季节图片
+const getSeasonImage = computed(() => {
+  return SEASON[props.information.season]
+})
 </script>
 
 <style lang="less" scoped>
 .InfoBoard {
+  background-image: url("@/assets/image/bg/info_bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  .time-pointer {
+    transform-origin: 10px 10px;
+    transition: 1s;
+  }
+  .info-text {
+    width: 126px;
+    text-align: center;
+    position: absolute;
+    right: 15px;
+    color: var(--text-color);
+    font-weight: 600;
+    text-shadow: -2px 1px 0 rgba(0, 0, 0, 0.1);
+  }
+  .flash-dot {
+    animation: flash 1s infinite;
+  }
+}
+@keyframes flash {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 </style>

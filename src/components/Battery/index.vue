@@ -1,7 +1,7 @@
 <template>
-  <div class="Battery w-[20px] h-[120px] absolute right-[20px] bottom-[20px] flex justify-center pt-[27px] pb-[5px]">
+  <div class="Battery w-[20px] h-[120px] absolute right-[20px] bottom-[20px] flex justify-center pt-[22px] pb-[3px]">
     <div class="w-[10px] h-full flex items-end overflow-hidden">
-      <div :style="{height: `${battery.electricQuantity}%`}" class="w-full rounded-[3px] bg-[#80FB4D]">
+      <div :style="{height: `${battery.electricQuantity}%`}" class="w-full rounded-[2px] bg-[#80FB4D]">
 
       </div>
     </div>
@@ -45,7 +45,7 @@ const listenBattery = () => {
     battery.isCharge = val.charging
     battery.electricQuantity = val.level * 100
   }
-  window.navigator.getBattery().then((fn: BatteryManager) => {
+  (window.navigator as any).getBattery().then((fn: BatteryManager) => {
     changeBattery(fn)
     fn.onchargingchange = () => {
       changeBattery(fn)

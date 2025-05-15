@@ -1,3 +1,6 @@
+:root {
+    --text-color: #50302C;
+}
 .text-mouse {
     cursor: url("@/assets/image/cursor/text.png"), auto;
 }

@@ -10,8 +10,9 @@
 import StardewInput from './StardewInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const'
+import { useStorage } from '@/libs/storage'
 
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
@@ -49,8 +50,18 @@ const BaiduSuggest = (): void => {
   document.body.appendChild(script)
 }
 
+onMounted(async () => {
+  const storageEngine = await useStorage().getStorage('engine')
+  if (storageEngine) {
+    engineValue.value = storageEngine
+  }
+})
+
 watch(inputValue, () => {
   getQuickJumpList()
+})
+watch(engineValue, () => {
+  useStorage().setStorage('engine', engineValue.value)
 })
 </script>
 

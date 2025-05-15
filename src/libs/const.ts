@@ -1,5 +1,10 @@
 import BaiduLogo from '@/assets/image/search-engine/baidu.png'
 import GoogleLogo from '@/assets/image/search-engine/google.png'
+import Spring from '@/assets/image/season/Spring.png'
+import Summer from '@/assets/image/season/Summer.png'
+import Fall from '@/assets/image/season/Fall.png'
+import Winter from '@/assets/image/season/Winter.png'
+
 
 export interface SEARCH_ITEM {
   name: string;
@@ -38,3 +43,12 @@ export const WEEK_LIST: string[] = [
   '星期五',
   '星期六'
 ]
+
+export const SEASON: { [key: string]: string } = {
+  spring: Spring,
+  summer: Summer,
+  fall: Fall,
+  winter: Winter
+}
+
+
