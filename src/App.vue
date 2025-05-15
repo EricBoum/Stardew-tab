@@ -75,7 +75,6 @@ const getTime = (): void => {
   information.time.second = pad(now.getSeconds())
 }
 
-
 onMounted(() => {
   init()
   document.addEventListener('visibilitychange', handleVisibilityChange)
