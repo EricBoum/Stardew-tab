@@ -17,6 +17,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import { debounce } from '@/libs'
 
 const props = defineProps({
   modelValue: {
@@ -24,7 +25,7 @@ const props = defineProps({
     default: ''
   }
 })
-const emit = defineEmits(['update:modelValue', 'stardewEnter'])
+const emit = defineEmits([ 'update:modelValue', 'stardewEnter' ])
 const inputText = computed({
   get() {
     return props.modelValue.replace(/^&nbsp;/, '')
@@ -57,12 +58,12 @@ const updateDeleteAnimationPosition = () => {
   const offsetX = rect.left - containerRect.left + 10 // 加10的间距
   sickleLeft.value = `${ offsetX }px`
   showSickle.value = true
-  // 自动隐藏动画图标
-  setTimeout(() => {
-    showSickle.value = false
-  }, 300)
+  // 自动隐藏动画图标（需加上防抖）
+  hideSickle()
 }
-
+const hideSickle = debounce(() => {
+  showSickle.value = false
+}, 300)
 // 监听输入事件
 const onInput = () => {
   const el = editableDiv.value
@@ -157,7 +158,7 @@ onMounted(() => {
   pointer-events: none;
   transition: transform 0.2s ease-out;
   .sickle {
-    animation: sickle-animation 0.1s ease-in-out;
+    animation: sickle-animation 0.2s infinite;
   }
 }
 @keyframes sickle-animation {

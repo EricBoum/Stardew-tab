@@ -4,11 +4,13 @@
     <p class="info-text h-[33px] leading-[33px] top-[13px]">
       {{ props.information.week }}
     </p>
-    <img class="w-[36px] h-[27px] absolute top-[51px] right-[97px]" :src="getSeasonImage" alt="">
+    <img class="w-[36px] h-[27px] absolute top-[51px] right-[97px]" :src="getTodayWeather" :title="props.information.weather.today.zh" :alt="props.information.weather.today.zh">
     <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage" alt="">
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
+
+    <img class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px]" :title="props.information.weather.tomorrow.zh" :src="getTomorrowWeather" alt="">
   </div>
 </template>
 
@@ -25,11 +27,34 @@ const getPointerRotate = computed(() => {
   const hour = Number(props.information.time.hour)
   const minute = Number(props.information.time.minute)
   const totalMinutes = hour * 60 + minute
-  return (totalMinutes / 1440) * 180
+  return ( totalMinutes / 1440 ) * 180
 })
 // 获取季节图片
 const getSeasonImage = computed(() => {
   return SEASON[props.information.season]
+})
+// 预加载所有天气图片（今天）
+const weatherImages = import.meta.glob('@/assets/image/weather/*.png', {
+  eager: true,
+  import: 'default'
+}) as Record<string, string>
+// 预加载所有天气图片（明天）
+const weatherImagesTomorrow = import.meta.glob('@/assets/image/weather/*.gif', {
+  eager: true,
+  import: 'default'
+}) as Record<string, string>
+
+// 获取今天天气
+const getTodayWeather = computed(() => {
+  const en = props.information.weather.today.en
+  const key = `/src/assets/image/weather/${ en }.png`
+  return weatherImages[key]
+})
+// 获取明天天气
+const getTomorrowWeather = computed(() => {
+  const en = props.information.weather.tomorrow.en
+  const key = `/src/assets/image/weather/${ en }_tm.gif`
+  return weatherImagesTomorrow[key]
 })
 </script>
 

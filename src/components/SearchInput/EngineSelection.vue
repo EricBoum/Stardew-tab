@@ -1,6 +1,6 @@
 <template>
-  <ul class="EngineSelection absolute -top-[40px] left-0 flex items-center">
-    <li :class="['w-[25px]', 'h-[25px]', 'mr-[15px]', 'transition-[3s]', localValue.name === item.name? 'opacity-100': 'opacity-30']" v-for="(item, index) in SEARCH_ENGINES" :key="index" @click="chooseEngines(item)">
+  <ul class="EngineSelection absolute -top-[46px] left-0 flex items-center">
+    <li :class="['w-[30px]', 'h-[30px]', 'mr-[15px]', 'transition-[3s]', localValue.name === item.name? 'opacity-100': 'opacity-30']" v-for="(item, index) in SEARCH_ENGINES" :key="index" @click="chooseEngines(item)">
       <img class="w-full h-full pointer" :src="item.logo" alt="">
     </li>
   </ul>

@@ -31,6 +31,16 @@ export interface INFORMATION {
     hour: number | string;
     minute: number | string;
     second: number | string;
+  };
+  weather: {
+    today: {
+      zh: string;
+      en: string;
+    };
+    tomorrow: {
+      zh: string;
+      en: string;
+    };
   }
 }
 

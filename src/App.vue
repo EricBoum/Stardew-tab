@@ -4,8 +4,8 @@
     <InfoBoard :information="information" />
     <!--输入框-->
     <SearchInput />
-    <!--草地-->
-    <!--<GrassLand />-->
+    <!--快捷导航栏-->
+    <Navigation />
     <!--电量-->
     <Battery />
   </div>
@@ -14,10 +14,11 @@
 <script setup lang="ts">
 import InfoBoard from '@/components/InfoBoard/index.vue'
 import SearchInput from '@/components/SearchInput/index.vue'
-// import GrassLand from '@/components/GrassLand/index.vue'
+import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { type INFORMATION, WEEK_LIST } from '@/libs/const'
+import { byGaoDe } from '@/libs/weather.ts'
 
 const timer = ref<number | null>(null)
 const information = reactive<INFORMATION>({
@@ -27,12 +28,23 @@ const information = reactive<INFORMATION>({
     hour: '00',
     minute: '00',
     second: '00'
+  },
+  weather: {
+    today: {
+      zh: '默认',
+      en: 'Default'
+    },
+    tomorrow: {
+      zh: '默认',
+      en: 'Default'
+    }
   }
 })
 
 // 初始化
 const init = (): void => {
   startTime() // 开始时间
+  getWeather()
 }
 // 处理标签页可见性变化,节省性能
 const handleVisibilityChange = (): void => {
@@ -42,7 +54,6 @@ const handleVisibilityChange = (): void => {
     startTime()
   }
 }
-
 // 开始时间
 const startTime = () => {
   getTime()
@@ -70,6 +81,10 @@ const getSeasonByMonth = (month: number): void => {
 // 获取当前周
 const getWeek = (day: number): void => {
   information.week = WEEK_LIST[day]
+}
+// 获取天气
+const getWeather = async (): Promise<any> => {
+  information.weather = await byGaoDe()
 }
 
 onMounted(() => {
