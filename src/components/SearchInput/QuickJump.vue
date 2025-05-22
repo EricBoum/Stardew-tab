@@ -1,6 +1,6 @@
 <template>
-  <ul class="absolute w-full top-[60px] left-0">
-    <li class="h-[30px] bg-[#EFBD73] p-1" v-for="(item,index) in props.list" :key="index" @click="jump(item)">
+  <ul class="absolute w-full top-[60px] left-0 shadow-2xl">
+    <li class="quick-item h-[40px] flex items-center bg-[#EFBD73] p-1 pointer" v-for="(item,index) in props.list" :key="index" @click="jump(item)">
       {{ item.title }}
     </li>
   </ul>
@@ -24,4 +24,10 @@ const jump = (item: Item) => {
 </script>
 
 <style lang="less" scoped>
+.quick-item {
+  transition: 0.3s;
+  &:hover {
+    background-color: #e2aa56;
+  }
+}
 </style>

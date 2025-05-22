@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/stardew-tab.iml" filepath="$PROJECT_DIR$/.idea/stardew-tab.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Stardew-tab.iml" filepath="$PROJECT_DIR$/.idea/Stardew-tab.iml" />
     </modules>
   </component>
 </project>

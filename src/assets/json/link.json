@@ -1,0 +1,17 @@
+[
+  {
+    "name": "官网",
+    "url": "https://www.stardewvalley.net/",
+    "logo": "https://www.stardewvalley.net/wp-content/uploads/2017/12/cropped-chickenfavicon-192x192.png"
+  },
+  {
+    "name": "wiki",
+    "url": "https://stardewvalleywiki.com/",
+    "logo": "https://stardewvalleywiki.com/mediawiki/extensions/StardewValley/images/favicon.png"
+  },
+  {
+    "name": "n网",
+    "url": "https://www.nexusmods.com/games/stardewvalley",
+    "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4"
+  }
+]

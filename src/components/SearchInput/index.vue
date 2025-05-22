@@ -1,5 +1,5 @@
 <template>
-  <div class="SearchInput w-1/2 h-[50px] mt-[40vh] bg-[#EFBD73] relative">
+  <div class="SearchInput w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative">
     <EngineSelection v-model="engineValue" />
     <StardewInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />
@@ -36,7 +36,7 @@ const BaiduSuggest = (): void => {
   const script = document.createElement('script')
   // @ts-ignore
   window[callbackName] = (response: any): void => {
-    if (response?.s) {
+    if (response?.s && inputValue.value) {
       quickJumpList.value = response.s.map((item: string) => ( {title: item} ))
     } else {
       quickJumpList.value = []

@@ -4,7 +4,7 @@
     <InfoBoard :information="information" />
     <!--输入框-->
     <SearchInput />
-    <!--快捷导航栏-->
+    <!--快捷导航栏（开发中）-->
     <Navigation />
     <!--电量-->
     <Battery />
@@ -18,7 +18,7 @@ import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import { type INFORMATION, WEEK_LIST } from '@/libs/const'
-import { byGaoDe } from '@/libs/weather.ts'
+import { byGaoDe } from '@/libs/weather'
 
 const timer = ref<number | null>(null)
 const information = reactive<INFORMATION>({

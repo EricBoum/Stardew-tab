@@ -8,6 +8,7 @@
       class="stardew-input w-full h-full indent-px flex items-center text-mouse"
     >
     </div>
+    <span class="absolute top-1/2 left-[20px] -translate-y-1/2 text-[#00000099]" v-if="showPlaceholder">输入关键词进行搜索</span>
     <div :style="{left: sickleLeft}" class="delete-animation absolute top-1/2 -translate-y-1/2 z-20" v-show="showSickle">
       <img class="sickle w-[20px] h-[20px] relative" src="@/assets/image/sickle.png" alt="">
     </div>
@@ -39,6 +40,10 @@ const showSickle = ref<boolean>(false) // 是否显示镰刀动画
 const sickleLeft = ref<string>('0') // 镰刀图标的 left 偏移量（相对输入框）
 const lastKey = ref<string>('') // 上一次按下的键，用于判断是否为删除
 const isComposing = ref<boolean>(false) // 是否处于输入法组合输入中（防止误触发回车）
+
+const showPlaceholder = computed(() => {
+  return !inputText.value.trim()
+})
 
 // 触发镰刀动画
 const updateDeleteAnimationPosition = () => {
@@ -139,6 +144,7 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .stardew-input {
+  z-index: 10;
   white-space: nowrap;
   overflow-x: scroll;
   font-size: 20px;
