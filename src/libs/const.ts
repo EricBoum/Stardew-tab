@@ -54,11 +54,40 @@ export const WEEK_LIST: string[] = [
   '星期六'
 ]
 
-export const SEASON: { [key: string]: string } = {
-  spring: Spring,
-  summer: Summer,
-  fall: Fall,
-  winter: Winter
+export interface SEASON_ITEM {
+  img: string;
+  zh: string;
+  en: string;
+}
+export interface SEASON_TYPE {
+  spring: SEASON_ITEM;
+  summer: SEASON_ITEM;
+  fall: SEASON_ITEM;
+  winter: SEASON_ITEM;
+
+  [key: string]: SEASON_ITEM;
+}
+export const SEASON: SEASON_TYPE = {
+  spring: {
+    img: Spring,
+    zh: '春天',
+    en: 'Spring'
+  },
+  summer: {
+    img: Summer,
+    zh: '夏天',
+    en: 'Summer'
+  },
+  fall: {
+    img: Fall,
+    zh: '秋天',
+    en: 'Fall'
+  },
+  winter: {
+    img: Winter,
+    zh: '冬天',
+    en: 'Winter'
+  }
 }
 
 

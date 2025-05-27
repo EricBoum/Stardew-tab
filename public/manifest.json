@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Stardew-tab",
+  "name": "Stardew Tab",
   "description": "一个星露谷物语风格的标签页",
   "version": "1.0.0",
   "chrome_url_overrides": {

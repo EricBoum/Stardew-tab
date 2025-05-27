@@ -75,7 +75,7 @@ const getTime = (): void => {
 }
 // 获取当前季节
 const getSeasonByMonth = (month: number): void => {
-  const seasons = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
+  const seasons: string[] = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
   information.season = seasons[month]
 }
 // 获取当前周

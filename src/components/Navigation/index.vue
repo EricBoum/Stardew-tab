@@ -17,7 +17,6 @@ interface Item {
 }
 
 const jump = (item: Item) => {
-  console.log(item)
   window.open(item.url)
 }
 </script>

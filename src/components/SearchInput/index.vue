@@ -7,6 +7,7 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios'
 import StardewInput from './StardewInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
@@ -30,24 +31,36 @@ const getQuickJumpList = (): void => {
   // 暂时只支持百度搜索推荐
   BaiduSuggest()
 }
-const BaiduSuggest = (): void => {
-  const callbackName = '__baidu_cb'
-  const query = encodeURIComponent(inputValue.value)
-  const script = document.createElement('script')
-  // @ts-ignore
-  window[callbackName] = (response: any): void => {
-    if (response?.s && inputValue.value) {
-      quickJumpList.value = response.s.map((item: string) => ( {title: item} ))
-    } else {
-      quickJumpList.value = []
-    }
-    if (document.body.contains(script)) {
-      document.body.removeChild(script)
-    }
-  }
 
-  script.src = `https://suggestion.baidu.com/su?wd=${ query }&cb=${ callbackName }`
-  document.body.appendChild(script)
+const BaiduSuggest = async (): Promise<void> => {
+  if (!inputValue.value) {
+    quickJumpList.value = []
+    return
+  }
+  try {
+    const proxyUrl = 'https://suggestion.baidu.com/su'
+    const temp = {
+      p: 3,
+      ie: 'UTF-8',
+      wd: inputValue.value,
+      cb: 'window.baidu.sug'
+    }
+    const res = await axios.get(proxyUrl, {
+      params: temp,
+      timeout: 3000
+    })
+    const match = res.data.match(/window.baidu.sug\(([\s\S]*?)\)/)
+    let json = { s: [] }
+
+    if (match && match[1]) {
+      const fixed = match[1].replace(/(\w+):/g, '"$1":') // 把 q: → "q":
+      json = JSON.parse(fixed)
+    }
+    quickJumpList.value = ( json.s || [] ).map((item: string) => ( {title: item} ))
+  } catch (error) {
+    console.error('获取百度搜索建议失败:', error)
+    quickJumpList.value = []
+  }
 }
 
 onMounted(async () => {
@@ -61,6 +74,7 @@ watch(inputValue, () => {
   getQuickJumpList()
 })
 watch(engineValue, () => {
+  // 将默认搜索引擎存入本地
   useStorage().setStorage('engine', engineValue.value)
 })
 </script>

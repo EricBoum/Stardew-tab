@@ -5,7 +5,7 @@
       {{ props.information.week }}
     </p>
     <img class="w-[36px] h-[27px] absolute top-[51px] right-[97px]" :src="getTodayWeather" :title="props.information.weather.today.zh" :alt="props.information.weather.today.zh">
-    <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage" alt="">
+    <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage.img" :title="getSeasonImage.zh" :alt="getSeasonImage.zh">
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { type INFORMATION, SEASON } from '@/libs/const'
+import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const'
 
 const props = defineProps<{
   information: INFORMATION
@@ -31,7 +31,7 @@ const getPointerRotate = computed(() => {
 })
 // 获取季节图片
 const getSeasonImage = computed(() => {
-  return SEASON[props.information.season]
+  return (SEASON as SEASON_TYPE)[props.information.season] as SEASON_ITEM || {zh: '', img: ''}
 })
 // 预加载所有天气图片（今天）
 const weatherImages = import.meta.glob('@/assets/image/weather/*.png', {
