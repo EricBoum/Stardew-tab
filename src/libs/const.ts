@@ -1,3 +1,4 @@
+import DefaultEngin from '@/assets/image/search-engine/defaultEngin.png'
 import BaiduLogo from '@/assets/image/search-engine/baidu.png'
 import GoogleLogo from '@/assets/image/search-engine/google.png'
 import Spring from '@/assets/image/season/Spring.png'
@@ -8,10 +9,14 @@ import Winter from '@/assets/image/season/Winter.png'
 
 export interface SEARCH_ITEM {
   name: string;
-  url: string;
+  url?: string;
   logo: string;
 }
 export const SEARCH_ENGINES: SEARCH_ITEM[] = [
+  {
+    name: 'Default',
+    logo: DefaultEngin
+  },
   {
     name: 'Baidu',
     url: 'https://www.baidu.com/s?wd=',

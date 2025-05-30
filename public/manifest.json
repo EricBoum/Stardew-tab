@@ -15,6 +15,7 @@
     "default_icon": "icon48.png"
   },
   "permissions": [
+    "search",
     "geolocation",
     "storage"
   ],

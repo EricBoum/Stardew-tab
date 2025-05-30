@@ -20,8 +20,15 @@ const inputValue = ref<string>('')
 const quickJumpList = ref<Array<any>>([])
 
 const toSearch = (e: { title: string } = {title: ''}): void => {
-  const keyWords = e.title || inputValue.value
-  window.open(`${ engineValue.value.url }${ keyWords }`)
+  const keyWords = (e.title || inputValue.value).trim()
+  if (!keyWords) {
+    return
+  }
+  if (engineValue.value.name === 'Default') {
+    chrome.search.query({ text: keyWords, disposition: 'NEW_TAB' })
+  } else {
+    window.open(`${ engineValue.value.url }${ keyWords }`)
+  }
 }
 const getQuickJumpList = (): void => {
   if (!inputValue.value) {
