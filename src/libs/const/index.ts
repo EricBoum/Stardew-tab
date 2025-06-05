@@ -6,7 +6,6 @@ import Summer from '@/assets/image/season/Summer.png'
 import Fall from '@/assets/image/season/Fall.png'
 import Winter from '@/assets/image/season/Winter.png'
 
-
 export interface SEARCH_ITEM {
   name: string;
   url?: string;
@@ -95,4 +94,5 @@ export const SEASON: SEASON_TYPE = {
   }
 }
 
-
+export const LINK_LIST_KEY: string = 'LINK_LIST' // 快捷链接缓存key
+export const LINK_TAB_KEY: string = 'LINK_TAB' // 快捷链接tab混存key

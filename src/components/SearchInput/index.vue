@@ -12,7 +12,7 @@ import StardewInput from './StardewInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
 import { ref, watch, onMounted } from 'vue'
-import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const'
+import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
 import { useStorage } from '@/libs/storage'
 
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
@@ -25,7 +25,12 @@ const toSearch = (e: { title: string } = {title: ''}): void => {
     return
   }
   if (engineValue.value.name === 'Default') {
-    chrome.search.query({ text: keyWords, disposition: 'NEW_TAB' })
+    if (chrome.search?.query) {
+      chrome.search.query({ text: keyWords, disposition: 'NEW_TAB' })
+    } else {
+      // 兼容Firefox fallback 跳转百度
+      window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(keyWords)}`)
+    }
   } else {
     window.open(`${ engineValue.value.url }${ keyWords }`)
   }
@@ -71,6 +76,7 @@ const BaiduSuggest = async (): Promise<void> => {
 }
 
 onMounted(async () => {
+  // 获取本地存储的用户默认选择的搜索引擎
   const storageEngine = await useStorage().getStorage('engine')
   if (storageEngine) {
     engineValue.value = storageEngine
@@ -93,6 +99,6 @@ watch(engineValue, () => {
   border-bottom-color: #8E5F40;
   outline: 3px solid #552E2B;
   padding: 0 50px 0 10px;
-  z-index: 999;
+  z-index: 10;
 }
 </style>
