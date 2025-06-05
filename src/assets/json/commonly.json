@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "name": "官网",
+    "url": "https://www.stardewvalley.net/",
+    "logo": "https://www.stardewvalley.net/wp-content/uploads/2017/12/cropped-chickenfavicon-192x192.png",
+    "desc": "星露谷官网",
+    "type": "img",
+    "bgColor": "#C87529",
+    "textColor": "#FFCF46"
+  },
+  {
+    "id": 2,
+    "name": "wiki",
+    "url": "https://stardewvalleywiki.com/",
+    "logo": "https://stardewvalleywiki.com/mediawiki/extensions/StardewValley/images/favicon.png",
+    "desc": "星露谷wiki，农民的百科全书",
+    "type": "img",
+    "bgColor": "#C87529",
+    "textColor": "#FFCF46"
+  },
+  {
+    "id": 3,
+    "name": "n网",
+    "url": "https://www.nexusmods.com/games/stardewvalley",
+    "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4",
+    "desc": "星露谷n网",
+    "type": "img",
+    "bgColor": "#C87529",
+    "textColor": "#FFCF46"
+  },
+  {
+    "id": 4,
+    "name": "测试",
+    "url": "https://www.nexusmods.com/games/stardewvalley",
+    "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4",
+    "desc": "星露谷n网",
+    "type": "text",
+    "bgColor": "#C87529",
+    "textColor": "#FFCF46"
+  }
+]

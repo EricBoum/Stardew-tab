@@ -4,19 +4,34 @@
     <p class="info-text h-[33px] leading-[33px] top-[13px]">
       {{ props.information.week }}
     </p>
-    <img class="w-[36px] h-[27px] absolute top-[51px] right-[97px]" :src="getTodayWeather" :title="props.information.weather.today.zh" :alt="props.information.weather.today.zh">
+    <div class="w-[36px] h-[27px] absolute top-[51px] right-[97px] group">
+      <img class="w-full h-full" :src="getTodayWeather" :alt="props.information.weather.today.zh">
+      <StardewTips placement="top-start">
+        <template #default>
+          <SimpleInfo :detail="{title: '今天天气', content: props.information.weather.today.zh}" />
+        </template>
+      </StardewTips>
+    </div>
     <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage.img" :title="getSeasonImage.zh" :alt="getSeasonImage.zh">
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
-
-    <img class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px]" :title="props.information.weather.tomorrow.zh" :src="getTomorrowWeather" alt="">
+    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px] group">
+      <img class="w-full h-full" :src="getTomorrowWeather" alt="">
+      <StardewTips placement="bottom-end">
+        <template #default>
+          <SimpleInfo :detail="{title: '明天天气', content: props.information.weather.tomorrow.zh}" />
+        </template>
+      </StardewTips>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import StardewTips from '@/components/_components/StardewTips/index.vue'
+import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import { computed } from 'vue'
-import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const'
+import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
 
 const props = defineProps<{
   information: INFORMATION
@@ -31,7 +46,7 @@ const getPointerRotate = computed(() => {
 })
 // 获取季节图片
 const getSeasonImage = computed(() => {
-  return (SEASON as SEASON_TYPE)[props.information.season] as SEASON_ITEM || {zh: '', img: ''}
+  return ( SEASON as SEASON_TYPE )[props.information.season] as SEASON_ITEM || {zh: '', img: ''}
 })
 // 预加载所有天气图片（今天）
 const weatherImages = import.meta.glob('@/assets/image/weather/*.png', {

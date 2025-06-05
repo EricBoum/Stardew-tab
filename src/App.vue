@@ -5,9 +5,13 @@
     <!--输入框-->
     <SearchInput />
     <!--快捷导航栏（开发中）-->
-    <Navigation />
+    <Navigation @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
     <Battery />
+    <!--TODO测试用-->
+    <!--<PopUp />-->
+    <!--快捷链接工具栏-->
+    <LinkBox ref="LinkBoxRef" />
   </div>
 </template>
 
@@ -16,10 +20,13 @@ import InfoBoard from '@/components/InfoBoard/index.vue'
 import SearchInput from '@/components/SearchInput/index.vue'
 import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import { type INFORMATION, WEEK_LIST } from '@/libs/const'
-import { byGaoDe } from '@/libs/weather'
+import LinkBox from '@/components/LinkBox/index.vue'
+// import PopUp from '@/popup/vuePage/index.vue'
+import { ref, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import { type INFORMATION, WEEK_LIST } from '@/libs/const/index.ts'
+// import { byGaoDe } from '@/libs/weather'
 
+const LinkBoxRef = useTemplateRef('LinkBoxRef')
 const timer = ref<number | null>(null)
 const information = reactive<INFORMATION>({
   season: '',
@@ -84,7 +91,12 @@ const getWeek = (day: number): void => {
 }
 // 获取天气
 const getWeather = async (): Promise<any> => {
-  information.weather = await byGaoDe()
+  // TODO
+  // information.weather = await byGaoDe()
+}
+// 打开linkBox弹窗
+const handleOpenLinkBox = (): void => {
+  LinkBoxRef.value?.show()
 }
 
 onMounted(() => {
