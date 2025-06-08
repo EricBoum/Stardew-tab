@@ -5,9 +5,11 @@
     <!--输入框-->
     <SearchInput />
     <!--快捷导航栏（开发中）-->
-    <Navigation />
+    <Navigation v-if="!linkBoxShow" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
     <Battery />
+    <!--快捷链接工具栏-->
+    <LinkBox v-model="linkBoxShow" ref="LinkBoxRef" @on-close="toRefreshList" />
   </div>
 </template>
 
@@ -16,11 +18,15 @@ import InfoBoard from '@/components/InfoBoard/index.vue'
 import SearchInput from '@/components/SearchInput/index.vue'
 import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import { type INFORMATION, WEEK_LIST } from '@/libs/const'
+import LinkBox from '@/components/LinkBox/index.vue'
+import { ref, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import { type INFORMATION, WEEK_LIST } from '@/libs/const/index.ts'
 import { byGaoDe } from '@/libs/weather'
 
+const LinkBoxRef = useTemplateRef('LinkBoxRef')
+const NavigationRef = useTemplateRef('NavigationRef')
 const timer = ref<number | null>(null)
+const linkBoxShow = ref<boolean>(false)
 const information = reactive<INFORMATION>({
   season: '',
   week: '',
@@ -44,7 +50,7 @@ const information = reactive<INFORMATION>({
 // 初始化
 const init = (): void => {
   startTime() // 开始时间
-  getWeather()
+  getWeather() // 获取天气
 }
 // 处理标签页可见性变化,节省性能
 const handleVisibilityChange = (): void => {
@@ -84,7 +90,19 @@ const getWeek = (day: number): void => {
 }
 // 获取天气
 const getWeather = async (): Promise<any> => {
-  information.weather = await byGaoDe()
+  try {
+    information.weather = await byGaoDe()
+  } catch (error) {
+    console.log(error)
+  }
+}
+// 打开linkBox弹窗
+const handleOpenLinkBox = (): void => {
+  LinkBoxRef.value?.show()
+}
+// 刷新常用列表
+const toRefreshList = () => {
+  NavigationRef.value?.query()
 }
 
 onMounted(() => {

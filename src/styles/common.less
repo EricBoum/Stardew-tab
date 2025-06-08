@@ -1,0 +1,24 @@
+.dialog-close-button(@w: 20px; @mg: 5px) {
+  position: absolute;
+  top: calc((@w + @mg) * -1);
+  right: calc((@w + @mg) * -1);
+  width: @w;
+  height: @w;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+  z-index: 5;
+  cursor: url("@/assets/image/cursor/pointer.png"), auto;
+  * {
+    cursor: url("@/assets/image/cursor/pointer.png"), auto;
+  }
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}

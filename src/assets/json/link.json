@@ -1,20 +1,80 @@
 [
   {
-    "name": "官网",
-    "url": "https://www.stardewvalley.net/",
-    "logo": "https://www.stardewvalley.net/wp-content/uploads/2017/12/cropped-chickenfavicon-192x192.png",
-    "desc": "星露谷官网"
+    "name": "影视",
+    "id": "1",
+    "list": [
+      {
+        "parentId": "1",
+        "id": "1-1",
+        "name": "腾讯视频",
+        "url": "https://v.qq.com/",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://v.qq.com/&size=64",
+        "desc": "不负好时光",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      },
+      {
+        "parentId": "1",
+        "id": "1-2",
+        "name": "爱奇艺",
+        "url": "https://www.iqiyi.com/",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.iqiyi.com/&size=64",
+        "desc": "悦享品质",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      },
+      {
+        "parentId": "1",
+        "id": "1-3",
+        "name": "优酷视频",
+        "url": "https://www.youku.com/ku/webhome",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.youku.com/ku/webhome&size=64",
+        "desc": "这世界很酷",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      },
+      {
+        "parentId": "1",
+        "id": "1-4",
+        "name": "BiliBili",
+        "url": "https://www.bilibili.com/",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.bilibili.com/&size=64",
+        "desc": "哔哩哔哩 (゜-゜)つロ 干杯~-bilibili",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      }
+    ]
   },
   {
-    "name": "wiki",
-    "url": "https://stardewvalleywiki.com/",
-    "logo": "https://stardewvalleywiki.com/mediawiki/extensions/StardewValley/images/favicon.png",
-    "desc": "星露谷wiki，农民的百科全书"
-  },
-  {
-    "name": "n网",
-    "url": "https://www.nexusmods.com/games/stardewvalley",
-    "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4",
-    "desc": "星露谷n网"
+    "name": "社交",
+    "id": "2",
+    "list": [
+      {
+        "parentId": "2",
+        "id": "2-1",
+        "name": "知乎",
+        "url": "https://www.zhihu.com/",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://www.zhihu.com/&size=64",
+        "desc": "有问题，就会有答案",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      },
+      {
+        "parentId": "2",
+        "id": "2-2",
+        "name": "微博",
+        "url": "https://weibo.com/",
+        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://weibo.com/&size=64",
+        "desc": "随时随地发现",
+        "type": "img",
+        "bgColor": "#C87529",
+        "textColor": "#FFCF46"
+      }
+    ]
   }
 ]

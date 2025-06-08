@@ -1,15 +1,19 @@
 /// <reference types="chrome" />
 type StorageArea = typeof chrome.storage.local
+declare var browser: typeof chrome
 
-const storage: StorageArea = (() => {
+const storage: StorageArea = ( () => {
   try {
     if (
       typeof chrome !== 'undefined' &&
       chrome.storage?.local
     ) {
       return chrome.storage.local
+    } else if (typeof browser !== 'undefined' && browser.storage?.local) {
+      return browser.storage.local
     }
-  } catch (_) {}
+  } catch (_) {
+  }
 
   // fallback: use localStorage when chrome.storage is unavailable (e.g. dev mode)
   return {
@@ -29,22 +33,22 @@ const storage: StorageArea = (() => {
       items: Record<string, any>,
       callback?: () => void
     ) => {
-      Object.entries(items).forEach(([key, value]) => {
+      Object.entries(items).forEach(([ key, value ]) => {
         try {
           localStorage.setItem(key, JSON.stringify(value))
         } catch {
-          console.warn(`Failed to store ${key} in localStorage`)
+          console.warn(`Failed to store ${ key } in localStorage`)
         }
       })
       callback?.()
     }
   } as StorageArea
-})()
+} )()
 
 export const useStorage = () => {
   const getStorage = <T = any>(key: string): Promise<T | undefined> => {
     return new Promise((resolve) => {
-      storage.get([key], (result) => {
+      storage.get([ key ], (result) => {
         resolve(result[key] as T)
       })
     })
@@ -52,9 +56,9 @@ export const useStorage = () => {
 
   const setStorage = <T = any>(key: string, value: T): Promise<void> => {
     return new Promise((resolve) => {
-      storage.set({ [key]: value }, () => resolve())
+      storage.set({[key]: value}, () => resolve())
     })
   }
 
-  return { getStorage, setStorage }
+  return {getStorage, setStorage}
 }

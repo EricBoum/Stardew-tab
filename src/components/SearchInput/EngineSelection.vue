@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const'
+import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
 
 const props = defineProps({
   modelValue: {

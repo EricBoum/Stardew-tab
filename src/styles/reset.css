@@ -14,3 +14,55 @@ html, body {
 body {
     font-size: 100%;
 }
+:root {
+    --text-color: #50302C;
+}
+.text-mouse {
+    cursor: url("@/assets/image/cursor/text.png"), auto;
+}
+.pointer {
+    cursor: url("@/assets/image/cursor/pointer.png"), auto;
+    * {
+        cursor: url("@/assets/image/cursor/pointer.png"), auto;
+    }
+}
+.stardew-border {
+    border: 3px solid #CF802F;
+    border-radius: 2px;
+    border-left-color: #8E5F40;
+    border-bottom-color: #8E5F40;
+    outline: 3px solid #552E2B;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.stardew-font {
+    font-family: 'StardewValley', sans-serif;
+    color: var(--text-color, #4e3623);
+}
+.dialog-title {
+    @apply text-xl text-[#4e3623] font-bold mb-4 text-center;
+    font-family: 'StardewValley', sans-serif;
+    color: var(--text-color, #4e3623);
+    text-shadow: -1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+.stardew-button {
+    @apply px-16 py-1 bg-[#CF802F] text-white;
+    cursor: url("@/assets/image/cursor/pointer.png"), auto;
+    font-family: 'StardewValley', sans-serif;
+    border: 2px solid #CF802F;
+    border-left-color: #8E5F40;
+    border-bottom-color: #8E5F40;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s;
+    &:hover {
+        background-color: #DF9040;
+        transform: translateY(-1px);
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+    }
+    &:active {
+        transform: translateY(1px);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    * {
+        cursor: url("@/assets/image/cursor/pointer.png"), auto;
+    }
+}

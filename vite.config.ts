@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite'
+import { resolve } from 'path'
 import vue from '@vitejs/plugin-vue'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [ vue(), tailwindcss() ],
   server: {
@@ -16,4 +16,12 @@ export default defineConfig({
     },
     extensions: [ '.js', '.ts', '.vue' ], // 添加 .vue
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        popup: resolve(__dirname, 'src/popup/index.html')
+      }
+    }
+  }
 })
