@@ -14,16 +14,24 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
+const props = defineProps({
   modelValue: {
     type: Boolean,
     required: true
+  },
+  closeOnMask: {
+    type: Boolean,
+    default: true
   }
 })
 
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits([ 'update:modelValue', 'on-close' ])
 
 function close() {
-  emit('update:modelValue', false)
+  if (props.closeOnMask) {
+    emit('update:modelValue', false)
+    return
+  }
+  emit('on-close')
 }
 </script>

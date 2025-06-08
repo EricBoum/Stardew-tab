@@ -1,5 +1,6 @@
 [
   {
+    "parentId": "",
     "id": 1,
     "name": "官网",
     "url": "https://www.stardewvalley.net/",
@@ -10,6 +11,7 @@
     "textColor": "#FFCF46"
   },
   {
+    "parentId": "",
     "id": 2,
     "name": "wiki",
     "url": "https://stardewvalleywiki.com/",
@@ -20,22 +22,13 @@
     "textColor": "#FFCF46"
   },
   {
+    "parentId": "",
     "id": 3,
     "name": "n网",
     "url": "https://www.nexusmods.com/games/stardewvalley",
     "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4",
     "desc": "星露谷n网",
     "type": "img",
-    "bgColor": "#C87529",
-    "textColor": "#FFCF46"
-  },
-  {
-    "id": 4,
-    "name": "测试",
-    "url": "https://www.nexusmods.com/games/stardewvalley",
-    "logo": "https://avatars.githubusercontent.com/u/17085531?s=200&v=4",
-    "desc": "星露谷n网",
-    "type": "text",
     "bgColor": "#C87529",
     "textColor": "#FFCF46"
   }

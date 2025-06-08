@@ -1,14 +1,14 @@
 <template>
   <div class="SearchInput w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative">
     <EngineSelection v-model="engineValue" />
-    <StardewInput v-model="inputValue" @stardewEnter="toSearch" />
+    <SpecialInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />
   </div>
 </template>
 
 <script setup lang="ts">
 import axios from 'axios'
-import StardewInput from './StardewInput.vue'
+import SpecialInput from './SpecialInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
 import { ref, watch, onMounted } from 'vue'

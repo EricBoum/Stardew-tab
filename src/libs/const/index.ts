@@ -94,5 +94,10 @@ export const SEASON: SEASON_TYPE = {
   }
 }
 
+
+export const MAX_COMMON_NUM = 11 // 最大常用快捷链接数量
+export const MAX_CURRENT_NUM = 24 // 当前tab快捷链接数量
+export const COMMON_LINK_LIST_KEY: string = 'COMMON_LINK_LIST' // 常用快捷链接缓存key
 export const LINK_LIST_KEY: string = 'LINK_LIST' // 快捷链接缓存key
-export const LINK_TAB_KEY: string = 'LINK_TAB' // 快捷链接tab混存key
+
+export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度

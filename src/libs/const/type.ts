@@ -1,4 +1,5 @@
 export interface LINK_ITEM_TYPE {
+  parentId?: string | number;
   id?: string | number;
   name: string;
   url: string;
@@ -12,4 +13,5 @@ export interface LINK_ITEM_TYPE {
 export interface TAB_ITEM {
   name: string;
   id: string | number;
+  list?: LINK_ITEM_TYPE[];
 }

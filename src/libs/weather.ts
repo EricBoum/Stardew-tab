@@ -5,7 +5,14 @@ export const byGaoDe = (): Promise<any> => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const {latitude, longitude} = position.coords
-        const key = import.meta.env.VITE_GAODE_KEY
+        const now = new Date()
+        const today = now.getDay()
+        let key
+        if ([0,1,3,5].includes(today)) {
+          key = import.meta.env.VITE_GAODE_KEY
+        } else {
+          key = import.meta.env.VITE_GAODE_KEY_YAO
+        }
         try {
           const geoRes = await axios.get('https://restapi.amap.com/v3/geocode/regeo', {
             params: {
