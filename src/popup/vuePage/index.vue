@@ -1,5 +1,5 @@
 <template>
-  <div class="popup-box px-6 py-3 w-[400px] stardew-border stardew-font relative">
+  <div class="popup-box px-6 py-2 w-[400px] stardew-border stardew-font relative">
     <div v-if="showMask" class="w-full h-full top-0 left-0 absolute z-[2] bg-[#C87529] flex flex-col items-center justify-center text-[#ffffff]">
       <img class="w-[50px] mb-[20px]" src="@/assets/image/star.png" alt="">
       添加成功
