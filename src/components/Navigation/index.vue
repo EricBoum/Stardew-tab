@@ -1,8 +1,8 @@
 <template>
-  <div class="Navigation w-[900px] h-[117px] fixed bottom-[0px] left-1/2 -translate-x-1/2 z-[5]" style="isolation: isolate;">
-    <ul class="flex w-full h-full pt-[46px] pl-[46px] relative">
+  <div class="Navigation w-[700px] h-[85px] fixed bottom-[10px] left-1/2 -translate-x-1/2 z-[5]" style="isolation: isolate;">
+    <ul class="flex w-full h-full pt-[15px] pl-[15px] relative">
       <li v-for="(item, index) in commonLinkList" :key="index" class="group relative" @contextmenu="openContextMenu($event, index)">
-        <div class="w-[60px] h-[60px] mr-[8px] relative z-[5]">
+        <div class="w-[53px] h-[53px] mr-[3.1px] relative z-[5]">
           <LinkItem :detail="item" />
           <StardewTips placement="top">
             <template #default>
@@ -11,9 +11,9 @@
           </StardewTips>
         </div>
       </li>
-      <li class="w-[60px] h-[60px] absolute right-[46px]" @click="openLinkBox">
+      <li class="w-[53px] h-[53px] absolute right-[15px]" @click="openLinkBox">
         <div class="w-full h-full flex items-center justify-center cursor-pointer transition-colors">
-          <div class="Navigation-add w-[50px] h-[50px] mr-[1px] flex items-center justify-center pointer">
+          <div class="Navigation-add w-[41px] h-[41px] mr-[1px] flex items-center justify-center pointer">
             <svg width="22" height="22" viewBox="0 0 20 20" class="pixel-plus">
               <circle cx="4" cy="10" r="2" fill="#FFD54F" />
               <circle cx="10" cy="10" r="2" fill="#FFD54F" />

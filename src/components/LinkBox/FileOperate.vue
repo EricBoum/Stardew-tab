@@ -1,10 +1,22 @@
 <template>
   <div class="FileOperate absolute top-[30px] -right-[65px] flex flex-col">
-    <div class="w-[40px] h-[40px] relative pointer">
+    <div class="w-[40px] h-[40px] relative pointer group">
       <img class="w-full h-full" src="@/assets/image/link/upload.png" alt="上传">
       <input class="w-full h-full absolute top-0 left-0 z-[2] text-[0px]" type="file" accept=".json" @change="handleUpload">
+      <StardewTips placement="bottom-start">
+        <template #default>
+          <SimpleInfo :detail="{title: '上传快捷键', content: '批量导入快捷键'}" />
+        </template>
+      </StardewTips>
     </div>
-    <img class="w-[40px] mt-[20px] pointer" src="@/assets/image/link/download.png" alt="下载" @click="downLoad">
+    <div class="w-[40px] mt-[20px] pointer group">
+      <img class="w-full h-full" src="@/assets/image/link/download.png" alt="下载" @click="downLoad">
+      <StardewTips placement="bottom-start">
+        <template #default>
+          <SimpleInfo :detail="{title: '导出快捷键列表', content: '导出当前所有快捷键（除常用快捷键）'}" />
+        </template>
+      </StardewTips>
+    </div>
 
     <!--二次确认-->
     <ConfirmBox ref="ConfirmBoxRef" @on-commit="commitUpload" />
@@ -17,6 +29,8 @@ import { useStorage } from '@/libs/storage.ts'
 import { LINK_LIST_KEY } from '@/libs/const'
 import { ref, useTemplateRef } from 'vue'
 import { getLinkData } from '@/libs'
+import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
+import StardewTips from '@/components/_components/StardewTips/index.vue'
 
 const emit = defineEmits([ 'on-upload-success' ])
 const storage = useStorage()
