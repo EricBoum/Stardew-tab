@@ -1,46 +1,31 @@
 import axios from 'axios'
+import { useStorage } from './storage.ts'
 
-export const byGaoDe = (): Promise<any> => {
+export const byQWeather = () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const {latitude, longitude} = position.coords
-        const now = new Date()
-        const today = now.getDay()
-        let key
-        if ([0,1,3,5].includes(today)) {
-          key = import.meta.env.VITE_GAODE_KEY
-        } else {
-          key = import.meta.env.VITE_GAODE_KEY_YAO
-        }
         try {
-          const geoRes = await axios.get('https://restapi.amap.com/v3/geocode/regeo', {
+          const weatherRes = await axios.get(import.meta.env.VITE_QWEATHER_API, {
             params: {
               location: `${ longitude },${ latitude }`,
-              key
-            }
+              key: import.meta.env.VITE_QWEATHER_KEY,
+            },
           })
-          const adcode = geoRes.data?.regeocode?.addressComponent?.adcode
-          if (!adcode) {
-            reject(new Error('未能获取 adcode'))
-            return
+          const daily = weatherRes.data.daily
+          const todayWeather = daily[0].textDay
+          const tomorrowWeather = daily[1].textDay
+
+          const returnData = {
+            today: dealWithWeather(todayWeather),
+            tomorrow: dealWithWeather(tomorrowWeather),
           }
-          const weatherRes = await axios.get('https://restapi.amap.com/v3/weather/weatherInfo', {
-            params: {
-              city: adcode,
-              key,
-              extensions: 'all',
-              output: 'JSON'
-            }
-          })
-          const weatherData = weatherRes.data.forecasts?.[0].casts
-          let returnData = {
-            today: getWeather(weatherData[0]?.dayweather),
-            tomorrow: getWeather(weatherData[1]?.dayweather),
-          }
+
+          await setWeather(returnData)
           resolve(returnData)
-        } catch (err) {
-          reject(err)
+        } catch (error) {
+          reject(error)
         }
       },
       (err) => {
@@ -50,24 +35,48 @@ export const byGaoDe = (): Promise<any> => {
   })
 }
 
-type WeatherCategory = {
-  keyword: '晴' | '雨' | '风' | '雷' | '雪' | '未定义' | string;
-  en: 'Sunny' | 'Rainy' | 'Windy' | 'Stormy' | 'Snowy' | 'Undefined';
-};
-
-export function getWeather(input: string): { zh: string; en: string } {
-  const mapping: { keyword: string; en: WeatherCategory['en'] }[] = [
-    {keyword: '雷', en: 'Stormy'},
-    {keyword: '雨', en: 'Rainy'},
-    {keyword: '风', en: 'Windy'},
-    {keyword: '雪', en: 'Snowy'},
-    {keyword: '晴', en: 'Sunny'},
+export function dealWithWeather(input: string): { zh: string; en: string } {
+  const mapping: { keywords: string[]; zh: string; en: string }[] = [
+    {keywords: [ '晴' ], zh: '晴', en: 'Sunny'},
+    {keywords: [ '雨' ], zh: '雨', en: 'Rainy'},
+    {keywords: [ '雷' ], zh: '雷', en: 'Stormy'},
+    {keywords: [ '雪' ], zh: '雪', en: 'Snowy'},
+    {keywords: [ '风' ], zh: '风', en: 'Windy'},
   ]
-  for (const {keyword, en} of mapping) {
-    if (input.includes(keyword)) {
+
+  for (const {keywords, en} of mapping) {
+    if (keywords.some(keyword => new RegExp(keyword, 'i').test(input))) {
       return {zh: input, en}
     }
   }
 
   return {zh: input, en: 'Default'}
+}
+
+export const setWeather = async (data: any) => {
+  const cached = {
+    data,
+    timestamp: Date.now()
+  }
+  await useStorage().setStorage('weather_cache', cached)
+}
+
+export const getWeatherData = async (): Promise<any> => {
+  const cache = await useStorage().getStorage('weather_cache')
+  if (cache) {
+    try {
+      const now = Date.now()
+      // 五小时内最多请求一次，隔天可立即请求
+      const FIVE_HOURS = 5 * 60 * 60 * 1000
+      const nowDateStr = new Date(now).toDateString()
+      const cacheDateStr = new Date(cache.timestamp).toDateString()
+      const isSameDay = nowDateStr === cacheDateStr
+      if (now - cache.timestamp < FIVE_HOURS && isSameDay) {
+        return cache.data
+      }
+    } catch (e) {
+      console.warn('解析缓存失败', e)
+    }
+  }
+  return await byQWeather()
 }

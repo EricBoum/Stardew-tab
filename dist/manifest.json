@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Stardew Tab",
   "description": "一个星露谷物语风格的标签页",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "chrome_url_overrides": {
     "newtab": "index.html"
   },
@@ -22,6 +22,7 @@
     "storage"
   ],
   "host_permissions": [
+    "https://api.openweathermap.org/*",
     "https://restapi.amap.com/*",
     "https://suggestion.baidu.com/*"
   ],

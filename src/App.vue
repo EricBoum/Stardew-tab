@@ -21,7 +21,7 @@ import Battery from '@/components/Battery/index.vue'
 import LinkBox from '@/components/LinkBox/index.vue'
 import { ref, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
 import { type INFORMATION, WEEK_LIST } from '@/libs/const/index.ts'
-import { byGaoDe } from '@/libs/weather'
+import { getWeatherData } from '@/libs/weather'
 
 const LinkBoxRef = useTemplateRef('LinkBoxRef')
 const NavigationRef = useTemplateRef('NavigationRef')
@@ -91,7 +91,7 @@ const getWeek = (day: number): void => {
 // 获取天气
 const getWeather = async (): Promise<any> => {
   try {
-    information.weather = await byGaoDe()
+    information.weather = await getWeatherData()
   } catch (error) {
     console.log(error)
   }
