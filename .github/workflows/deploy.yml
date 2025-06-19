@@ -31,7 +31,11 @@ jobs:
         run: npm install
 
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build -- --base=$VITE_BASE
+
+      - name: Set base path for GitHub Pages
+        run: echo "VITE_BASE=/$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)/" >> $GITHUB_ENV
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
