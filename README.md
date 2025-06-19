@@ -18,6 +18,9 @@
 3. 开启右上角「开发者模式」
 4. 点击「加载已解压的扩展程序」，选择本项目dist目录
 
+🔗 **项目在线预览地址**：  
+https://ericboum.github.io/Stardew-tab/
+
 ## 🛠 开发指令
 
 ```bash
