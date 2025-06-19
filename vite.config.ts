@@ -24,5 +24,5 @@ export default defineConfig({
       }
     }
   },
-  base: 'https://github.com/EricBoum/stardew-tab/'
+  base: '/Stardew-tab/'
 })
