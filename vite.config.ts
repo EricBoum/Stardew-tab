@@ -23,5 +23,6 @@ export default defineConfig({
         popup: resolve(__dirname, 'src/popup/index.html')
       }
     }
-  }
+  },
+  base: 'https://github.com/EricBoum/stardew-tab/'
 })
