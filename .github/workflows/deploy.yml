@@ -3,7 +3,7 @@ name: Deploy Vue App to GitHub Pages
 on:
   push:
     branches:
-      - master
+      - master  # 或 main，依据你的主分支设置
 
 permissions:
   contents: read
@@ -17,9 +17,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -31,11 +30,7 @@ jobs:
         run: npm install
 
       - name: Build project
-        run: |
-          npm run build -- --base=$VITE_BASE
-
-      - name: Set base path for GitHub Pages
-        run: echo "VITE_BASE=/$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)/" >> $GITHUB_ENV
+        run: npm run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
