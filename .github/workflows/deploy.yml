@@ -38,7 +38,7 @@ jobs:
         run: echo "VITE_BASE=/$(echo $GITHUB_REPOSITORY | cut -d '/' -f2)/" >> $GITHUB_ENV
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./dist
 
