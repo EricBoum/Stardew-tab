@@ -3,7 +3,7 @@ name: Deploy Vue App to GitHub Pages
 on:
   push:
     branches:
-      - main  # 或 master，根据你的主分支修改
+      - master
 
 permissions:
   contents: read
