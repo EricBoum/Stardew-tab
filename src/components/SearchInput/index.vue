@@ -1,6 +1,6 @@
 <template>
-  <div class="SearchInput w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative">
-    <EngineSelection v-model="engineValue" />
+  <div :class="['SearchInput transition-[0.3s] w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative', getShadow && 'shadow-[0_5px_40px_5px_rgba(255,255,200,0.4)]']">
+    <EngineSelection v-model="engineValue" :information="information" />
     <SpecialInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />
   </div>
@@ -11,25 +11,33 @@ import axios from 'axios'
 import SpecialInput from './SpecialInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
-import { ref, watch, onMounted } from 'vue'
-import { SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
+import { ref, watch, onMounted, computed } from 'vue'
+import { type INFORMATION, SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
 import { useStorage } from '@/libs/storage'
 
+const props = defineProps<{
+  information: INFORMATION
+}>()
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
 const quickJumpList = ref<Array<any>>([])
 
+// 获取阴影
+const getShadow = computed(() => {
+  return props.information.time.isNight
+})
+
 const toSearch = (e: { title: string } = {title: ''}): void => {
-  const keyWords = (e.title || inputValue.value).trim()
+  const keyWords = ( e.title || inputValue.value ).trim()
   if (!keyWords) {
     return
   }
   if (engineValue.value.name === 'Default') {
     if (chrome.search?.query) {
-      chrome.search.query({ text: keyWords, disposition: 'NEW_TAB' })
+      chrome.search.query({text: keyWords, disposition: 'NEW_TAB'})
     } else {
       // 兼容Firefox fallback 跳转百度
-      window.open(`https://www.baidu.com/s?wd=${encodeURIComponent(keyWords)}`)
+      window.open(`https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`)
     }
   } else {
     window.open(`${ engineValue.value.url }${ keyWords }`)
@@ -62,7 +70,7 @@ const BaiduSuggest = async (): Promise<void> => {
       timeout: 3000
     })
     const match = res.data.match(/window.baidu.sug\(([\s\S]*?)\)/)
-    let json = { s: [] }
+    let json = {s: []}
 
     if (match && match[1]) {
       const fixed = match[1].replace(/(\w+):/g, '"$1":') // 把 q: → "q":

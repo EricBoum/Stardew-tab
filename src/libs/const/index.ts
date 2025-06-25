@@ -35,6 +35,7 @@ export interface INFORMATION {
     hour: number | string;
     minute: number | string;
     second: number | string;
+    isNight: boolean;
   };
   weather: {
     today: {

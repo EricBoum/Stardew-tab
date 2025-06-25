@@ -1,9 +1,9 @@
 <template>
-  <div class="flex justify-center w-screen h-screen relative overflow-hidden">
+  <div class="flex justify-center w-screen h-screen relative overflow-hidden bg-cover bg-no-repeat bg-center" :style="getBodyBg">
     <!--信息看板-->
     <InfoBoard :information="information" />
     <!--输入框-->
-    <SearchInput />
+    <SearchInput :information="information" />
     <!--快捷导航栏（开发中）-->
     <Navigation v-if="!linkBoxShow" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
@@ -19,7 +19,9 @@ import SearchInput from '@/components/SearchInput/index.vue'
 import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
 import LinkBox from '@/components/LinkBox/index.vue'
-import { ref, reactive, onMounted, onUnmounted, useTemplateRef } from 'vue'
+import MorningBg from '@/assets/image/bg/bg.jpg'
+import NightBg from '@/assets/image/bg/bg_night.png'
+import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed } from 'vue'
 import { type INFORMATION, WEEK_LIST } from '@/libs/const/index.ts'
 import { getWeatherData } from '@/libs/weather'
 
@@ -33,7 +35,8 @@ const information = reactive<INFORMATION>({
   time: {
     hour: '00',
     minute: '00',
-    second: '00'
+    second: '00',
+    isNight: false,
   },
   weather: {
     today: {
@@ -44,6 +47,13 @@ const information = reactive<INFORMATION>({
       zh: '默认',
       en: 'Default'
     }
+  }
+})
+
+// 根据时间段切换背景
+const getBodyBg = computed(() => {
+  return {
+    backgroundImage: `url(${information.time.isNight ? NightBg : MorningBg})`
   }
 })
 
@@ -78,6 +88,7 @@ const getTime = (): void => {
   information.time.hour = pad(now.getHours())
   information.time.minute = pad(now.getMinutes())
   information.time.second = pad(now.getSeconds())
+  information.time.isNight = now.getHours() <= 5 || now.getHours() >= 19
 }
 // 获取当前季节
 const getSeasonByMonth = (month: number): void => {
