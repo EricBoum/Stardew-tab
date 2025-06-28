@@ -1,10 +1,10 @@
 <template>
-  <div class="InfoBoard absolute top-[30px] right-0 w-[230px] h-[129px]">
+  <div class="InfoBoard absolute top-[30px] right-0 z-[2] w-[230px] h-[129px]">
     <img :style="{transform: `rotate(${getPointerRotate}deg)`}" class="time-pointer absolute w-[20px] top-[53px] left-[64px]" src="@/assets/image/time-pointer.png" alt="">
     <p class="info-text h-[33px] leading-[33px] top-[13px]">
       {{ props.information.week }}
     </p>
-    <div class="w-[36px] h-[27px] absolute top-[51px] right-[97px] group">
+    <div class="w-[45px] h-[30px] absolute top-[49px] right-[92px] group">
       <img class="w-full h-full" :src="getTodayWeather" :alt="props.information.weather.today.zh">
       <StardewTips placement="top-start">
         <template #default>

@@ -41,6 +41,7 @@ export interface INFORMATION {
     today: {
       zh: string;
       en: string;
+      weatherKey: string;
     };
     tomorrow: {
       zh: string;

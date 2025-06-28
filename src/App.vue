@@ -1,5 +1,7 @@
 <template>
   <div class="flex justify-center w-screen h-screen relative overflow-hidden bg-cover bg-no-repeat bg-center" :style="getBodyBg">
+    <!--天气动效-->
+    <Weather ref="WeatherRef" :information="information" />
     <!--信息看板-->
     <InfoBoard :information="information" />
     <!--输入框-->
@@ -19,6 +21,7 @@ import SearchInput from '@/components/SearchInput/index.vue'
 import Navigation from '@/components/Navigation/index.vue'
 import Battery from '@/components/Battery/index.vue'
 import LinkBox from '@/components/LinkBox/index.vue'
+import Weather from '@/components/Weather/index.vue'
 import MorningBg from '@/assets/image/bg/bg.jpg'
 import NightBg from '@/assets/image/bg/bg_night.png'
 import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed } from 'vue'
@@ -27,6 +30,7 @@ import { getWeatherData } from '@/libs/weather'
 
 const LinkBoxRef = useTemplateRef('LinkBoxRef')
 const NavigationRef = useTemplateRef('NavigationRef')
+const WeatherRef = useTemplateRef('WeatherRef')
 const timer = ref<number | null>(null)
 const linkBoxShow = ref<boolean>(false)
 const information = reactive<INFORMATION>({
@@ -41,7 +45,8 @@ const information = reactive<INFORMATION>({
   weather: {
     today: {
       zh: '默认',
-      en: 'Default'
+      en: 'Default',
+      weatherKey: ''
     },
     tomorrow: {
       zh: '默认',
@@ -53,7 +58,7 @@ const information = reactive<INFORMATION>({
 // 根据时间段切换背景
 const getBodyBg = computed(() => {
   return {
-    backgroundImage: `url(${information.time.isNight ? NightBg : MorningBg})`
+    backgroundImage: `url(${ information.time.isNight ? NightBg : MorningBg })`
   }
 })
 
@@ -66,8 +71,10 @@ const init = (): void => {
 const handleVisibilityChange = (): void => {
   if (document.hidden) {
     stopTime()
+    WeatherRef.value?.pause()
   } else {
     startTime()
+    WeatherRef.value?.start()
   }
 }
 // 开始时间
@@ -92,7 +99,20 @@ const getTime = (): void => {
 }
 // 获取当前季节
 const getSeasonByMonth = (month: number): void => {
-  const seasons: string[] = [ 'winter', 'winter', 'spring', 'spring', 'spring', 'spring', 'summer', 'summer', 'summer', 'autumn', 'autumn', 'autumn' ]
+  const seasons: string[] = [
+    'winter', // 0 - Jan
+    'winter', // 1 - Feb
+    'spring', // 2 - Mar
+    'spring', // 3 - Apr
+    'spring', // 4 - May
+    'summer', // 5 - Jun
+    'summer', // 6 - Jul
+    'summer', // 7 - Aug
+    'autumn', // 8 - Sep
+    'autumn', // 9 - Oct
+    'autumn', // 10 - Nov
+    'winter'  // 11 - Dec
+  ]
   information.season = seasons[month]
 }
 // 获取当前周
