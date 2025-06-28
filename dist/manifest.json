@@ -24,7 +24,8 @@
   "host_permissions": [
     "https://api.openweathermap.org/*",
     "https://restapi.amap.com/*",
-    "https://suggestion.baidu.com/*"
+    "https://suggestion.baidu.com/*",
+    "https://ipapi.co/json/"
   ],
   "web_accessible_resources": [
     {

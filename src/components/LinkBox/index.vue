@@ -157,6 +157,7 @@ const initAll = () => {
 }
 // 更新常用链接列表
 const initCommonLinkList = async () => {
+  console.log('更新常用链接列表')
   commonLinkList.value = await getCommonLinkData()
 }
 // 更新全量链接列表
@@ -298,7 +299,8 @@ watch(() => props.modelValue, (e: boolean) => {
 
 defineExpose({
   show,
-  hide
+  hide,
+  initCommonLinkList
 })
 </script>
 
