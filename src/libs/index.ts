@@ -35,10 +35,15 @@ export const getCommonLinkData = async () => {
 }
 // 修改常用link数据
 export const setCommonLinkData = async (data: any) => {
+  console.log('setCommonLinkData', data)
   const {id} = data
   const LIST = await getCommonLinkData()
   let index = LIST.findIndex((item: any) => item.id === id)
-  LIST[index] = {...LIST[index], ...data}
+  if (index === -1) {
+    LIST.push(data)
+  } else {
+    LIST[index] = {...LIST[index], ...data}
+  }
   await setStorage(COMMON_LINK_LIST_KEY, LIST)
   return true
 }

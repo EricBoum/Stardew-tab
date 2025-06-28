@@ -77,12 +77,18 @@ import StardewInput from '@/components/_components/StardewInput/index.vue'
 import StardewSelect from '@/components/_components/StardewSelect/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
-import { getLinkData, setLinkData } from '@/libs/index.ts'
+import { getLinkData, setCommonLinkData, setLinkData } from '@/libs/index.ts'
 import { MAX_CURRENT_NUM } from '@/libs/const/index.ts'
 
 interface ICON_TYPE {
   type: string,
   label: string
+}
+
+interface TYPE_OPTIONS {
+  id: string;
+  name: string;
+  list: any[]
 }
 
 const emit = defineEmits([ 'on-commit' ])
@@ -120,11 +126,11 @@ const getUrlPlaceholder = computed(() => {
 
 const init = async () => {
   const res = await getLinkData()
-  typeOptions.value = res as { id: string; name: string; list: any[] }[]
+  typeOptions.value = [ {id: 'common', name: '常用', list: []}, ...res as TYPE_OPTIONS[] ]
   const tabDetail = await chrome.tabs.query({active: true, currentWindow: true})
   const {title, url} = tabDetail[0] as { title: string; url: string }
   formData.value = {
-    parentId: res[0].id,
+    parentId: 'common',
     id: '',
     name: title,
     url: url,
@@ -159,12 +165,16 @@ const save = async (): Promise<undefined> => {
   if (!formData.value.id) {
     temp.id = Date.now()
   }
-  await setLinkData(temp)
+  if (formData.value.parentId === 'common') {
+    await setCommonLinkData(temp)
+  } else {
+    await setLinkData(temp)
+  }
   showMask.value = true
   setTimeout(() => {
     showMask.value = false
     window.close()
-  }, 2000)
+  }, 1500)
 }
 
 // 校验

@@ -75,6 +75,7 @@ const handleVisibilityChange = (): void => {
   } else {
     startTime()
     WeatherRef.value?.start()
+    toRefreshList()
   }
 }
 // 开始时间
