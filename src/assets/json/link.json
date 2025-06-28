@@ -63,17 +63,6 @@
         "type": "img",
         "bgColor": "#C87529",
         "textColor": "#FFCF46"
-      },
-      {
-        "parentId": "2",
-        "id": "2-2",
-        "name": "微博",
-        "url": "https://weibo.com/",
-        "logo": "https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://weibo.com/&size=64",
-        "desc": "随时随地发现",
-        "type": "img",
-        "bgColor": "#C87529",
-        "textColor": "#FFCF46"
       }
     ]
   }
