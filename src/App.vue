@@ -143,7 +143,6 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  stopTime()
   document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>
