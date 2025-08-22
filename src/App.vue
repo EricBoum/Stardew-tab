@@ -6,7 +6,7 @@
     <InfoBoard :information="information" />
     <!--输入框-->
     <SearchInput :information="information" />
-    <!--快捷导航栏（开发中）-->
+    <!--快捷导航栏-->
     <Navigation v-if="!linkBoxShow" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
     <Battery />
