@@ -109,9 +109,9 @@ const getSeasonByMonth = (month: number): void => {
     'summer', // 5 - Jun
     'summer', // 6 - Jul
     'summer', // 7 - Aug
-    'autumn', // 8 - Sep
-    'autumn', // 9 - Oct
-    'autumn', // 10 - Nov
+    'fall', // 8 - Sep
+    'fall', // 9 - Oct
+    'fall', // 10 - Nov
     'winter'  // 11 - Dec
   ]
   information.season = seasons[month]
