@@ -77,8 +77,8 @@ import StardewInput from '@/components/_components/StardewInput/index.vue'
 import StardewSelect from '@/components/_components/StardewSelect/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
-import { getLinkData, setCommonLinkData, setLinkData } from '@/libs/index.ts'
-import { MAX_CURRENT_NUM } from '@/libs/const/index.ts'
+import { getLinkData, setLinkData, getCommonLinkData, setCommonLinkData } from '@/libs/index.ts'
+import { MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const/index.ts'
 
 interface ICON_TYPE {
   type: string,
@@ -126,7 +126,8 @@ const getUrlPlaceholder = computed(() => {
 
 const init = async () => {
   const res = await getLinkData()
-  typeOptions.value = [ {id: 'common', name: '常用', list: []}, ...res as TYPE_OPTIONS[] ]
+  const commonRes = await getCommonLinkData()
+  typeOptions.value = [ {id: 'common', name: '常用', list: commonRes || []}, ...res as TYPE_OPTIONS[] ]
   const tabDetail = await chrome.tabs.query({active: true, currentWindow: true})
   const {title, url} = tabDetail[0] as { title: string; url: string }
   formData.value = {
@@ -181,7 +182,12 @@ const save = async (): Promise<undefined> => {
 const checkForm = () => {
   const currentOption = typeOptions.value.find(item => item.id === formData.value.parentId)
   const currentList = currentOption ? currentOption?.list : []
-  return currentList.length >= MAX_CURRENT_NUM
+  // 判断不同类型列表下长度是否已达上限
+  if (formData.value.parentId === 'common') {
+    return currentList.length >= MAX_COMMON_NUM
+  } else {
+    return currentList.length >= MAX_CURRENT_NUM
+  }
 }
 
 // 获取默认favicon
