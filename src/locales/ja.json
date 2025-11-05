@@ -60,6 +60,13 @@
   },
   "weather": {
     "today": "今日の天気",
-    "tomorrow": "明日の天気"
+    "tomorrow": "明日の天気",
+    "default": "不明"
+  },
+  "season": {
+    "spring": "春",
+    "summer": "夏",
+    "fall": "秋",
+    "winter": "冬"
   }
 }

@@ -60,6 +60,13 @@
   },
   "weather": {
     "today": "今天天气",
-    "tomorrow": "明天天气"
+    "tomorrow": "明天天气",
+    "default": "默认"
+  },
+  "season": {
+    "spring": "春天",
+    "summer": "夏天",
+    "fall": "秋天",
+    "winter": "冬天"
   }
 }

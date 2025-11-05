@@ -47,13 +47,12 @@ const information = reactive<INFORMATION>({
   },
   weather: {
     today: {
-      zh: '默认',
-      en: 'Default',
+      iconKey: 'Default',
       weatherKey: ''
     },
     tomorrow: {
-      zh: '默认',
-      en: 'Default'
+      iconKey: 'Default',
+      weatherKey: ''
     }
   }
 })

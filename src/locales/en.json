@@ -60,6 +60,13 @@
   },
   "weather": {
     "today": "Today's Weather",
-    "tomorrow": "Tomorrow's Weather"
+    "tomorrow": "Tomorrow's Weather",
+    "default": "Default"
+  },
+  "season": {
+    "spring": "Spring",
+    "summer": "Summer",
+    "fall": "Fall",
+    "winter": "Winter"
   }
 }

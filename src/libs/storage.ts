@@ -41,6 +41,17 @@ const storage: StorageArea = ( () => {
         }
       })
       callback?.()
+    },
+    remove: (keys: string | string[], callback?: () => void) => {
+      const keyArray = Array.isArray(keys) ? keys : [keys]
+      keyArray.forEach((key: string) => {
+        try {
+          localStorage.removeItem(key)
+        } catch {
+          console.warn(`Failed to remove ${ key } from localStorage`)
+        }
+      })
+      callback?.()
     }
   } as StorageArea
 } )()
@@ -60,5 +71,11 @@ export const useStorage = () => {
     })
   }
 
-  return {getStorage, setStorage}
+  const removeStorage = (key: string): Promise<void> => {
+    return new Promise((resolve) => {
+      storage.remove(key, () => resolve())
+    })
+  }
+
+  return {getStorage, setStorage, removeStorage}
 }

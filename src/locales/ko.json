@@ -60,6 +60,13 @@
   },
   "weather": {
     "today": "오늘 날씨",
-    "tomorrow": "내일 날씨"
+    "tomorrow": "내일 날씨",
+    "default": "알 수 없음"
+  },
+  "season": {
+    "spring": "봄",
+    "summer": "여름",
+    "fall": "가을",
+    "winter": "겨울"
   }
 }

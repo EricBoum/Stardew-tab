@@ -7,7 +7,7 @@ import ru from './ru.json'
 
 // 获取默认语言
 const getDefaultLocale = () => {
-  return 'zh-CN'
+  return 'ko'
 }
 
 const i18n = createI18n({

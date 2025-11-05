@@ -5,14 +5,14 @@
       {{ props.information.week }}
     </p>
     <div class="w-[45px] h-[30px] absolute top-[49px] right-[92px] group">
-      <img class="w-full h-full" :src="getTodayWeather" :alt="props.information.weather.today.zh">
+      <img class="w-full h-full" :src="getTodayWeather" :alt="getTodayWeatherText">
       <StardewTips placement="top-start">
         <template #default>
-          <SimpleInfo :detail="{title: t('weather.today'), content: props.information.weather.today.zh}" />
+          <SimpleInfo :detail="{title: t('weather.today'), content: getTodayWeatherText}" />
         </template>
       </StardewTips>
     </div>
-    <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage.img" :title="getSeasonImage.zh" :alt="getSeasonImage.zh">
+    <img class="w-[36px] h-[27px] absolute top-[51px] right-[20px]" :src="getSeasonImage.img" :title="getSeasonText" :alt="getSeasonText">
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
@@ -20,7 +20,7 @@
       <img class="w-full h-full" :src="getTomorrowWeather" alt="">
       <StardewTips placement="bottom-end">
         <template #default>
-          <SimpleInfo :detail="{title: t('weather.tomorrow'), content: props.information.weather.tomorrow.zh}" />
+          <SimpleInfo :detail="{title: t('weather.tomorrow'), content: getTomorrowWeatherText}" />
         </template>
       </StardewTips>
     </div>
@@ -32,9 +32,10 @@ import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import { computed } from 'vue'
 import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
+import { WEATHER_ICON_MAP } from '@/libs/const/weatherMap.ts'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const props = defineProps<{
   information: INFORMATION
@@ -51,6 +52,14 @@ const getPointerRotate = computed(() => {
 const getSeasonImage = computed(() => {
   return ( SEASON as SEASON_TYPE )[props.information.season] as SEASON_ITEM || {zh: '', img: ''}
 })
+// 获取季节文本
+const getSeasonText = computed(() => {
+  const seasonKey = props.information.season // 'spring', 'summer', 'fall', 'winter'
+  if (seasonKey) {
+    return t(`season.${seasonKey}`)
+  }
+  return ''
+})
 // 预加载所有天气图片（今天）
 const weatherImages = import.meta.glob('@/assets/image/weather/*.png', {
   eager: true,
@@ -64,15 +73,31 @@ const weatherImagesTomorrow = import.meta.glob('@/assets/image/weather/*.gif', {
 
 // 获取今天天气
 const getTodayWeather = computed(() => {
-  const en = props.information.weather.today.en
-  const key = `/src/assets/image/weather/${ en }.png`
+  const iconKey = props.information.weather.today.iconKey
+  const key = `/src/assets/image/weather/${ iconKey }.png`
   return weatherImages[key]
 })
 // 获取明天天气
 const getTomorrowWeather = computed(() => {
-  const en = props.information.weather.tomorrow.en
-  const key = `/src/assets/image/weather/${ en }_tm.gif`
+  const iconKey = props.information.weather.tomorrow.iconKey
+  const key = `/src/assets/image/weather/${ iconKey }_tm.gif`
   return weatherImagesTomorrow[key]
+})
+// 获取今天天气文本
+const getTodayWeatherText = computed(() => {
+  const weatherKey = props.information.weather.today.weatherKey
+  if (weatherKey && WEATHER_ICON_MAP[weatherKey]) {
+    return WEATHER_ICON_MAP[weatherKey][locale.value as keyof typeof WEATHER_ICON_MAP[typeof weatherKey]]
+  }
+  return t('weather.default')
+})
+// 获取明天天气文本
+const getTomorrowWeatherText = computed(() => {
+  const weatherKey = props.information.weather.tomorrow.weatherKey
+  if (weatherKey && WEATHER_ICON_MAP[weatherKey]) {
+    return WEATHER_ICON_MAP[weatherKey][locale.value as keyof typeof WEATHER_ICON_MAP[typeof weatherKey]]
+  }
+  return t('weather.default')
 })
 </script>
 
