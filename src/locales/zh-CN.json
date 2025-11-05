@@ -1,3 +1,65 @@
 {
-  "hello": "你好！"
+  "common": {
+    "save": "保存",
+    "confirm": "确认",
+    "edit": "编辑",
+    "delete": "删除",
+    "clear": "清除",
+    "close": "关闭",
+    "upload": "上传",
+    "download": "下载",
+    "category": "分类"
+  },
+  "form": {
+    "name": "名称",
+    "url": "网址",
+    "description": "描述",
+    "imageIcon": "图片图标",
+    "textIcon": "文字图标",
+    "background": "背景",
+    "text": "文字",
+    "placeholderName": "请输入网站名称",
+    "placeholderUrl": "请输入网站链接",
+    "placeholderDesc": "请输入网站描述（可选）",
+    "placeholderCategory": "请输入分类名称",
+    "placeholderIconUrl": "请输入图标链接",
+    "placeholderIconText": "请输入图标文字",
+    "placeholderSearch": "输入关键词进行搜索",
+    "placeholderSelectCategory": "请选择分类"
+  },
+  "dialog": {
+    "addWebsite": "添加网站",
+    "editWebsite": "编辑网站",
+    "addCategory": "添加分类",
+    "editCategory": "编辑分类",
+    "notice": "提示",
+    "getIcon": "获取图标"
+  },
+  "message": {
+    "deleteConfirm": "删除操作不可逆，是否继续删除",
+    "uploadConfirm": "上传后将覆盖本地快捷链接列表，是否确认操作",
+    "addSuccess": "添加成功",
+    "categoryFull": "当前分类下的链接数量已满，请换一个"
+  },
+  "link": {
+    "website": "网站",
+    "uploadShortcuts": "上传快捷键",
+    "batchImport": "批量导入快捷键",
+    "exportShortcuts": "导出快捷键列表",
+    "exportDesc": "导出当前所有快捷键（除常用快捷键）",
+    "common": "常用"
+  },
+  "week": {
+    "sunday": "星期日",
+    "monday": "星期一",
+    "tuesday": "星期二",
+    "wednesday": "星期三",
+    "thursday": "星期四",
+    "friday": "星期五",
+    "saturday": "星期六"
+  },
+  "weather": {
+    "today": "今天天气",
+    "tomorrow": "明天天气"
+  }
 }

@@ -1,0 +1,65 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "confirm": "Подтвердить",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "clear": "Очистить",
+    "close": "Закрыть",
+    "upload": "Загрузить",
+    "download": "Скачать",
+    "category": "Категория"
+  },
+  "form": {
+    "name": "Название",
+    "url": "URL",
+    "description": "Описание",
+    "imageIcon": "Изображение иконки",
+    "textIcon": "Текстовая иконка",
+    "background": "Фон",
+    "text": "Текст",
+    "placeholderName": "Введите название сайта",
+    "placeholderUrl": "Введите URL сайта",
+    "placeholderDesc": "Введите описание сайта (необязательно)",
+    "placeholderCategory": "Введите название категории",
+    "placeholderIconUrl": "Введите URL иконки",
+    "placeholderIconText": "Введите текст иконки",
+    "placeholderSearch": "Введите ключевые слова для поиска",
+    "placeholderSelectCategory": "Выберите категорию"
+  },
+  "dialog": {
+    "addWebsite": "Добавить сайт",
+    "editWebsite": "Редактировать сайт",
+    "addCategory": "Добавить категорию",
+    "editCategory": "Редактировать категорию",
+    "notice": "Уведомление",
+    "getIcon": "Получить иконку"
+  },
+  "message": {
+    "deleteConfirm": "Операция удаления необратима, продолжить?",
+    "uploadConfirm": "Загрузка перезапишет локальные ярлыки, подтвердить?",
+    "addSuccess": "Успешно добавлено",
+    "categoryFull": "Текущая категория заполнена, выберите другую"
+  },
+  "link": {
+    "website": "Сайт",
+    "uploadShortcuts": "Загрузить ярлыки",
+    "batchImport": "Массовый импорт ярлыков",
+    "exportShortcuts": "Экспорт ярлыков",
+    "exportDesc": "Экспортировать все ярлыки (кроме часто используемых)",
+    "common": "Часто используемые"
+  },
+  "week": {
+    "sunday": "Воскресенье",
+    "monday": "Понедельник",
+    "tuesday": "Вторник",
+    "wednesday": "Среда",
+    "thursday": "Четверг",
+    "friday": "Пятница",
+    "saturday": "Суббота"
+  },
+  "weather": {
+    "today": "Сегодняшняя погода",
+    "tomorrow": "Завтрашняя погода"
+  }
+}

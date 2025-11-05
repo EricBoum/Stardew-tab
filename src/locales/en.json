@@ -1,3 +1,65 @@
 {
-  "hello": "Hello!"
+  "common": {
+    "save": "Save",
+    "confirm": "Confirm",
+    "edit": "Edit",
+    "delete": "Delete",
+    "clear": "Clear",
+    "close": "Close",
+    "upload": "Upload",
+    "download": "Download",
+    "category": "Category"
+  },
+  "form": {
+    "name": "Name",
+    "url": "URL",
+    "description": "Description",
+    "imageIcon": "Image Icon",
+    "textIcon": "Text Icon",
+    "background": "Background",
+    "text": "Text",
+    "placeholderName": "Please enter website name",
+    "placeholderUrl": "Please enter website URL",
+    "placeholderDesc": "Please enter website description (optional)",
+    "placeholderCategory": "Please enter category name",
+    "placeholderIconUrl": "Please enter icon URL",
+    "placeholderIconText": "Please enter icon text",
+    "placeholderSearch": "Enter keywords to search",
+    "placeholderSelectCategory": "Please select category"
+  },
+  "dialog": {
+    "addWebsite": "Add Website",
+    "editWebsite": "Edit Website",
+    "addCategory": "Add Category",
+    "editCategory": "Edit Category",
+    "notice": "Notice",
+    "getIcon": "Get Icon"
+  },
+  "message": {
+    "deleteConfirm": "Delete operation is irreversible, continue?",
+    "uploadConfirm": "Upload will overwrite local shortcuts, confirm?",
+    "addSuccess": "Added Successfully",
+    "categoryFull": "Current category is full, please choose another"
+  },
+  "link": {
+    "website": "Website",
+    "uploadShortcuts": "Upload Shortcuts",
+    "batchImport": "Batch Import Shortcuts",
+    "exportShortcuts": "Export Shortcuts",
+    "exportDesc": "Export all shortcuts (except common shortcuts)",
+    "common": "Common"
+  },
+  "week": {
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday"
+  },
+  "weather": {
+    "today": "Today's Weather",
+    "tomorrow": "Tomorrow's Weather"
+  }
 }

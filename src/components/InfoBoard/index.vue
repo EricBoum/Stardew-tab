@@ -8,7 +8,7 @@
       <img class="w-full h-full" :src="getTodayWeather" :alt="props.information.weather.today.zh">
       <StardewTips placement="top-start">
         <template #default>
-          <SimpleInfo :detail="{title: '今天天气', content: props.information.weather.today.zh}" />
+          <SimpleInfo :detail="{title: t('weather.today'), content: props.information.weather.today.zh}" />
         </template>
       </StardewTips>
     </div>
@@ -20,7 +20,7 @@
       <img class="w-full h-full" :src="getTomorrowWeather" alt="">
       <StardewTips placement="bottom-end">
         <template #default>
-          <SimpleInfo :detail="{title: '明天天气', content: props.information.weather.tomorrow.zh}" />
+          <SimpleInfo :detail="{title: t('weather.tomorrow'), content: props.information.weather.tomorrow.zh}" />
         </template>
       </StardewTips>
     </div>
@@ -32,6 +32,9 @@ import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import { computed } from 'vue'
 import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const props = defineProps<{
   information: INFORMATION

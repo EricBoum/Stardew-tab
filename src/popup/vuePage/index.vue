@@ -2,23 +2,23 @@
   <div class="popup-box px-6 py-2 w-[400px] stardew-border stardew-font relative">
     <div v-if="showMask" class="w-full h-full top-0 left-0 absolute z-[2] bg-[#C87529] flex flex-col items-center justify-center text-[#ffffff]">
       <img class="w-[50px] mb-[20px]" src="@/assets/image/star.png" alt="">
-      添加成功
+      {{ $t('message.addSuccess') }}
     </div>
     <div class="mb-2">
-      <label class="form-label">名称</label>
-      <StardewInput v-model="formData.name" placeholder="请输入网站名称" />
+      <label class="form-label">{{ $t('form.name') }}</label>
+      <StardewInput v-model="formData.name" :placeholder="$t('form.placeholderName')" />
     </div>
     <div class="mb-2">
-      <label class="form-label">分类</label>
-      <StardewSelect v-model="formData.parentId" :options="typeOptions" placeholder="请选择分类" />
+      <label class="form-label">{{ $t('common.category') }}</label>
+      <StardewInput v-model="formData.parentId" :options="typeOptions" :placeholder="$t('form.placeholderSelectCategory')" />
     </div>
     <div class="mb-2">
-      <label class="form-label">网址</label>
-      <StardewInput v-model="formData.url" placeholder="请输入网站链接" @blur="fetchFavicon" />
+      <label class="form-label">{{ $t('form.url') }}</label>
+      <StardewInput v-model="formData.url" :placeholder="$t('form.placeholderUrl')" @blur="fetchFavicon" />
     </div>
     <div class="mb-2">
-      <label class="form-label">描述</label>
-      <StardewInput v-model="formData.desc" type="textarea" rows="2" placeholder="请输入网站描述（可选）" />
+      <label class="form-label">{{ $t('form.description') }}</label>
+      <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
     </div>
     <div class="">
       <div class="flex">
@@ -45,18 +45,18 @@
         <div class="flex-1">
           <div class="flex space-x-2" v-if="formData.type === 'img'">
             <button @click="useDefaultIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
-              获取图标
+              {{ $t('dialog.getIcon') }}
             </button>
             <button @click="formData.logo = ''" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
-              清除
+              {{ $t('common.clear') }}
             </button>
           </div>
           <div v-else class="flex">
             <div class="flex items-center text-[12px]">
-              背景：<input type="color" v-model="formData.bgColor">
+              {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
             </div>
             <div class="flex items-center text-[12px] ml-5">
-              文字：<input type="color" v-model="formData.textColor">
+              {{ $t('form.text') }}：<input type="color" v-model="formData.textColor">
             </div>
           </div>
         </div>
@@ -64,9 +64,9 @@
       <StardewInput class="mt-[10px]" v-if="formData.type === 'img'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
     </div>
     <div class="flex flex-col items-center justify-center space-x-4">
-      <span :class="[showHint? 'opacity-100': 'opacity-0']" class="h-[20px] my-[3px] text-[#ffffff] text-[12px]">当前分类下的链接数量已满，请换一个</span>
+      <span :class="[showHint? 'opacity-100': 'opacity-0']" class="h-[20px] my-[3px] text-[#ffffff] text-[12px]">{{ $t('message.categoryFull') }}</span>
       <button @click="save" class="stardew-button w-1/2">
-        保存
+        {{ $t('common.save') }}
       </button>
     </div>
   </div>
@@ -79,6 +79,9 @@ import { computed, onMounted, ref } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
 import { getLinkData, setLinkData, getCommonLinkData, setCommonLinkData } from '@/libs/index.ts'
 import { MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const/index.ts'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 interface ICON_TYPE {
   type: string,
@@ -95,11 +98,11 @@ const emit = defineEmits([ 'on-commit' ])
 const ICON_TYPE_LIST: ICON_TYPE[] = [
   {
     type: 'img',
-    label: '图片图标'
+    label: $t('form.imageIcon')
   },
   {
     type: 'text',
-    label: '文字图标'
+    label: $t('form.textIcon')
   }
 ]
 const formData = ref<LINK_ITEM_TYPE>({
@@ -118,16 +121,16 @@ const showMask = ref<boolean>(false) // 是否展示提交成功弹窗
 const showHint = ref<boolean>(false) // 是否展示提示信息
 const getUrlPlaceholder = computed(() => {
   if (formData.value.type === 'img') {
-    return '请输入图标链接'
+    return $t('form.placeholderIconUrl')
   } else {
-    return '请输入图标文字'
+    return $t('form.placeholderIconText')
   }
 })
 
 const init = async () => {
   const res = await getLinkData()
   const commonRes = await getCommonLinkData()
-  typeOptions.value = [ {id: 'common', name: '常用', list: commonRes || []}, ...res as TYPE_OPTIONS[] ]
+  typeOptions.value = [ {id: 'common', name: $t('link.common'), list: commonRes || []}, ...res as TYPE_OPTIONS[] ]
   const tabDetail = await chrome.tabs.query({active: true, currentWindow: true})
   const {title, url} = tabDetail[0] as { title: string; url: string }
   formData.value = {

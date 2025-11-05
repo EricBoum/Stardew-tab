@@ -1,3 +1,65 @@
 {
-  "hello": "こんにちは!"
+  "common": {
+    "save": "保存",
+    "confirm": "確認",
+    "edit": "編集",
+    "delete": "削除",
+    "clear": "クリア",
+    "close": "閉じる",
+    "upload": "アップロード",
+    "download": "ダウンロード",
+    "category": "カテゴリ"
+  },
+  "form": {
+    "name": "名前",
+    "url": "URL",
+    "description": "説明",
+    "imageIcon": "画像アイコン",
+    "textIcon": "テキストアイコン",
+    "background": "背景",
+    "text": "テキスト",
+    "placeholderName": "ウェブサイト名を入力してください",
+    "placeholderUrl": "ウェブサイトのURLを入力してください",
+    "placeholderDesc": "ウェブサイトの説明を入力してください（任意）",
+    "placeholderCategory": "カテゴリ名を入力してください",
+    "placeholderIconUrl": "アイコンのURLを入力してください",
+    "placeholderIconText": "アイコンのテキストを入力してください",
+    "placeholderSearch": "キーワードを入力して検索",
+    "placeholderSelectCategory": "カテゴリを選択してください"
+  },
+  "dialog": {
+    "addWebsite": "ウェブサイトを追加",
+    "editWebsite": "ウェブサイトを編集",
+    "addCategory": "カテゴリを追加",
+    "editCategory": "カテゴリを編集",
+    "notice": "お知らせ",
+    "getIcon": "アイコンを取得"
+  },
+  "message": {
+    "deleteConfirm": "削除操作は元に戻せません。続行しますか？",
+    "uploadConfirm": "アップロードするとローカルのショートカットリストが上書きされます。続行しますか？",
+    "addSuccess": "追加成功",
+    "categoryFull": "現在のカテゴリは満杯です。別のカテゴリを選択してください"
+  },
+  "link": {
+    "website": "ウェブサイト",
+    "uploadShortcuts": "ショートカットをアップロード",
+    "batchImport": "ショートカットを一括インポート",
+    "exportShortcuts": "ショートカットリストをエクスポート",
+    "exportDesc": "すべてのショートカットをエクスポート（よく使うショートカットを除く）",
+    "common": "よく使う"
+  },
+  "week": {
+    "sunday": "日曜日",
+    "monday": "月曜日",
+    "tuesday": "火曜日",
+    "wednesday": "水曜日",
+    "thursday": "木曜日",
+    "friday": "金曜日",
+    "saturday": "土曜日"
+  },
+  "weather": {
+    "today": "今日の天気",
+    "tomorrow": "明日の天気"
+  }
 }

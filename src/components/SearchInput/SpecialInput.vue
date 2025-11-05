@@ -8,7 +8,7 @@
       class="stardew-input w-full h-full indent-px flex items-center text-mouse"
     >
     </div>
-    <span class="absolute top-1/2 left-[20px] -translate-y-1/2 text-[#00000099]" v-if="showPlaceholder">输入关键词进行搜索</span>
+    <span class="absolute top-1/2 left-[20px] -translate-y-1/2 text-[#00000099]" v-if="showPlaceholder">{{ $t('form.placeholderSearch') }}</span>
     <div :style="{left: sickleLeft}" class="delete-animation absolute top-1/2 -translate-y-1/2 z-20" v-show="showSickle">
       <img class="sickle w-[20px] h-[20px] relative" src="@/assets/image/sickle.png" alt="">
     </div>
@@ -19,6 +19,9 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { debounce } from '@/libs'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   modelValue: {

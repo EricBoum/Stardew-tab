@@ -2,17 +2,17 @@
   <StardewDialog v-model="visible">
     <div class="site-dialog bg-[#EFBD73] p-6 w-[400px] max-w-[90vw] relative stardew-border stardew-font">
       <div class="close-box" @click="hide">
-        <img src="@/assets/image/link/close.png" alt="关闭">
+        <img src="@/assets/image/link/close.png" :alt="$t('common.close')">
       </div>
       <h3 class="text-xl text-[#4e3623] font-bold mb-4 text-center stardew-font dialog-title">
-        {{ isEdit ? '编辑分类' : '添加分类' }}</h3>
+        {{ isEdit ? $t('dialog.editCategory') : $t('dialog.addCategory') }}</h3>
       <div class="mb-3">
-        <StardewInput v-model="formData.name" placeholder="请输入分类名称" />
+        <StardewInput v-model="formData.name" :placeholder="$t('form.placeholderCategory')" />
       </div>
 
       <div class="flex justify-center space-x-4">
         <button @click="commit" class="px-20 py-2 bg-[#CF802F] hover:bg-[#DF9040] text-white stardew-button pointer">
-          保存
+          {{ $t('common.save') }}
         </button>
       </div>
     </div>
@@ -25,6 +25,9 @@ import StardewInput from '@/components/_components/StardewInput/index.vue'
 import { ref } from 'vue'
 import type { TAB_ITEM } from '@/libs/const/type.ts'
 import { setLinkData } from '@/libs/index.ts'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits([ 'on-refresh' ])
 const visible = ref<boolean>(false)

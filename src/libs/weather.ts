@@ -67,7 +67,7 @@ export const byQWeather = () => {
 
       const returnData = {
         today: {...dealWithWeather(todayWeather), weatherKey: daily[0].iconDay},
-        tomorrow: dealWithWeather(tomorrowWeather),
+        tomorrow: {...dealWithWeather(tomorrowWeather), weatherKey: daily[1].iconDay},
       }
 
       await setWeather(returnData)

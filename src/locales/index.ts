@@ -3,8 +3,9 @@ import zhCN from './zh-CN.json'
 import en from './en.json'
 import ja from './ja.json'
 import ko from './ko.json'
+import ru from './ru.json'
 
-// 获取浏览器默认语言（可选）
+// 获取默认语言
 const getDefaultLocale = () => {
   return 'zh-CN'
 }
@@ -18,7 +19,8 @@ const i18n = createI18n({
     'zh-CN': zhCN,
     en,
     ja,
-    ko
+    ko,
+    ru
   }
 })
 

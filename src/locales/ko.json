@@ -1,3 +1,65 @@
 {
-  "hello": "안녕하세요!"
+  "common": {
+    "save": "저장",
+    "confirm": "확인",
+    "edit": "편집",
+    "delete": "삭제",
+    "clear": "지우기",
+    "close": "닫기",
+    "upload": "업로드",
+    "download": "다운로드",
+    "category": "카테고리"
+  },
+  "form": {
+    "name": "이름",
+    "url": "URL",
+    "description": "설명",
+    "imageIcon": "이미지 아이콘",
+    "textIcon": "텍스트 아이콘",
+    "background": "배경",
+    "text": "텍스트",
+    "placeholderName": "웹사이트 이름을 입력하세요",
+    "placeholderUrl": "웹사이트 URL을 입력하세요",
+    "placeholderDesc": "웹사이트 설명을 입력하세요 (선택사항)",
+    "placeholderCategory": "카테고리 이름을 입력하세요",
+    "placeholderIconUrl": "아이콘 URL을 입력하세요",
+    "placeholderIconText": "아이콘 텍스트를 입력하세요",
+    "placeholderSearch": "키워드를 입력하여 검색",
+    "placeholderSelectCategory": "카테고리를 선택하세요"
+  },
+  "dialog": {
+    "addWebsite": "웹사이트 추가",
+    "editWebsite": "웹사이트 편집",
+    "addCategory": "카테고리 추가",
+    "editCategory": "카테고리 편집",
+    "notice": "알림",
+    "getIcon": "아이콘 가져오기"
+  },
+  "message": {
+    "deleteConfirm": "삭제 작업은 되돌릴 수 없습니다. 계속하시겠습니까?",
+    "uploadConfirm": "업로드하면 로컬 바로가기 목록이 덮어씌워집니다. 계속하시겠습니까?",
+    "addSuccess": "추가 성공",
+    "categoryFull": "현재 카테고리가 가득 찼습니다. 다른 카테고리를 선택하세요"
+  },
+  "link": {
+    "website": "웹사이트",
+    "uploadShortcuts": "바로가기 업로드",
+    "batchImport": "바로가기 일괄 가져오기",
+    "exportShortcuts": "바로가기 목록 내보내기",
+    "exportDesc": "모든 바로가기 내보내기 (자주 사용하는 바로가기 제외)",
+    "common": "자주 사용"
+  },
+  "week": {
+    "sunday": "일요일",
+    "monday": "월요일",
+    "tuesday": "화요일",
+    "wednesday": "수요일",
+    "thursday": "목요일",
+    "friday": "금요일",
+    "saturday": "토요일"
+  },
+  "weather": {
+    "today": "오늘 날씨",
+    "tomorrow": "내일 날씨"
+  }
 }

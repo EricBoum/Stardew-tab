@@ -1,19 +1,19 @@
 <template>
   <div class="FileOperate absolute top-[30px] -right-[65px] flex flex-col">
     <div class="w-[40px] h-[40px] relative pointer group">
-      <img class="w-full h-full" src="@/assets/image/link/upload.png" alt="上传">
+      <img class="w-full h-full" src="@/assets/image/link/upload.png" :alt="$t('common.upload')">
       <input class="w-full h-full absolute top-0 left-0 z-[2] text-[0px]" type="file" accept=".json" @change="handleUpload">
       <StardewTips placement="bottom-start">
         <template #default>
-          <SimpleInfo :detail="{title: '上传快捷键', content: '批量导入快捷键'}" />
+          <SimpleInfo :detail="{title: $t('link.uploadShortcuts'), content: $t('link.batchImport')}" />
         </template>
       </StardewTips>
     </div>
     <div class="w-[40px] mt-[20px] pointer group">
-      <img class="w-full h-full" src="@/assets/image/link/download.png" alt="下载" @click="downLoad">
+      <img class="w-full h-full" src="@/assets/image/link/download.png" :alt="$t('common.download')" @click="downLoad">
       <StardewTips placement="bottom-start">
         <template #default>
-          <SimpleInfo :detail="{title: '导出快捷键列表', content: '导出当前所有快捷键（除常用快捷键）'}" />
+          <SimpleInfo :detail="{title: $t('link.exportShortcuts'), content: $t('link.exportDesc')}" />
         </template>
       </StardewTips>
     </div>
@@ -31,6 +31,9 @@ import { ref, useTemplateRef } from 'vue'
 import { getLinkData } from '@/libs'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import StardewTips from '@/components/_components/StardewTips/index.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const emit = defineEmits([ 'on-upload-success' ])
 const storage = useStorage()
@@ -42,7 +45,7 @@ const handleUpload = (e: any) => {
   // 解除浏览器不能上传同一文件操作
   e.target.value = ''
   // 打开二次确认弹窗
-  ConfirmBoxRef.value?.show('上传后将覆盖本地快捷链接列表，是否确认操作')
+  ConfirmBoxRef.value?.show($t('message.uploadConfirm'))
 }
 const commitUpload = () => {
   const reader = new FileReader()

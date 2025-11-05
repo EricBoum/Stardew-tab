@@ -25,8 +25,11 @@ import Weather from '@/components/Weather/index.vue'
 import MorningBg from '@/assets/image/bg/bg.jpg'
 import NightBg from '@/assets/image/bg/bg_night.png'
 import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed } from 'vue'
-import { type INFORMATION, WEEK_LIST } from '@/libs/const/index.ts'
+import { type INFORMATION } from '@/libs/const/index.ts'
 import { getWeatherData } from '@/libs/weather'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const LinkBoxRef = useTemplateRef('LinkBoxRef')
 const NavigationRef = useTemplateRef('NavigationRef')
@@ -118,7 +121,8 @@ const getSeasonByMonth = (month: number): void => {
 }
 // 获取当前周
 const getWeek = (day: number): void => {
-  information.week = WEEK_LIST[day]
+  const weekKeys = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+  information.week = t(`week.${weekKeys[day]}`)
 }
 // 获取天气
 const getWeather = async (): Promise<any> => {

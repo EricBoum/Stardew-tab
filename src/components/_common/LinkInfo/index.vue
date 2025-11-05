@@ -5,7 +5,7 @@
         {{ detail.name }}
       </div>
       <div class="sub-title">
-        网站
+        {{ $t('link.website') }}
       </div>
     </div>
     <div class="stardew-tips-desc">
@@ -16,6 +16,9 @@
 
 <script setup lang="ts">
 import { type LINK_ITEM_TYPE } from '@/libs/const/type.ts'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 defineProps<{
   detail: LINK_ITEM_TYPE
