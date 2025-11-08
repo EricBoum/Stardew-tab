@@ -16,7 +16,7 @@
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
-    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px] group">
+    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[60px] group">
       <img class="w-full h-full" :src="getTomorrowWeather" alt="">
       <StardewTips placement="bottom-end">
         <template #default>
@@ -24,13 +24,18 @@
         </template>
       </StardewTips>
     </div>
+    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px] pointer" @click="handleToSetting">
+      <img class="w-full h-full" src="@/assets/image/setting.png" alt="">
+    </div>
+    <OperateDialog ref="OperateDialogRef"/>
   </div>
 </template>
 
 <script setup lang="ts">
 import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
-import { computed } from 'vue'
+import OperateDialog from './OperateDialog.vue'
+import { computed, useTemplateRef } from 'vue'
 import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
 import { WEATHER_ICON_MAP } from '@/libs/const/weatherMap.ts'
 import { useI18n } from 'vue-i18n'
@@ -40,6 +45,8 @@ const { t, locale } = useI18n()
 const props = defineProps<{
   information: INFORMATION
 }>()
+
+const OperateDialogRef = useTemplateRef('OperateDialogRef')
 
 // 根据当前时间返回刻度
 const getPointerRotate = computed(() => {
@@ -99,6 +106,10 @@ const getTomorrowWeatherText = computed(() => {
   }
   return t('weather.default')
 })
+// 打开设置弹窗
+const handleToSetting = () => {
+  OperateDialogRef.value?.show()
+}
 </script>
 
 <style lang="less" scoped>

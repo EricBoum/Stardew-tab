@@ -83,4 +83,6 @@ export const LINK_LIST_KEY: string = 'LINK_LIST' // 快捷链接缓存key
 
 export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
 
+export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
+
 export const VERSION = '1.3.0' // 版本号

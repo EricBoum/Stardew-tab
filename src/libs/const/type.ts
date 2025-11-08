@@ -15,3 +15,9 @@ export interface TAB_ITEM {
   id: string | number;
   list?: LINK_ITEM_TYPE[];
 }
+
+export interface SYSTEM_SETTING {
+  language: string;
+  bottomLinkShow: boolean;
+  batteryShow: boolean;
+}

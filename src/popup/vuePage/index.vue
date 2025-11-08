@@ -10,7 +10,7 @@
     </div>
     <div class="mb-2">
       <label class="form-label">{{ $t('common.category') }}</label>
-      <StardewInput v-model="formData.parentId" :options="typeOptions" :placeholder="$t('form.placeholderSelectCategory')" />
+      <StardewSelect v-model="formData.parentId" :options="typeOptions" :placeholder="$t('form.placeholderSelectCategory')" />
     </div>
     <div class="mb-2">
       <label class="form-label">{{ $t('form.url') }}</label>
@@ -95,7 +95,8 @@ interface TYPE_OPTIONS {
 }
 
 const emit = defineEmits([ 'on-commit' ])
-const ICON_TYPE_LIST: ICON_TYPE[] = [
+// 改为 computed 确保语言切换时 label 能响应式更新
+const ICON_TYPE_LIST = computed(() => [
   {
     type: 'img',
     label: $t('form.imageIcon')
@@ -104,7 +105,7 @@ const ICON_TYPE_LIST: ICON_TYPE[] = [
     type: 'text',
     label: $t('form.textIcon')
   }
-]
+])
 const formData = ref<LINK_ITEM_TYPE>({
   parentId: '',
   id: '',
