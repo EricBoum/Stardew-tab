@@ -68,5 +68,11 @@
     "summer": "Summer",
     "fall": "Fall",
     "winter": "Winter"
+  },
+  "settings": {
+    "title": "Basic Settings",
+    "language": "Language",
+    "showBottomBar": "Show Bottom Bar",
+    "showBattery": "Show Battery"
   }
 }

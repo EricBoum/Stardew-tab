@@ -68,5 +68,11 @@
     "summer": "여름",
     "fall": "가을",
     "winter": "겨울"
+  },
+  "settings": {
+    "title": "기본 설정",
+    "language": "언어",
+    "showBottomBar": "하단 바 표시",
+    "showBattery": "배터리 표시"
   }
 }

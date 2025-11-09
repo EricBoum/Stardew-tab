@@ -68,5 +68,11 @@
     "summer": "夏",
     "fall": "秋",
     "winter": "冬"
+  },
+  "settings": {
+    "title": "基本設定",
+    "language": "言語",
+    "showBottomBar": "下部バーを表示",
+    "showBattery": "バッテリーを表示"
   }
 }

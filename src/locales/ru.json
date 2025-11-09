@@ -68,5 +68,11 @@
     "summer": "Лето",
     "fall": "Осень",
     "winter": "Зима"
+  },
+  "settings": {
+    "title": "Основные настройки",
+    "language": "Язык",
+    "showBottomBar": "Показать нижнюю панель",
+    "showBattery": "Показать батарею"
   }
 }

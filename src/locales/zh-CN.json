@@ -68,5 +68,11 @@
     "summer": "夏天",
     "fall": "秋天",
     "winter": "冬天"
+  },
+  "settings": {
+    "title": "基础设置",
+    "language": "语言",
+    "showBottomBar": "是否显示底部栏",
+    "showBattery": "是否显示电量"
   }
 }

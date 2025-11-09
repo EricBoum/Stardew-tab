@@ -6,10 +6,10 @@
     <InfoBoard :information="information" />
     <!--输入框-->
     <SearchInput :information="information" />
-    <!--快捷导航栏（开发中）-->
-    <Navigation v-if="!linkBoxShow" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
+    <!--快捷导航栏-->
+    <Navigation v-if="showBottomLink" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
-    <Battery />
+    <Battery v-if="systemDetail.batteryShow" />
     <!--快捷链接工具栏-->
     <LinkBox v-model="linkBoxShow" ref="LinkBoxRef" @on-close="toRefreshList" />
   </div>
@@ -28,8 +28,10 @@ import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed } from 
 import { type INFORMATION } from '@/libs/const/index.ts'
 import { getWeatherData } from '@/libs/weather'
 import { useI18n } from 'vue-i18n'
+import { useSystemSettings } from '@/hooks/useSystemSettings'
 
 const { t } = useI18n()
+const { systemSettings: systemDetail, init: initSystemSettings } = useSystemSettings()
 
 const LinkBoxRef = useTemplateRef('LinkBoxRef')
 const NavigationRef = useTemplateRef('NavigationRef')
@@ -63,11 +65,16 @@ const getBodyBg = computed(() => {
     backgroundImage: `url(${ information.time.isNight ? NightBg : MorningBg })`
   }
 })
+// 是否显示底部工具栏
+const showBottomLink = computed(() => {
+  return systemDetail.value.bottomLinkShow && !linkBoxShow.value
+})
 
 // 初始化
-const init = (): void => {
+const init = async (): Promise<void> => {
   startTime() // 开始时间
   getWeather() // 获取天气
+  await initSystemSettings() // 初始化系统设置
 }
 // 处理标签页可见性变化,节省性能
 const handleVisibilityChange = (): void => {

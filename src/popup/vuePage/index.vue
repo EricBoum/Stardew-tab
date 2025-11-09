@@ -20,7 +20,7 @@
       <label class="form-label">{{ $t('form.description') }}</label>
       <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
     </div>
-    <div class="">
+    <div>
       <div class="flex">
         <label class="mr-5 block pointer text-[16px] font-medium mb-1" :class="[formData.type === item.type? 'text-[#ffffff]': 'text-[#ffffffb0]']" v-for="(item, index) in ICON_TYPE_LIST" :key="index" @click="changeIconType(item)">
           {{ item.label }}
