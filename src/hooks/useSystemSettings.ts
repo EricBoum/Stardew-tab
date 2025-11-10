@@ -21,9 +21,9 @@ export function useSystemSettings() {
   // 初始化(只执行一次)
   const init = async () => {
     if (isInitialized) return
-    
+
     const storageData = await getStorage(SYSTEM_SETTING_KEY)
-    if (Object.keys(storageData).length) {
+    if (storageData && Object.keys(storageData).length) {
       systemSettings.value = storageData as SYSTEM_SETTING
       locale.value = systemSettings.value.language as any
     }

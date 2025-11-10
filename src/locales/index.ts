@@ -1,15 +1,18 @@
 import { createI18n } from 'vue-i18n'
 import zhCN from './zh-CN.json'
+import zhHant from './zh-Hant.json'
 import en from './en.json'
 import ja from './ja.json'
 import ko from './ko.json'
 import ru from './ru.json'
+import pt from './pt.json'
+import es from './es.json'
 import { useStorage } from '@/libs/storage'
 import { SYSTEM_SETTING_KEY } from '@/libs/const'
 import type { SYSTEM_SETTING } from '@/libs/const/type'
 
 // 定义语言类型
-export type LocaleType = 'zh-CN' | 'en' | 'ja' | 'ko' | 'ru'
+export type LocaleType = 'zh-CN' | 'zh-Hant' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es'
 
 // 定义语言列表项类型
 export interface LanguageItem {
@@ -20,10 +23,13 @@ export interface LanguageItem {
 
 export const LanguageList: LanguageItem[] = [
   { label: '简体中文', value: 'zh-CN', data: zhCN },
+  { label: '繁體中文', value: 'zh-Hant', data: zhHant },
   { label: 'English', value: 'en', data: en },
   { label: '日本語', value: 'ja', data: ja },
   { label: '한국어', value: 'ko', data: ko },
-  { label: 'Русский', value: 'ru', data: ru }
+  { label: 'Русский', value: 'ru', data: ru },
+  { label: 'Português', value: 'pt', data: pt },
+  { label: 'Español', value: 'es', data: es }
 ]
 
 const { getStorage } = useStorage()

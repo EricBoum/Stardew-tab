@@ -28,7 +28,7 @@
           <div class="mb-5">
             <div class="flex">
               <label class="mr-5 block pointer text-sm font-medium mb-1" :class="[formData.type === item.type? 'text-[#4e3623]': 'text-[#A19187]']" v-for="(item, index) in ICON_TYPE_LIST" :key="index" @click="changeIconType(item)">
-                {{ item.label }}
+                {{ $t(item.label) }}
               </label>
             </div>
             <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
@@ -98,11 +98,11 @@ const emit = defineEmits([ 'on-commit' ])
 const ICON_TYPE_LIST: ICON_TYPE[] = [
   {
     type: 'img',
-    label: t('form.imageIcon')
+    label: 'form.imageIcon'
   },
   {
     type: 'text',
-    label: t('form.textIcon')
+    label: 'form.textIcon'
   }
 ]
 const formData = ref<LINK_ITEM_TYPE>({

@@ -37,10 +37,9 @@ import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import OperateDialog from './OperateDialog.vue'
 import { computed, useTemplateRef } from 'vue'
 import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
-import { WEATHER_ICON_MAP } from '@/libs/const/weatherMap.ts'
 import { useI18n } from 'vue-i18n'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 
 const props = defineProps<{
   information: INFORMATION
@@ -93,16 +92,16 @@ const getTomorrowWeather = computed(() => {
 // 获取今天天气文本
 const getTodayWeatherText = computed(() => {
   const weatherKey = props.information.weather.today.weatherKey
-  if (weatherKey && WEATHER_ICON_MAP[weatherKey]) {
-    return WEATHER_ICON_MAP[weatherKey][locale.value as keyof typeof WEATHER_ICON_MAP[typeof weatherKey]]
+  if (weatherKey) {
+    return t(`weatherCode.${weatherKey}`)
   }
   return t('weather.default')
 })
 // 获取明天天气文本
 const getTomorrowWeatherText = computed(() => {
   const weatherKey = props.information.weather.tomorrow.weatherKey
-  if (weatherKey && WEATHER_ICON_MAP[weatherKey]) {
-    return WEATHER_ICON_MAP[weatherKey][locale.value as keyof typeof WEATHER_ICON_MAP[typeof weatherKey]]
+  if (weatherKey) {
+    return t(`weatherCode.${weatherKey}`)
   }
   return t('weather.default')
 })
