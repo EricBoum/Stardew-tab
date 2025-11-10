@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { debounce } from '@/libs'
 import { useI18n } from 'vue-i18n'
 
@@ -47,6 +47,25 @@ const isComposing = ref<boolean>(false) // 是否处于输入法组合输入中�
 const showPlaceholder = computed(() => {
   return !inputText.value.trim()
 })
+
+// 事件处理函数
+const handlePaste = (e: ClipboardEvent) => {
+  e.preventDefault()
+  const text = e.clipboardData?.getData('text/plain') ?? ''
+  setInputValue(text)
+  insertTextAtCursor(text)
+  // 滚动到末尾
+  const el = editableDiv.value
+  if (el) {
+    el.scrollLeft = el.scrollWidth
+  }
+}
+const handleCompositionStart = () => {
+  isComposing.value = true
+}
+const handleCompositionEnd = () => {
+  isComposing.value = false
+}
 
 // 触发镰刀动画
 const updateDeleteAnimationPosition = () => {
@@ -113,21 +132,20 @@ const initInput = () => {
   if (el.innerText.trim() === '') {
     el.innerHTML = '&nbsp;'
   }
-  // 由于用的是div做输入框，所以需要监听粘贴事件，将dom转为文字
-  el.addEventListener('paste', (e: ClipboardEvent) => {
-    e.preventDefault()
-    const text = e.clipboardData?.getData('text/plain') ?? ''
-    setInputValue(text)
-    insertTextAtCursor(text)
-    // 滚动到末尾
-    el.scrollLeft = el.scrollWidth
-  })
-  el.addEventListener('compositionstart', () => {
-    isComposing.value = true
-  })
-  el.addEventListener('compositionend', () => {
-    isComposing.value = false
-  })
+  // 由于用的是div做输入框,所以需要监听粘贴事件,将dom转为文字
+  el.addEventListener('paste', handlePaste)
+  el.addEventListener('compositionstart', handleCompositionStart)
+  el.addEventListener('compositionend', handleCompositionEnd)
+}
+// 清理事件监听器
+const cleanupInput = () => {
+  const el = editableDiv.value
+  if (!el) {
+    return
+  }
+  el.removeEventListener('paste', handlePaste)
+  el.removeEventListener('compositionstart', handleCompositionStart)
+  el.removeEventListener('compositionend', handleCompositionEnd)
 }
 // 手动插入文字
 const insertTextAtCursor = (text: string) => {
@@ -142,6 +160,10 @@ const insertTextAtCursor = (text: string) => {
 
 onMounted(() => {
   initInput()
+})
+
+onBeforeUnmount(() => {
+  cleanupInput()
 })
 </script>
 

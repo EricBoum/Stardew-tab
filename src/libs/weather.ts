@@ -115,14 +115,11 @@ export const getWeatherData = async (): Promise<any> => {
       if (cache.version !== VERSION) {
         return await byQWeather()
       }
-
-      const now = Date.now()
-      // 六小时内最多请求一次，隔天可立即请求
-      const FIVE_HOURS = 6 * 60 * 60 * 1000
-      const nowDateStr = new Date(now).toDateString()
-      const cacheDateStr = new Date(cache.timestamp).toDateString()
-      const isSameDay = nowDateStr === cacheDateStr
-      if (now - cache.timestamp < FIVE_HOURS && isSameDay) {
+      
+      // 天气一天请求一次，同一天内使用缓存，跨天后自动刷新
+      const todayStr = new Date().toDateString()
+      const cacheStr = new Date(cache.timestamp).toDateString()
+      if (todayStr === cacheStr) {
         return cache.data
       }
     } catch (e) {
