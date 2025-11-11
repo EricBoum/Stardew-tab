@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { useStorage } from './storage.ts'
+import { WEATHER_ICON_MAP } from './const/weatherMap.ts'
+import { VERSION } from '@/libs/const'
 
 /**
  * 通过 ipapi.co 获取经纬度
@@ -14,13 +16,13 @@ async function getCoordsByIP(): Promise<{ latitude: number; longitude: number }>
  */
 async function getCoords(): Promise<{ latitude: number, longitude: number }> {
   return new Promise((resolve, reject) => {
-    // 1️⃣ 浏览器不支持 Geolocation：直接走 IP 兜底
+    // 浏览器不支持 Geolocation：直接走 IP 兜底
     if (!( 'geolocation' in navigator )) {
       getCoordsByIP().then(resolve).catch(reject)
       return
     }
 
-    // 2️⃣ 尝试浏览器定位；把可能的同步异常也收进 fallback
+    // 尝试浏览器定位；把可能的同步异常也收进 fallback
     try {
       navigator.geolocation.getCurrentPosition(
         pos => {
@@ -40,12 +42,12 @@ async function getCoords(): Promise<{ latitude: number, longitude: number }> {
         },
         {
           enableHighAccuracy: true,
-          timeout: 8000,      // ⏲️ 8 秒未获取到位置就触发 error 回调
+          timeout: 8000,      // 8 秒未获取到位置就触发 error 回调
           maximumAge: 0,
         }
       )
     } catch (syncErr) {
-      // 3️⃣ 不安全上下文等导致的同步异常
+      // 不安全上下文等导致的同步异常
       getCoordsByIP().then(resolve).catch(reject)
     }
   })
@@ -62,12 +64,12 @@ export const byQWeather = () => {
         },
       })
       const daily = weatherRes.data.daily
-      const todayWeather = daily[0].textDay
-      const tomorrowWeather = daily[1].textDay
+      const todayIconDay = daily[0].iconDay
+      const tomorrowIconDay = daily[1].iconDay
 
       const returnData = {
-        today: {...dealWithWeather(todayWeather), weatherKey: daily[0].iconDay},
-        tomorrow: dealWithWeather(tomorrowWeather),
+        today: dealWithWeather(todayIconDay),
+        tomorrow: dealWithWeather(tomorrowIconDay),
       }
 
       await setWeather(returnData)
@@ -78,26 +80,27 @@ export const byQWeather = () => {
   })
 }
 
-export function dealWithWeather(input: string): { zh: string; en: string } {
-  const mapping: { keywords: string[]; zh: string; en: string }[] = [
-    {keywords: [ '晴' ], zh: '晴', en: 'Sunny'},
-    {keywords: [ '雨' ], zh: '雨', en: 'Rainy'},
-    {keywords: [ '雷' ], zh: '雷', en: 'Stormy'},
-    {keywords: [ '雪' ], zh: '雪', en: 'Snowy'},
-    {keywords: [ '风' ], zh: '风', en: 'Windy'},
-  ]
+export function dealWithWeather(iconCode: string) {
+  // 根据 iconCode 查表获取图标类型
+  const weatherInfo = WEATHER_ICON_MAP[iconCode]
 
-  for (const {keywords, en} of mapping) {
-    if (keywords.some(keyword => new RegExp(keyword, 'i').test(input))) {
-      return {zh: input, en}
+  if (weatherInfo) {
+    return {
+      iconKey: weatherInfo.iconKey,
+      weatherKey: iconCode
     }
   }
 
-  return {zh: input, en: 'Default'}
+  // 兜底：如果找不到对应的天气代码，返回默认值
+  return {
+    iconKey: 'Default' as const,
+    weatherKey: iconCode
+  }
 }
 
 export const setWeather = async (data: any) => {
   const cached = {
+    version: VERSION,
     data,
     timestamp: Date.now()
   }
@@ -108,13 +111,15 @@ export const getWeatherData = async (): Promise<any> => {
   const cache = await useStorage().getStorage('weather_cache')
   if (cache) {
     try {
-      const now = Date.now()
-      // 六小时内最多请求一次，隔天可立即请求
-      const FIVE_HOURS = 6 * 60 * 60 * 1000
-      const nowDateStr = new Date(now).toDateString()
-      const cacheDateStr = new Date(cache.timestamp).toDateString()
-      const isSameDay = nowDateStr === cacheDateStr
-      if (now - cache.timestamp < FIVE_HOURS && isSameDay) {
+      // 检查缓存版本号，如果不匹配则丢弃旧缓存
+      if (cache.version !== VERSION) {
+        return await byQWeather()
+      }
+      
+      // 天气一天请求一次，同一天内使用缓存，跨天后自动刷新
+      const todayStr = new Date().toDateString()
+      const cacheStr = new Date(cache.timestamp).toDateString()
+      if (todayStr === cacheStr) {
         return cache.data
       }
     } catch (e) {

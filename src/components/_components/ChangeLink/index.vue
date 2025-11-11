@@ -3,32 +3,32 @@
     <template #default>
       <div class="relative">
         <div class="close-box" @click="hide">
-          <img src="@/assets/image/link/close.png" alt="关闭">
+          <img src="@/assets/image/link/close.png" :alt="$t('common.close')">
         </div>
         <div class="site-dialog bg-[#EFBD73] p-6 w-[400px] max-w-[90vw] stardew-border stardew-font">
           <h3 class="dialog-title">
-            {{ isEdit ? '编辑网站' : '添加网站' }}
+            {{ isEdit ? $t('dialog.editWebsite') : $t('dialog.addWebsite') }}
           </h3>
 
           <div class="mb-3">
-            <label class="block text-[#4e3623] text-sm font-medium mb-1">名称</label>
-            <StardewInput v-model="formData.name" placeholder="请输入网站名称" />
+            <label class="block text-[#4e3623] text-sm font-medium mb-1">{{ $t('form.name') }}</label>
+            <StardewInput v-model="formData.name" :placeholder="$t('form.placeholderName')" />
           </div>
 
           <div class="mb-3">
-            <label class="block text-[#4e3623] text-sm font-medium mb-1">网址</label>
-            <StardewInput v-model="formData.url" placeholder="请输入网站链接" @blur="fetchFavicon" />
+            <label class="block text-[#4e3623] text-sm font-medium mb-1">{{ $t('form.url') }}</label>
+            <StardewInput v-model="formData.url" :placeholder="$t('form.placeholderUrl')" @blur="fetchFavicon" />
           </div>
 
           <div class="mb-3">
-            <label class="block text-[#4e3623] text-sm font-medium mb-1">描述</label>
-            <StardewInput v-model="formData.desc" type="textarea" rows="2" placeholder="请输入网站描述（可选）" />
+            <label class="block text-[#4e3623] text-sm font-medium mb-1">{{ $t('form.description') }}</label>
+            <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
           </div>
 
           <div class="mb-5">
             <div class="flex">
               <label class="mr-5 block pointer text-sm font-medium mb-1" :class="[formData.type === item.type? 'text-[#4e3623]': 'text-[#A19187]']" v-for="(item, index) in ICON_TYPE_LIST" :key="index" @click="changeIconType(item)">
-                {{ item.label }}
+                {{ $t(item.label) }}
               </label>
             </div>
             <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
@@ -50,18 +50,18 @@
               <div class="flex-1">
                 <div class="flex space-x-2" v-if="formData.type === 'img'">
                   <button @click="useDefaultIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
-                    获取图标
+                    {{ $t('dialog.getIcon') }}
                   </button>
                   <button @click="formData.logo = ''" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
-                    清除
+                    {{ $t('common.clear') }}
                   </button>
                 </div>
                 <div v-else class="flex">
                   <div class="flex items-center text-[12px]">
-                    背景：<input type="color" v-model="formData.bgColor">
+                    {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
                   </div>
                   <div class="flex items-center text-[12px] ml-5">
-                    文字：<input type="color" v-model="formData.textColor">
+                    {{ $t('form.text') }}：<input type="color" v-model="formData.textColor">
                   </div>
                 </div>
               </div>
@@ -71,7 +71,7 @@
 
           <div class="flex justify-center space-x-4">
             <button @click="save" class="stardew-button">
-              保存
+              {{ $t('common.save') }}
             </button>
           </div>
         </div>
@@ -85,6 +85,9 @@ import StardewDialog from '@/components/_components/StardewDialog/index.vue'
 import StardewInput from '@/components/_components/StardewInput/index.vue'
 import { computed, ref } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 interface ICON_TYPE {
   type: string,
@@ -95,11 +98,11 @@ const emit = defineEmits([ 'on-commit' ])
 const ICON_TYPE_LIST: ICON_TYPE[] = [
   {
     type: 'img',
-    label: '图片图标'
+    label: 'form.imageIcon'
   },
   {
     type: 'text',
-    label: '文字图标'
+    label: 'form.textIcon'
   }
 ]
 const formData = ref<LINK_ITEM_TYPE>({
@@ -117,9 +120,9 @@ const visible = ref<boolean>(false) // 弹窗显示状态
 const isEdit = ref<boolean>(false) // 是否编辑状态
 const getUrlPlaceholder = computed(() => {
   if (formData.value.type === 'img') {
-    return '请输入图标链接'
+    return t('form.placeholderIconUrl')
   } else {
-    return '请输入图标文字'
+    return t('form.placeholderIconText')
   }
 })
 

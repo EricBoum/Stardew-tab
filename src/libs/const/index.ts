@@ -39,31 +39,18 @@ export interface INFORMATION {
   };
   weather: {
     today: {
-      zh: string;
-      en: string;
+      iconKey: 'Sunny' | 'Rainy' | 'Snowy' | 'Stormy' | 'Windy' | 'Default';
       weatherKey: string;
     };
     tomorrow: {
-      zh: string;
-      en: string;
+      iconKey: 'Sunny' | 'Rainy' | 'Snowy' | 'Stormy' | 'Windy' | 'Default';
+      weatherKey: string;
     };
   }
 }
 
-export const WEEK_LIST: string[] = [
-  '星期日',
-  '星期一',
-  '星期二',
-  '星期三',
-  '星期四',
-  '星期五',
-  '星期六'
-]
-
 export interface SEASON_ITEM {
   img: string;
-  zh: string;
-  en: string;
 }
 export interface SEASON_TYPE {
   spring: SEASON_ITEM;
@@ -75,24 +62,16 @@ export interface SEASON_TYPE {
 }
 export const SEASON: SEASON_TYPE = {
   spring: {
-    img: Spring,
-    zh: '春天',
-    en: 'Spring'
+    img: Spring
   },
   summer: {
-    img: Summer,
-    zh: '夏天',
-    en: 'Summer'
+    img: Summer
   },
   fall: {
-    img: Fall,
-    zh: '秋天',
-    en: 'Fall'
+    img: Fall
   },
   winter: {
-    img: Winter,
-    zh: '冬天',
-    en: 'Winter'
+    img: Winter
   }
 }
 
@@ -103,3 +82,7 @@ export const COMMON_LINK_LIST_KEY: string = 'COMMON_LINK_LIST' // 常用快捷�
 export const LINK_LIST_KEY: string = 'LINK_LIST' // 快捷链接缓存key
 
 export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
+
+export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
+
+export const VERSION = '1.3.0' // 版本号

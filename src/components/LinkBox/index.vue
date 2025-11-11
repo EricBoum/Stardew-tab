@@ -3,7 +3,7 @@
     <StardewDialog v-model="visible" :closeOnMask="false">
       <div class="link-list-box w-[900px] h-[303px] pt-[0.1px] relative">
         <div class="close-box" @click="hide">
-          <img src="@/assets/image/link/close.png" alt="关闭">
+          <img src="@/assets/image/link/close.png" :alt="$t('common.close')">
         </div>
         <div class="w-[60px] h-[60px] absolute right-[49px] top-[46px]">
           <div class="w-full h-full flex items-center justify-center cursor-pointer transition-colors">
@@ -98,6 +98,9 @@ import {
 } from '@/libs/index.ts'
 import { useStorage } from '@/libs/storage.ts'
 import { COMMON_LINK_LIST_KEY, MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   modelValue: {

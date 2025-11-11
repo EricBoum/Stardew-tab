@@ -1,5 +1,9 @@
 # 🌾 Stardew Tab
 
+**简体中文** | [English](./README.en.md)
+
+---
+
 一个灵感来自《星露谷物语》的 Chrome 新标签页插件，用像素风为你带来治愈的搜索体验。
 
 

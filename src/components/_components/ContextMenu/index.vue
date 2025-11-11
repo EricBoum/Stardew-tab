@@ -3,10 +3,10 @@
     <div v-if="visible" class="fixed z-[9999] bg-[#EFBD73] py-1 w-25 stardew-border stardew-font"
          :style="{top: `${contextMenu.y}px`, left: `${contextMenu.x}px`}">
       <div class="px-2 py-1 hover:bg-[#f1e6c8] pointer context-menu-item" @click="handleClick('on-edit')">
-        编辑
+        {{ $t('common.edit') }}
       </div>
       <div v-if="props.showDelete" class="px-2 py-1 hover:bg-[#f1e6c8] pointer context-menu-item text-[#d32f2f] hover:text-[#b71c1c]" @click="handleClick('on-delete')">
-        删除
+        {{ $t('common.delete') }}
       </div>
     </div>
   </Teleport>
@@ -14,6 +14,9 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t: $t } = useI18n()
 
 const props = defineProps({
   showDelete: {
