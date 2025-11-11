@@ -206,7 +206,5 @@ export const createRainEffect = (
       s.draw()
       return s.life > 0
     })
-
-    clampRaindropCount()
   }
 }

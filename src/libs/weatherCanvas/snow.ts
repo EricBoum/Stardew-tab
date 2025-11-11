@@ -91,29 +91,27 @@ export const createSnowEffect = (
       ctx.save()
       ctx.translate(this.x, this.y)
 
-      // 绘制棉絮的各个小团
+      // 绘制棉絮的各个小团（使用简化渲染减少对象创建）
       this.fluffParts.forEach(part => {
         const currentSize = part.size
         const currentOpacity = part.opacity * 0.7
 
-        // 创建径向渐变
-        const gradient = ctx.createRadialGradient(
-          part.x, part.y, 0,
-          part.x, part.y, currentSize
-        )
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${currentOpacity})`)
-        gradient.addColorStop(0.4, `rgba(255, 255, 255, ${currentOpacity * 0.6})`)
-        gradient.addColorStop(1, `rgba(255, 255, 255, 0)`)
+        // 内层：高亮核心
+        ctx.globalAlpha = currentOpacity
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
+        ctx.beginPath()
+        ctx.arc(part.x, part.y, currentSize * 0.4, 0, Math.PI * 2)
+        ctx.fill()
 
-        ctx.fillStyle = gradient
-
-        // 绘制蓬松的圆形
+        // 外层：柔和边缘
+        ctx.globalAlpha = currentOpacity * 0.4
+        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
         ctx.beginPath()
         ctx.arc(part.x, part.y, currentSize, 0, Math.PI * 2)
         ctx.fill()
       })
 
-      // 主体光晕
+      // 主体光晕（保留渐变以获得柔和边缘）
       const mainGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.r * 1.5)
       mainGradient.addColorStop(0, `rgba(255, 255, 255, 0.2)`)
       mainGradient.addColorStop(0.6, `rgba(255, 255, 255, 0.05)`)
