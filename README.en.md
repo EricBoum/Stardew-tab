@@ -17,6 +17,13 @@ A Chrome new tab extension inspired by Stardew Valley, bringing you a healing se
 
 ## 📦 Installation
 
+### Online Installation (Recommended)
+
+- **Chrome Browser**: [Chrome Web Store](https://chromewebstore.google.com/detail/stardew-tab/bcefonnhpfkohlafkkjopagaceijfflo)
+- **Edge Browser**: [Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/stardew-tab/kkkcbbpbcekmjnalalpfbichlhkhbgho)
+
+### Local Installation
+
 1. Clone this project or download and extract the zip package
 2. Open Chrome extensions page (`chrome://extensions/`)
 3. Enable "Developer mode" in the top right corner
