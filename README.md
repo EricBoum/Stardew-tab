@@ -17,6 +17,13 @@
 
 ## 📦 安装方式
 
+### 线上安装（推荐）
+
+- **Chrome 浏览器**：[Chrome Web Store](https://chromewebstore.google.com/detail/stardew-tab/bcefonnhpfkohlafkkjopagaceijfflo)
+- **Edge 浏览器**：[Microsoft Edge 加载项](https://microsoftedge.microsoft.com/addons/detail/stardew-tab/kkkcbbpbcekmjnalalpfbichlhkhbgho)
+
+### 本地安装
+
 1. 克隆本项目或下载 zip 包解压
 2. 打开 Chrome 扩展页面（`chrome://extensions/`）
 3. 开启右上角「开发者模式」
