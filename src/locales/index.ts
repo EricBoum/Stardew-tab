@@ -6,13 +6,17 @@ import ko from './ko.json'
 import ru from './ru.json'
 import pt from './pt.json'
 import es from './es.json'
+import tr from './tr.json'
+import fr from './fr.json'
+import pl from './pl.json'
+import th from './th.json'
 import { useStorage } from '@/libs/storage'
 import { SYSTEM_SETTING_KEY } from '@/libs/const'
 import type { SYSTEM_SETTING } from '@/libs/const/type'
 import { createI18n } from 'vue-i18n'
 
 // 定义语言类型
-export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es'
+export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es' | 'tr' | 'fr' | 'pl' | 'th'
 
 // 定义语言列表项类型
 export interface LanguageItem {
@@ -29,7 +33,11 @@ export const LanguageList: LanguageItem[] = [
   { label: '한국어', value: 'ko', data: ko },
   { label: 'Русский', value: 'ru', data: ru },
   { label: 'Português', value: 'pt', data: pt },
-  { label: 'Español', value: 'es', data: es }
+  { label: 'Español', value: 'es', data: es },
+  { label: 'Türkçe', value: 'tr', data: tr },
+  { label: 'Français', value: 'fr', data: fr },
+  { label: 'Polski', value: 'pl', data: pl },
+  { label: 'ไทย', value: 'th', data: th }
 ]
 
 const { getStorage } = useStorage()
@@ -56,7 +64,11 @@ const normalizeBrowserLang = (browserLang: string): LocaleType => {
     'ko': 'ko',
     'ru': 'ru',
     'pt': 'pt',
-    'es': 'es'
+    'es': 'es',
+    'tr': 'tr',
+    'fr': 'fr',
+    'pl': 'pl',
+    'th': 'th'
   }
 
   // 不支持的语言降级到英语
