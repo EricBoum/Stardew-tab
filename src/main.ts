@@ -8,6 +8,9 @@ const initApp = async () => {
   // 等待 i18n 初始化完成（读取存储的语言设置）
   const i18n = await initI18n()
 
+  // SET NEW TAB TITLE BASED ON CURRENT LANGUAGE
+  document.title = i18n.global.t('newTabTitle')
+  
   // 创建并挂载应用
   const app = createApp(App)
   app.use(i18n)
