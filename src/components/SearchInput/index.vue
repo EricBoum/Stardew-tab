@@ -40,7 +40,7 @@ const toSearch = (e: { title: string } = {title: ''}): void => {
       window.open(`https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`)
     }
   } else {
-    window.open(`${ engineValue.value.url }${ keyWords }`)
+    window.open(`${ engineValue.value.url }${ encodeURIComponent(keyWords) }`)
   }
 }
 const getQuickJumpList = (): void => {

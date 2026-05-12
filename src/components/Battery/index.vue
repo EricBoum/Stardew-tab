@@ -1,5 +1,5 @@
 <template>
-  <div class="Battery w-[20px] h-[120px] absolute right-[20px] bottom-[20px] flex justify-center pt-[22px] pb-[3px]" :class="{'low-battery': battery.electricQuantity <= 20}">
+  <div v-if="isBatterySupported" class="Battery w-[20px] h-[120px] absolute right-[20px] bottom-[20px] flex justify-center pt-[22px] pb-[3px]" :class="{'low-battery': battery.electricQuantity <= 20}">
     <div class="w-[10px] h-full flex items-end overflow-hidden">
       <div :style="{height: `${battery.electricQuantity}%`}" class="battery-val w-full rounded-[2px] bg-[#80FB4D]">
 
@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { onMounted, onUnmounted, reactive, ref } from 'vue'
 
 interface Battery {
   isCharge: boolean
@@ -20,12 +20,17 @@ interface BatteryManager {
   chargingTime: number
   dischargingTime: number
   level: number
-  onchargingchange: () => void
-  onchargingtimechange: () => void
-  ondischargingtimechange: () => void
-  onlevelchange: () => void
+  onchargingchange: (() => void) | null
+  onchargingtimechange: (() => void) | null
+  ondischargingtimechange: (() => void) | null
+  onlevelchange: (() => void) | null
+}
+interface NavigatorWithBattery extends Navigator {
+  getBattery?: () => Promise<BatteryManager>
 }
 
+const isBatterySupported = ref<boolean>(false)
+let batteryManager: BatteryManager | null = null
 const battery = reactive<Battery>({
   isCharge: false,
   electricQuantity: 0
@@ -45,7 +50,14 @@ const listenBattery = () => {
     battery.isCharge = val.charging
     battery.electricQuantity = val.level * 100
   }
-  ( window.navigator as any ).getBattery().then((fn: BatteryManager) => {
+  const navigatorWithBattery = window.navigator as NavigatorWithBattery
+  if (!navigatorWithBattery.getBattery) {
+    isBatterySupported.value = false
+    return
+  }
+  navigatorWithBattery.getBattery().then((fn: BatteryManager) => {
+    batteryManager = fn
+    isBatterySupported.value = true
     changeBattery(fn)
     fn.onchargingchange = () => {
       changeBattery(fn)
@@ -53,11 +65,22 @@ const listenBattery = () => {
     fn.onlevelchange = () => {
       changeBattery(fn)
     }
+  }).catch(() => {
+    isBatterySupported.value = false
   })
 }
 
 onMounted(() => {
   listenBattery()
+})
+
+onUnmounted(() => {
+  if (!batteryManager) {
+    return
+  }
+  batteryManager.onchargingchange = null
+  batteryManager.onlevelchange = null
+  batteryManager = null
 })
 </script>
 

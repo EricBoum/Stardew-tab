@@ -14,6 +14,7 @@ import { useStorage } from '@/libs/storage'
 import { SYSTEM_SETTING_KEY } from '@/libs/const'
 import type { SYSTEM_SETTING } from '@/libs/const/type'
 import { createI18n } from 'vue-i18n'
+import type { Plugin } from 'vue'
 
 // 定义语言类型
 export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es' | 'tr' | 'fr' | 'pl' | 'th'
@@ -23,6 +24,12 @@ export interface LanguageItem {
   label: string
   value: LocaleType
   data: Record<string, any>
+}
+
+export type AppI18n = Plugin & {
+  global: {
+    t: (key: string) => string
+  }
 }
 
 export const LanguageList: LanguageItem[] = [
@@ -99,7 +106,7 @@ export const getDefaultLocale = async (): Promise<LocaleType> => {
 }
 
 // 创建 i18n 实例
-const createI18nInstance = (locale: LocaleType = 'zh-CN') => {
+const createI18nInstance = (locale: LocaleType = 'zh-CN'): AppI18n => {
   return createI18n({
     legacy: false,
     globalInjection: true,
@@ -109,11 +116,11 @@ const createI18nInstance = (locale: LocaleType = 'zh-CN') => {
       acc[item.value] = item.data
       return acc
     }, {} as Record<LocaleType, Record<string, any>>)
-  })
+  }) as unknown as AppI18n
 }
 
 // 异步初始化 i18n，等待语言设置加载完成
-export const initI18n = async () => {
+export const initI18n = async (): Promise<AppI18n> => {
   const locale = await getDefaultLocale()
   return createI18nInstance(locale)
 }

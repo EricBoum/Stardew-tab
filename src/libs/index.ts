@@ -51,6 +51,9 @@ export const deleteCommonLinkData = async (data: any) => {
   const {id} = data
   const LIST = await getCommonLinkData()
   let index = LIST.findIndex((item: any) => item.id === id)
+  if (index === -1) {
+    return false
+  }
   LIST.splice(index, 1)
   await setStorage(COMMON_LINK_LIST_KEY, LIST)
   return true
@@ -73,6 +76,9 @@ export const setLinkData = async (data: any) => {
   if (parentId) {
     // 子级更新
     let parentIndex = LIST.findIndex((item: any) => item.id === parentId)
+    if (parentIndex === -1) {
+      return false
+    }
     let current = LIST[parentIndex].list.findIndex((item: any) => item.id === id)
     if (current === -1) {
       LIST[parentIndex].list.push(data)
@@ -98,11 +104,20 @@ export const deleteLink = async (data: any) => {
   if (parentId) {
     // 子级更新
     let parentIndex = LIST.findIndex((item: any) => item.id === parentId)
+    if (parentIndex === -1) {
+      return false
+    }
     let current = LIST[parentIndex].list.findIndex((item: any) => item.id === id)
+    if (current === -1) {
+      return false
+    }
     LIST[parentIndex].list.splice(current, 1)
   } else {
     // tab更新
     let index = LIST.findIndex((item: any) => item.id === id)
+    if (index === -1) {
+      return false
+    }
     LIST.splice(index, 1)
   }
   await setStorage(LINK_LIST_KEY, JSON.parse(JSON.stringify(LIST)))
@@ -114,6 +129,9 @@ export const updateCurrentTabLinkList = async (data: any) => {
   const {id, linkList} = data
   let LIST = await getLinkData()
   let index = LIST.findIndex((item: any) => item.id === id)
+  if (index === -1) {
+    return false
+  }
   LIST[index].list = linkList
   await setStorage(LINK_LIST_KEY, JSON.parse(JSON.stringify(LIST)))
   return true
