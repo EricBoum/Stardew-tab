@@ -25,10 +25,8 @@
 
 <script setup lang="ts">
 import ConfirmBox from '@/components/_components/ConfirmBox/index.vue'
-import { useStorage } from '@/libs/storage.ts'
-import { LINK_LIST_KEY } from '@/libs/const'
 import { ref, useTemplateRef } from 'vue'
-import { getLinkData } from '@/libs'
+import { getLinkData, replaceLinkListData } from '@/libs'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import StardewTips from '@/components/_components/StardewTips/index.vue'
 import { useI18n } from 'vue-i18n'
@@ -36,7 +34,6 @@ import { useI18n } from 'vue-i18n'
 const { t: $t } = useI18n()
 
 const emit = defineEmits([ 'on-upload-success' ])
-const storage = useStorage()
 const ConfirmBoxRef = useTemplateRef('ConfirmBoxRef')
 const tempUploadFile = ref<File | null>()
 
@@ -50,7 +47,7 @@ const handleUpload = (e: any) => {
 const commitUpload = () => {
   const reader = new FileReader()
   reader.readAsText(tempUploadFile.value as File)
-  reader.onload = () => {
+  reader.onload = async () => {
     try {
       const data = reader.result as string
       const jsonData = JSON.parse(data).map((item: any, index: number) => {
@@ -66,7 +63,7 @@ const commitUpload = () => {
           })
         }
       })
-      storage.setStorage(LINK_LIST_KEY, jsonData)
+      await replaceLinkListData(jsonData)
       emit('on-upload-success')
     } catch (error) {
       console.error(error)

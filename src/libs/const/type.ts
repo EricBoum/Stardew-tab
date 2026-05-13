@@ -4,6 +4,8 @@ export interface LINK_ITEM_TYPE {
   name: string;
   url: string;
   logo: string;
+  iconId?: string;
+  iconSource?: 'favicon' | 'text' | 'upload';
   desc?: string;
   type: 'img' | 'text';
   bgColor?: string;
