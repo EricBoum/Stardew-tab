@@ -81,7 +81,8 @@
     "zoom": "縮放",
     "radius": "圓角",
     "circle": "圓形",
-    "fetchingIcon": "取得中"
+    "fetchingIcon": "取得中",
+    "remotePixelizeTip": "提示：遠端圖示如需像素化，請先下載後上傳。"
   },
   "week": {
     "sunday": "星期日",

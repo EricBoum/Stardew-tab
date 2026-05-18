@@ -81,7 +81,8 @@
     "zoom": "Zoom",
     "radius": "Radius",
     "circle": "Circle",
-    "fetchingIcon": "Fetching"
+    "fetchingIcon": "Fetching",
+    "remotePixelizeTip": "Tip: To pixelize a remote icon, download it first and upload it."
   },
   "week": {
     "sunday": "Sunday",

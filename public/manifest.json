@@ -23,8 +23,7 @@
     "storage"
   ],
   "host_permissions": [
-    "https://api.openweathermap.org/*",
-    "https://restapi.amap.com/*",
+    "https://*.qweatherapi.com/*",
     "https://suggestion.baidu.com/*",
     "https://ipapi.co/json/",
     "https://www.google.com/*",

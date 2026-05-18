@@ -81,7 +81,8 @@
     "zoom": "缩放",
     "radius": "圆角",
     "circle": "圆形",
-    "fetchingIcon": "获取中"
+    "fetchingIcon": "获取中",
+    "remotePixelizeTip": "提示：远程图标如需像素化，请先下载后上传。"
   },
   "week": {
     "sunday": "星期日",

@@ -81,7 +81,8 @@
     "zoom": "ズーム",
     "radius": "角丸",
     "circle": "円形",
-    "fetchingIcon": "取得中"
+    "fetchingIcon": "取得中",
+    "remotePixelizeTip": "ヒント：リモートアイコンをピクセル化するには、先にダウンロードしてからアップロードしてください。"
   },
   "week": {
     "sunday": "日曜日",

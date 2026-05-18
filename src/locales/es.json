@@ -81,7 +81,8 @@
     "zoom": "Zoom",
     "radius": "Radio",
     "circle": "Círculo",
-    "fetchingIcon": "Obteniendo"
+    "fetchingIcon": "Obteniendo",
+    "remotePixelizeTip": "Consejo: para pixelar un icono remoto, descárgalo primero y súbelo."
   },
   "week": {
     "sunday": "Domingo",

@@ -81,7 +81,8 @@
     "zoom": "Yakınlaştır",
     "radius": "Köşe",
     "circle": "Daire",
-    "fetchingIcon": "Alınıyor"
+    "fetchingIcon": "Alınıyor",
+    "remotePixelizeTip": "İpucu: Uzak bir simgeyi pikselleştirmek için önce indirin, sonra yükleyin."
   },
   "week": {
     "sunday": "Pazar",

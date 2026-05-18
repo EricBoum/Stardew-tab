@@ -81,7 +81,8 @@
     "zoom": "Powiększenie",
     "radius": "Zaokrąglenie",
     "circle": "Koło",
-    "fetchingIcon": "Pobieranie"
+    "fetchingIcon": "Pobieranie",
+    "remotePixelizeTip": "Wskazówka: aby spikselizować zdalną ikonę, najpierw ją pobierz, a potem prześlij."
   },
   "week": {
     "sunday": "Niedziela",

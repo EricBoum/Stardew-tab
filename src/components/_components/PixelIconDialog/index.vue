@@ -194,12 +194,17 @@ const pixelSizeOptions = computed<Array<{ id: PixelSize; name: string }>>(() => 
   {id: 48, name: '48'}
 ])
 const outputSizeOptions = [64, 96, 128]
-const radiusOptions = computed(() => [
-  {id: 0, name: '0'},
-  {id: 8, name: '8'},
-  {id: 16, name: '16'},
-  {id: options.outputSize / 2, name: $t('pixelIcon.circle')}
-])
+const radiusOptions = computed(() => {
+  const outputSize = options.outputSize
+  return [
+    {id: 0, name: '0'},
+    {id: Math.round(outputSize / 16), name: `${ Math.round(outputSize / 16) }`},
+    {id: Math.round(outputSize / 8), name: `${ Math.round(outputSize / 8) }`},
+    {id: Math.round(outputSize / 4), name: `${ Math.round(outputSize / 4) }`},
+    {id: Math.round(outputSize * 3 / 8), name: `${ Math.round(outputSize * 3 / 8) }`},
+    {id: outputSize / 2, name: $t('pixelIcon.circle')}
+  ]
+})
 const colorOptions = computed<Array<{ id: ColorCount; name: string }>>(() => [
   {id: 'original', name: $t('pixelIcon.originalColors')},
   {id: 8, name: '8'},
@@ -308,6 +313,10 @@ const clampCrop = () => {
   }
   options.cropOffsetX = Math.min(Math.max(options.cropOffsetX, -1), 1)
   options.cropOffsetY = Math.min(Math.max(options.cropOffsetY, -1), 1)
+}
+
+const clampBorderRadius = () => {
+  options.borderRadius = Math.min(Math.max(options.borderRadius, 0), options.outputSize / 2)
 }
 
 const handleCropPointerDown = (event: PointerEvent) => {
@@ -461,6 +470,7 @@ const handleFallbackUpload = (event: Event) => {
 
 watch(options, () => {
   clampCrop()
+  clampBorderRadius()
   renderPreview()
 }, {deep: true})
 

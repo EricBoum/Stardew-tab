@@ -81,7 +81,8 @@
     "zoom": "Zoom",
     "radius": "Arrondi",
     "circle": "Cercle",
-    "fetchingIcon": "Chargement"
+    "fetchingIcon": "Chargement",
+    "remotePixelizeTip": "Astuce : pour pixeliser une icône distante, téléchargez-la puis importez-la."
   },
   "week": {
     "sunday": "Dimanche",

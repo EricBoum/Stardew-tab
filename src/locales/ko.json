@@ -81,7 +81,8 @@
     "zoom": "확대",
     "radius": "모서리",
     "circle": "원형",
-    "fetchingIcon": "가져오는 중"
+    "fetchingIcon": "가져오는 중",
+    "remotePixelizeTip": "팁: 원격 아이콘을 픽셀화하려면 먼저 다운로드한 뒤 업로드하세요."
   },
   "week": {
     "sunday": "일요일",

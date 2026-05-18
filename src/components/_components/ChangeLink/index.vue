@@ -55,6 +55,9 @@
                   <button type="button" @click="clearIcon" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
                     {{ $t('common.clear') }}
                   </button>
+                  <p class="w-full text-[12px] leading-[16px] text-[#7B312A]">
+                    {{ $t('pixelIcon.remotePixelizeTip') }}
+                  </p>
                 </div>
                 <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'upload'">
                   <button type="button" @click="openUpload" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
