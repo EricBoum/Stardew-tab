@@ -5,7 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useTemplateRef, watch, computed } from 'vue'
+import { shallowRef, useTemplateRef, watch, computed, onUnmounted } from 'vue'
 import { createRainEffect } from '@/libs/weatherCanvas/rain.ts'
 import { createSnowEffect } from '@/libs/weatherCanvas/snow.ts'
 import type { INFORMATION } from '@/libs/const'
@@ -14,7 +14,9 @@ const props = defineProps<{
   information: INFORMATION
 }>()
 
-const canvasContent = ref<any>(null)
+type WeatherEffect = ReturnType<typeof createRainEffect> | ReturnType<typeof createSnowEffect>
+
+const canvasContent = shallowRef<WeatherEffect | null>(null)
 
 const getWeather = computed(() => {
   return props.information.weather.today.weatherKey
@@ -72,6 +74,7 @@ const init = () => {
   if (!weatherCanvas.value) {
     return
   }
+  destroy()
   // 根据 iconCode 动态渲染雨 / 雪效果，并按强度调整参数
   const {type, options} = parsedWeather.value
 
@@ -103,12 +106,17 @@ const destroy = () => {
     return
   }
   canvasContent.value.destroy()
+  canvasContent.value = null
 }
 
 
 watch(() => getWeather.value, () => {
   init()
 }, {deep: true})
+
+onUnmounted(() => {
+  destroy()
+})
 
 defineExpose({
   start,

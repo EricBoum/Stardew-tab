@@ -6,19 +6,30 @@ import ko from './ko.json'
 import ru from './ru.json'
 import pt from './pt.json'
 import es from './es.json'
+import tr from './tr.json'
+import fr from './fr.json'
+import pl from './pl.json'
+import th from './th.json'
 import { useStorage } from '@/libs/storage'
 import { SYSTEM_SETTING_KEY } from '@/libs/const'
 import type { SYSTEM_SETTING } from '@/libs/const/type'
 import { createI18n } from 'vue-i18n'
+import type { Plugin } from 'vue'
 
 // 定义语言类型
-export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es'
+export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es' | 'tr' | 'fr' | 'pl' | 'th'
 
 // 定义语言列表项类型
 export interface LanguageItem {
   label: string
   value: LocaleType
   data: Record<string, any>
+}
+
+export type AppI18n = Plugin & {
+  global: {
+    t: (key: string) => string
+  }
 }
 
 export const LanguageList: LanguageItem[] = [
@@ -29,7 +40,11 @@ export const LanguageList: LanguageItem[] = [
   { label: '한국어', value: 'ko', data: ko },
   { label: 'Русский', value: 'ru', data: ru },
   { label: 'Português', value: 'pt', data: pt },
-  { label: 'Español', value: 'es', data: es }
+  { label: 'Español', value: 'es', data: es },
+  { label: 'Türkçe', value: 'tr', data: tr },
+  { label: 'Français', value: 'fr', data: fr },
+  { label: 'Polski', value: 'pl', data: pl },
+  { label: 'ไทย', value: 'th', data: th }
 ]
 
 const { getStorage } = useStorage()
@@ -56,7 +71,11 @@ const normalizeBrowserLang = (browserLang: string): LocaleType => {
     'ko': 'ko',
     'ru': 'ru',
     'pt': 'pt',
-    'es': 'es'
+    'es': 'es',
+    'tr': 'tr',
+    'fr': 'fr',
+    'pl': 'pl',
+    'th': 'th'
   }
 
   // 不支持的语言降级到英语
@@ -87,7 +106,7 @@ export const getDefaultLocale = async (): Promise<LocaleType> => {
 }
 
 // 创建 i18n 实例
-const createI18nInstance = (locale: LocaleType = 'zh-CN') => {
+const createI18nInstance = (locale: LocaleType = 'zh-CN'): AppI18n => {
   return createI18n({
     legacy: false,
     globalInjection: true,
@@ -97,11 +116,11 @@ const createI18nInstance = (locale: LocaleType = 'zh-CN') => {
       acc[item.value] = item.data
       return acc
     }, {} as Record<LocaleType, Record<string, any>>)
-  })
+  }) as unknown as AppI18n
 }
 
 // 异步初始化 i18n，等待语言设置加载完成
-export const initI18n = async () => {
+export const initI18n = async (): Promise<AppI18n> => {
   const locale = await getDefaultLocale()
   return createI18nInstance(locale)
 }

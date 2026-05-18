@@ -5,7 +5,7 @@
         <div class="close-box" @click="hide">
           <img src="@/assets/image/link/close.png" :alt="$t('common.close')">
         </div>
-        <div class="site-dialog bg-[#EFBD73] p-6 w-[400px] max-w-[90vw] stardew-border stardew-font">
+        <div class="site-dialog bg-[#EFBD73] p-6 w-[520px] max-w-[90vw] stardew-border stardew-font">
           <h3 class="dialog-title">
             {{ isEdit ? $t('dialog.editWebsite') : $t('dialog.addWebsite') }}
           </h3>
@@ -27,14 +27,14 @@
 
           <div class="mb-5">
             <div class="flex">
-              <label class="mr-5 block pointer text-sm font-medium mb-1" :class="[formData.type === item.type? 'text-[#4e3623]': 'text-[#A19187]']" v-for="(item, index) in ICON_TYPE_LIST" :key="index" @click="changeIconType(item)">
+              <label class="mr-5 block pointer text-sm font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#4e3623]': 'text-[#A19187]']" v-for="item in ICON_SOURCE_LIST" :key="item.source" @click="changeIconSource(item.source)">
                 {{ $t(item.label) }}
               </label>
             </div>
             <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
               <div class="w-[60px] h-[60px] mr-3 flex items-center justify-center icon-preview">
-                <template v-if="formData.type === 'img'">
-                  <img v-if="formData.logo" :src="formData.logo" class="max-w-full max-h-full object-contain" alt="logo" />
+                <template v-if="currentIconSource !== 'text'">
+                  <LinkIcon v-if="formData.logo || formData.iconId" :detail="formData" />
                   <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -48,13 +48,28 @@
                 </template>
               </div>
               <div class="flex-1">
-                <div class="flex space-x-2" v-if="formData.type === 'img'">
-                  <button @click="useDefaultIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
-                    {{ $t('dialog.getIcon') }}
+                <div class="flex flex-wrap gap-2" v-if="currentIconSource === 'favicon'">
+                  <button type="button" @click="useDefaultIcon(true)" :disabled="isFetchingIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
+                    {{ isFetchingIcon ? $t('pixelIcon.fetchingIcon') : $t('dialog.getIcon') }}
                   </button>
-                  <button @click="formData.logo = ''" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
+                  <button type="button" @click="clearIcon" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
                     {{ $t('common.clear') }}
                   </button>
+                  <p class="w-full text-[12px] leading-[16px] text-[#7B312A]">
+                    {{ $t('pixelIcon.remotePixelizeTip') }}
+                  </p>
+                </div>
+                <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'upload'">
+                  <button type="button" @click="openUpload" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
+                    {{ formData.iconId ? $t('common.upload') : $t('pixelIcon.uploadIcon') }}
+                  </button>
+                  <button type="button" @click="openUploadEditor" :disabled="!formData.iconId" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
+                    {{ $t('pixelIcon.pixelize') }}
+                  </button>
+                  <button type="button" @click="clearIcon" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
+                    {{ $t('common.clear') }}
+                  </button>
+                  <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="handleUpload">
                 </div>
                 <div v-else class="flex">
                   <div class="flex items-center text-[12px]">
@@ -66,11 +81,11 @@
                 </div>
               </div>
             </div>
-            <StardewInput class="mt-[10px]" v-if="formData.type === 'img'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
+            <StardewInput class="mt-[10px]" v-if="currentIconSource === 'favicon'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
           </div>
 
           <div class="flex justify-center space-x-4">
-            <button @click="save" class="stardew-button">
+            <button type="button" @click="save" class="stardew-button">
               {{ $t('common.save') }}
             </button>
           </div>
@@ -78,31 +93,44 @@
       </div>
     </template>
   </StardewDialog>
+  <PixelIconDialog ref="PixelIconDialogRef" @apply="applyPixelIcon" />
 </template>
 
 <script setup lang="ts">
 import StardewDialog from '@/components/_components/StardewDialog/index.vue'
 import StardewInput from '@/components/_components/StardewInput/index.vue'
-import { computed, ref } from 'vue'
+import PixelIconDialog from '@/components/_components/PixelIconDialog/index.vue'
+import LinkIcon from '@/components/_common/LinkIcon/index.vue'
+import { computed, ref, useTemplateRef } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
 import { useI18n } from 'vue-i18n'
+import { getIconBlob, saveIconBlob } from '@/libs/db/iconRepository'
+import { resolveFavicon } from '@/libs/favicon'
 
 const { t } = useI18n()
 
-interface ICON_TYPE {
-  type: string,
+type IconSource = 'favicon' | 'text' | 'upload'
+
+interface ICON_SOURCE {
+  source: IconSource,
   label: string
 }
 
 const emit = defineEmits([ 'on-commit' ])
-const ICON_TYPE_LIST: ICON_TYPE[] = [
+const PixelIconDialogRef = useTemplateRef('PixelIconDialogRef')
+const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+const ICON_SOURCE_LIST: ICON_SOURCE[] = [
   {
-    type: 'img',
-    label: 'form.imageIcon'
+    source: 'favicon',
+    label: 'dialog.getIcon'
   },
   {
-    type: 'text',
+    source: 'text',
     label: 'form.textIcon'
+  },
+  {
+    source: 'upload',
+    label: 'pixelIcon.uploadIcon'
   }
 ]
 const formData = ref<LINK_ITEM_TYPE>({
@@ -111,6 +139,7 @@ const formData = ref<LINK_ITEM_TYPE>({
   name: '',
   url: '',
   logo: '',
+  iconSource: 'favicon',
   desc: '',
   type: 'img',
   bgColor: '#C87529',
@@ -118,19 +147,30 @@ const formData = ref<LINK_ITEM_TYPE>({
 })
 const visible = ref<boolean>(false) // 弹窗显示状态
 const isEdit = ref<boolean>(false) // 是否编辑状态
+const isFetchingIcon = ref<boolean>(false)
+const currentIconSource = computed<IconSource>(() => formData.value.iconSource || (formData.value.type === 'text' ? 'text' : 'favicon'))
 const getUrlPlaceholder = computed(() => {
-  if (formData.value.type === 'img') {
+  if (currentIconSource.value !== 'text') {
     return t('form.placeholderIconUrl')
   } else {
     return t('form.placeholderIconText')
   }
 })
 
+const normalizeLinkIconSource = (item: LINK_ITEM_TYPE): LINK_ITEM_TYPE => {
+  const iconSource = item.iconSource || (item.type === 'text' ? 'text' : (item.iconId && !item.logo ? 'upload' : 'favicon'))
+  return {
+    ...item,
+    iconSource,
+    type: iconSource === 'text' ? 'text' : 'img'
+  }
+}
+
 const show = (item?: LINK_ITEM_TYPE) => {
   // 先判断当前是新增还是编辑
   if (item?.id) {
     isEdit.value = true
-    formData.value = item
+    formData.value = normalizeLinkIconSource(item)
   } else {
     isEdit.value = false
     formData.value = {
@@ -139,6 +179,8 @@ const show = (item?: LINK_ITEM_TYPE) => {
       name: '',
       url: '',
       logo: '',
+      iconId: '',
+      iconSource: 'favicon',
       desc: '',
       type: 'img',
       bgColor: '#C87529',
@@ -149,6 +191,11 @@ const show = (item?: LINK_ITEM_TYPE) => {
 }
 const hide = () => {
   visible.value = false
+}
+
+const clearIcon = () => {
+  formData.value.logo = ''
+  formData.value.iconId = ''
 }
 
 // 校验URL
@@ -165,7 +212,9 @@ const isValidUrl = (url: string): boolean => {
 const save = async (): Promise<undefined> => {
   // 判断当前是编辑还是新增
   let temp = {
-    ...formData.value
+    ...formData.value,
+    type: currentIconSource.value === 'text' ? 'text' : 'img',
+    iconSource: currentIconSource.value
   }
   if (!formData.value.id) {
     temp.id = Date.now()
@@ -174,32 +223,78 @@ const save = async (): Promise<undefined> => {
   hide()
 }
 
-// 获取默认favicon
-const getDefaultFavicon = (url: string): string => {
-  try {
-    return `https://t0.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${ url }&size=64`
-  } catch (e) {
-    return ''
-  }
-}
-
 // 使用默认图标
-const useDefaultIcon = (): void => {
-  if (formData.value.url && isValidUrl(formData.value.url)) {
-    formData.value.logo = getDefaultFavicon(formData.value.url)
+const useDefaultIcon = async (forceRefresh = false): Promise<void> => {
+  if (!formData.value.url || !isValidUrl(formData.value.url)) {
+    return
+  }
+  isFetchingIcon.value = true
+  try {
+    const favicon = await resolveFavicon(formData.value.url, {forceRefresh})
+    formData.value.logo = favicon.logo
+    formData.value.iconId = favicon.iconId || ''
+    formData.value.iconSource = 'favicon'
+    formData.value.type = 'img'
+  } finally {
+    isFetchingIcon.value = false
   }
 }
 
 // 尝试获取网站favicon
-const fetchFavicon = (): void => {
+const fetchFavicon = async (): Promise<void> => {
   if (formData.value.url && isValidUrl(formData.value.url)) {
-    useDefaultIcon()
+    await useDefaultIcon()
   }
 }
 
-// 修改图标类型
-const changeIconType = (item: ICON_TYPE): void => {
-  formData.value.type = item.type as 'text' | 'img'
+// 修改图标来源
+const changeIconSource = (source: IconSource): void => {
+  const previousSource = currentIconSource.value
+  formData.value.iconSource = source
+  formData.value.type = source === 'text' ? 'text' : 'img'
+  if (source === 'favicon') {
+    formData.value.iconId = ''
+  }
+  if (source === 'upload') {
+    formData.value.logo = ''
+    if (previousSource !== 'upload') {
+      formData.value.iconId = ''
+    }
+  }
+}
+
+const openUpload = () => {
+  fileInput.value?.click()
+}
+
+const handleUpload = async (event: Event) => {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (!file) {
+    return
+  }
+  formData.value.iconSource = 'upload'
+  formData.value.type = 'img'
+  formData.value.logo = ''
+  formData.value.iconId = await saveIconBlob(file)
+}
+
+const openUploadEditor = async () => {
+  if (!formData.value.iconId) {
+    return
+  }
+  const blob = await getIconBlob(formData.value.iconId)
+  if (blob) {
+    PixelIconDialogRef.value?.show(blob, `${ formData.value.name || 'stardew-tab-icon' }.png`)
+  }
+}
+
+const applyPixelIcon = ({iconId}: { iconId: string }) => {
+  formData.value.iconId = iconId
+  formData.value.logo = ''
+  formData.value.type = 'img'
+  formData.value.iconSource = 'upload'
 }
 
 defineExpose({
@@ -228,6 +323,10 @@ defineExpose({
   transition: all 0.2s;
   &:hover {
     transform: translateY(-1px);
+  }
+  &:disabled {
+    opacity: 0.55;
+    transform: none;
   }
 }
 </style>

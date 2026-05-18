@@ -92,12 +92,12 @@ import {
   deleteLink,
   getCommonLinkData,
   getLinkData,
+  replaceCommonLinkListData,
   setCommonLinkData,
   setLinkData,
   updateCurrentTabLinkList
 } from '@/libs/index.ts'
-import { useStorage } from '@/libs/storage.ts'
-import { COMMON_LINK_LIST_KEY, MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const'
+import { MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const'
 import { useI18n } from 'vue-i18n'
 
 const { t: $t } = useI18n()
@@ -231,7 +231,7 @@ const draggleEnd = async (evt: any) => {
     const fIndex = currentLinkList.value.findIndex((item: LINK_ITEM_TYPE) => item.id === evt.data.id)
     currentLinkList.value[fIndex].parentId = tabChoose.value
   }
-  await useStorage().setStorage(COMMON_LINK_LIST_KEY, JSON.parse(JSON.stringify(commonLinkList.value)))
+  await replaceCommonLinkListData(commonLinkList.value)
   await updateCurrentTabLinkList({id: tabChoose.value, linkList: currentLinkList.value})
   initAll()
 }

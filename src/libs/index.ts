@@ -1,10 +1,10 @@
 import DEFAULT_LINK_LIST from '@/assets/json/link.json'
 import COMMON_LINK_LIST from '@/assets/json/commonly.json'
-import { useStorage } from '@/libs/storage.ts'
 import { COMMON_LINK_LIST_KEY, LINK_LIST_KEY } from '@/libs/const/index.ts'
+import { readLinkStorageValue, writeLinkStorageValue } from '@/libs/db/linkRepository'
+import type { LINK_ITEM_TYPE, TAB_ITEM } from '@/libs/const/type'
 
 // 防抖
-const {setStorage, getStorage} = useStorage()
 export const debounce = (fn: Function, delay: number = 300) => {
   let timer: number | null = null
   const debounced = function (this: any) {
@@ -25,13 +25,12 @@ export const debounce = (fn: Function, delay: number = 300) => {
 }
 
 // 获取常用快捷链接
-export const getCommonLinkData = async () => {
-  let LIST = JSON.parse(JSON.stringify(COMMON_LINK_LIST))
-  const storageData = await getStorage(COMMON_LINK_LIST_KEY)
-  if (storageData) {
-    LIST = storageData
-  }
-  return JSON.parse(JSON.stringify(LIST))
+export const getCommonLinkData = async (): Promise<LINK_ITEM_TYPE[]> => {
+  return readLinkStorageValue<LINK_ITEM_TYPE[]>(COMMON_LINK_LIST_KEY, COMMON_LINK_LIST as LINK_ITEM_TYPE[])
+}
+// 批量替换常用快捷链接数据
+export const replaceCommonLinkListData = async (data: LINK_ITEM_TYPE[]) => {
+  return writeLinkStorageValue(COMMON_LINK_LIST_KEY, data)
 }
 // 修改常用link数据
 export const setCommonLinkData = async (data: any) => {
@@ -43,27 +42,27 @@ export const setCommonLinkData = async (data: any) => {
   } else {
     LIST[index] = {...LIST[index], ...data}
   }
-  await setStorage(COMMON_LINK_LIST_KEY, LIST)
-  return true
+  return replaceCommonLinkListData(LIST)
 }
 // 删除常用link数据
 export const deleteCommonLinkData = async (data: any) => {
   const {id} = data
   const LIST = await getCommonLinkData()
   let index = LIST.findIndex((item: any) => item.id === id)
+  if (index === -1) {
+    return false
+  }
   LIST.splice(index, 1)
-  await setStorage(COMMON_LINK_LIST_KEY, LIST)
-  return true
+  return replaceCommonLinkListData(LIST)
 }
 
 // 获取全量快捷链接数据
-export const getLinkData = async () => {
-  let LIST = JSON.parse(JSON.stringify(DEFAULT_LINK_LIST))
-  const storageData = await getStorage(LINK_LIST_KEY)
-  if (storageData) {
-    LIST = storageData
-  }
-  return JSON.parse(JSON.stringify(LIST))
+export const getLinkData = async (): Promise<TAB_ITEM[]> => {
+  return readLinkStorageValue<TAB_ITEM[]>(LINK_LIST_KEY, DEFAULT_LINK_LIST as TAB_ITEM[])
+}
+// 批量替换全量快捷链接数据
+export const replaceLinkListData = async (data: TAB_ITEM[]) => {
+  return writeLinkStorageValue(LINK_LIST_KEY, data)
 }
 // 修改link数据
 export const setLinkData = async (data: any) => {
@@ -73,11 +72,19 @@ export const setLinkData = async (data: any) => {
   if (parentId) {
     // 子级更新
     let parentIndex = LIST.findIndex((item: any) => item.id === parentId)
-    let current = LIST[parentIndex].list.findIndex((item: any) => item.id === id)
+    if (parentIndex === -1) {
+      return false
+    }
+    const parent = LIST[parentIndex]
+    if (!parent) {
+      return false
+    }
+    parent.list = parent.list || []
+    let current = parent.list.findIndex((item: any) => item.id === id)
     if (current === -1) {
-      LIST[parentIndex].list.push(data)
+      parent.list.push(data)
     } else {
-      LIST[parentIndex].list[current] = {...LIST[parentIndex].list[current], ...data}
+      parent.list[current] = {...parent.list[current], ...data}
     }
   } else {
     // tab更新
@@ -85,11 +92,14 @@ export const setLinkData = async (data: any) => {
     if (index === -1) {
       LIST.push(data)
     } else {
-      LIST[index] = {...LIST[index], ...data}
+      const current = LIST[index]
+      if (!current) {
+        return false
+      }
+      LIST[index] = {...current, ...data}
     }
   }
-  await setStorage(LINK_LIST_KEY, JSON.parse(JSON.stringify(LIST)))
-  return true
+  return replaceLinkListData(LIST)
 }
 // 删除link数据
 export const deleteLink = async (data: any) => {
@@ -98,15 +108,27 @@ export const deleteLink = async (data: any) => {
   if (parentId) {
     // 子级更新
     let parentIndex = LIST.findIndex((item: any) => item.id === parentId)
-    let current = LIST[parentIndex].list.findIndex((item: any) => item.id === id)
-    LIST[parentIndex].list.splice(current, 1)
+    if (parentIndex === -1) {
+      return false
+    }
+    const parent = LIST[parentIndex]
+    if (!parent?.list) {
+      return false
+    }
+    let current = parent.list.findIndex((item: any) => item.id === id)
+    if (current === -1) {
+      return false
+    }
+    parent.list.splice(current, 1)
   } else {
     // tab更新
     let index = LIST.findIndex((item: any) => item.id === id)
+    if (index === -1) {
+      return false
+    }
     LIST.splice(index, 1)
   }
-  await setStorage(LINK_LIST_KEY, JSON.parse(JSON.stringify(LIST)))
-  return true
+  return replaceLinkListData(LIST)
 }
 
 // 更新当前选中tab的链接列表
@@ -114,7 +136,9 @@ export const updateCurrentTabLinkList = async (data: any) => {
   const {id, linkList} = data
   let LIST = await getLinkData()
   let index = LIST.findIndex((item: any) => item.id === id)
+  if (index === -1) {
+    return false
+  }
   LIST[index].list = linkList
-  await setStorage(LINK_LIST_KEY, JSON.parse(JSON.stringify(LIST)))
-  return true
+  return replaceLinkListData(LIST)
 }
