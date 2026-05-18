@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "__MSG_extensionName__",
+  "description": "__MSG_extensionDescription__",
+  "version": "2.0.0",
+  "default_locale": "zh_CN",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "action": {
+    "default_popup": "src/popup/index.html",
+    "default_icon": "icon48.png"
+  },
+  "permissions": [
+    "tabs",
+    "search",
+    "geolocation",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*.qweatherapi.com/*",
+    "https://suggestion.baidu.com/*",
+    "https://ipapi.co/json/",
+    "https://www.google.com/*",
+    "https://ico.faviconkit.net/*",
+    "https://icons.duckduckgo.com/*"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icons/*.png", "assets/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "stardew-tab@example.com",
+      "strict_min_version": "109.0"
+    }
+  }
+}
