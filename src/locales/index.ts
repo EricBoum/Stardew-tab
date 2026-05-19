@@ -1,6 +1,7 @@
 import zhCN from './zh-CN.json'
 import zhTW from './zh-TW.json'
 import en from './en.json'
+import ca from './ca.json'
 import ja from './ja.json'
 import ko from './ko.json'
 import ru from './ru.json'
@@ -17,7 +18,7 @@ import { createI18n } from 'vue-i18n'
 import type { Plugin } from 'vue'
 
 // 定义语言类型
-export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ja' | 'ko' | 'ru' | 'pt' | 'es' | 'tr' | 'fr' | 'pl' | 'th'
+export type LocaleType = 'zh-CN' | 'zh-TW' | 'en' | 'ca' | 'ja' | 'ko' | 'ru' | 'pt' | 'es' | 'tr' | 'fr' | 'pl' | 'th'
 
 // 定义语言列表项类型
 export interface LanguageItem {
@@ -36,6 +37,7 @@ export const LanguageList: LanguageItem[] = [
   { label: '简体中文', value: 'zh-CN', data: zhCN },
   { label: '繁體中文', value: 'zh-TW', data: zhTW },
   { label: 'English', value: 'en', data: en },
+  { label: 'Català', value: 'ca', data: ca },
   { label: '日本語', value: 'ja', data: ja },
   { label: '한국어', value: 'ko', data: ko },
   { label: 'Русский', value: 'ru', data: ru },
@@ -67,6 +69,7 @@ const normalizeBrowserLang = (browserLang: string): LocaleType => {
 
   const supportedLangs: Record<string, LocaleType> = {
     'en': 'en',
+    'ca': 'ca',
     'ja': 'ja',
     'ko': 'ko',
     'ru': 'ru',

@@ -1,4 +1,6 @@
-/* rainEffect.ts */
+import { createCanvasLoop } from './createCanvasLoop'
+import type { CanvasSize, WeatherEffectController } from './types'
+
 export interface RainOptions {
   /** 画面中的雨滴数量 */
   rainIntensity: number;      // 默认 200
@@ -6,6 +8,8 @@ export interface RainOptions {
   windForce: number;          // 默认 1
   /** 雨滴整体大小系数 */
   dropSizeMultiplier: number; // 默认 1.5
+  /** 雨滴下落速度系数 */
+  speedMultiplier: number;    // 默认 1.25
   /** 地面高度（便于溅水位置计算），默认 0 表示直接贴底 */
   groundHeight: number;       // 默认 0
 }
@@ -13,21 +17,29 @@ export interface RainOptions {
 export const createRainEffect = (
   canvas: HTMLCanvasElement,
   userOptions: Partial<RainOptions> = {}
-) => {
+): WeatherEffectController<RainOptions> => {
   /* ---------- 合并默认参数 ---------- */
   const options: RainOptions = {
     rainIntensity: 200,
     windForce: 1,
     dropSizeMultiplier: 1.5,
+    speedMultiplier: 1.25,
     groundHeight: 0,
     ...userOptions,
   }
 
-  const ctx = canvas.getContext('2d')!
+  const context = canvas.getContext('2d')
+  if (!context) {
+    throw new Error('无法创建雨天动画上下文')
+  }
+  const ctx = context
+  let canvasSize: CanvasSize = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    dpr: 1
+  }
   let raindrops: Raindrop[] = []
   let splashes: Splash[] = []
-  let rafId = 0
-  let running = true
 
   /* ---------- 数据结构 ---------- */
   class Raindrop {
@@ -44,8 +56,8 @@ export const createRainEffect = (
     }
 
     reset(randomY = false) {
-      this.x = Math.random() * ( canvas.width + 200 ) - 100
-      this.y = randomY ? Math.random() * canvas.height : -10
+      this.x = Math.random() * ( canvasSize.width + 200 ) - 100
+      this.y = randomY ? Math.random() * canvasSize.height : -10
       this.length = Math.random() * 20 + 10
       this.speed = Math.random() * 8 + 5
       this.thickness = Math.random() * 2 + 1
@@ -53,20 +65,20 @@ export const createRainEffect = (
       this.angle = Math.random() * 0.1 - 0.05
     }
 
-    update() {
-      this.y += this.speed
-      this.x += options.windForce + this.angle
+    update(delta: number) {
+      this.y += this.speed * options.speedMultiplier * delta
+      this.x += ( options.windForce + this.angle ) * delta
 
-      if (this.y > canvas.height - options.groundHeight) {
+      if (this.y > canvasSize.height - options.groundHeight) {
         this.createSplash()
         this.reset()
       }
-      if (this.x < -100 || this.x > canvas.width + 100) this.reset()
+      if (this.x < -100 || this.x > canvasSize.width + 100) this.reset()
     }
 
     private createSplash() {
       for (let i = 0; i < 3; i++) {
-        splashes.push(new Splash(this.x, canvas.height - options.groundHeight))
+        splashes.push(new Splash(this.x, canvasSize.height - options.groundHeight))
       }
     }
 
@@ -111,11 +123,11 @@ export const createRainEffect = (
       this.vy = Math.random() * -3 - 1
     }
 
-    update() {
-      this.x += this.vx
-      this.y += this.vy
-      this.vy += 0.1 // gravity
-      this.life -= this.decay
+    update(delta: number) {
+      this.x += this.vx * delta
+      this.y += this.vy * delta
+      this.vy += 0.1 * delta // gravity
+      this.life -= this.decay * delta
     }
 
     draw() {
@@ -123,19 +135,42 @@ export const createRainEffect = (
       ctx.save()
       ctx.globalAlpha = this.life * 0.8
       ctx.fillStyle = '#B0E0E6'
-      ctx.beginPath()
-      ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2)
-      ctx.fill()
+      const pixelSize = Math.max(1, Math.round(this.size * this.life))
+      const x = Math.round(this.x)
+      const y = Math.round(this.y)
+      ctx.fillRect(x, y, pixelSize, pixelSize)
+
+      if (pixelSize > 1) {
+        ctx.globalAlpha = this.life * 0.35
+        ctx.fillStyle = '#E0F6FF'
+        ctx.fillRect(x - pixelSize, y + pixelSize, pixelSize * 2, 1)
+      }
       ctx.restore()
     }
   }
 
   /* ---------- 初始化 ---------- */
-  resizeCanvas()
   initRaindrops()
-  loop()
+  const canvasLoop = createCanvasLoop(canvas, {
+    autoStart: false,
+    onResize: (_, size) => {
+      canvasSize = size
+    },
+    onFrame: (_, __, frame) => {
+      raindrops.forEach(d => {
+        d.update(frame.delta)
+        d.draw()
+      })
 
-  window.addEventListener('resize', resizeCanvas)
+      splashes = splashes.filter(s => {
+        s.update(frame.delta)
+        s.draw()
+        return s.life > 0
+      })
+      trimSplashes()
+    }
+  })
+  canvasLoop.start()
 
   /* ---------- 公开 API ---------- */
   return {
@@ -145,23 +180,12 @@ export const createRainEffect = (
       if (newOpts.rainIntensity !== undefined) clampRaindropCount()
     },
     /** 暂停动画 */
-    pause() {
-      if (running) {
-        running = false
-        cancelAnimationFrame(rafId)
-      }
-    },
+    pause: canvasLoop.pause,
     /** 恢复动画 */
-    start() {
-      if (!running) {
-        running = true
-        loop()
-      }
-    },
+    start: canvasLoop.start,
     /** 彻底清理 */
     destroy() {
-      this.pause()
-      window.removeEventListener('resize', resizeCanvas)
+      canvasLoop.destroy()
       raindrops = []
       splashes = []
     },
@@ -185,26 +209,11 @@ export const createRainEffect = (
     }
   }
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+  function trimSplashes() {
+    const maxSplashCount = Math.max(120, options.rainIntensity * 2)
+    if (splashes.length > maxSplashCount) {
+      splashes.splice(0, splashes.length - maxSplashCount)
+    }
   }
 
-  function loop() {
-    if (!running) return
-    rafId = requestAnimationFrame(loop)
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    raindrops.forEach(d => {
-      d.update()
-      d.draw()
-    })
-
-    splashes = splashes.filter(s => {
-      s.update()
-      s.draw()
-      return s.life > 0
-    })
-  }
 }

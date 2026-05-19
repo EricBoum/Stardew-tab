@@ -8,63 +8,18 @@
 import { shallowRef, useTemplateRef, watch, computed, onUnmounted } from 'vue'
 import { createRainEffect } from '@/libs/weatherCanvas/rain.ts'
 import { createSnowEffect } from '@/libs/weatherCanvas/snow.ts'
+import { resolveWeatherEffect } from '@/libs/weatherCanvas/effectMap'
+import type { WeatherEffectController } from '@/libs/weatherCanvas/types'
 import type { INFORMATION } from '@/libs/const'
 
 const props = defineProps<{
   information: INFORMATION
 }>()
 
-type WeatherEffect = ReturnType<typeof createRainEffect> | ReturnType<typeof createSnowEffect>
-
-const canvasContent = shallowRef<WeatherEffect | null>(null)
+const canvasContent = shallowRef<WeatherEffectController | null>(null)
 
 const getWeather = computed(() => {
   return props.information.weather.today.weatherKey
-})
-
-/** 解析 getWeather 的 iconCode，返回 { type, options }，保持响应式 */
-const parsedWeather = computed(() => {
-  const code = Number(getWeather.value)
-  // ===== Rain 300–399 =====
-  if (code >= 300 && code < 400) {
-    if ([ 300, 305, 309, 313 ].includes(code)) {
-      // 小雨
-      return {type: 'rain', options: {dropSizeMultiplier: 0.3, rainIntensity: 150}}
-    }
-    if ([ 306 ].includes(code)) {
-      // 中雨
-      return {type: 'rain', options: {dropSizeMultiplier: 0.5, rainIntensity: 300}}
-    }
-    if ([ 307, 308, 310, 311, 312 ].includes(code)) {
-      // 大雨
-      return {type: 'rain', options: {dropSizeMultiplier: 0.7, rainIntensity: 600}}
-    }
-    // 暴雨或雷暴
-    return {type: 'rain', options: {dropSizeMultiplier: 1, rainIntensity: 800}}
-  }
-  // ===== Snow 400–499 =====
-  if (code >= 400 && code < 500) {
-    if ([ 400, 406, 407 ].includes(code)) {
-      // 小雪
-      return {
-        type: 'snow',
-        options: {minSize: 2, maxSize: 5, flakeCount: 150, minSpeed: 0.3, maxSpeed: 1.2},
-      }
-    }
-    if ([ 401, 408 ].includes(code)) {
-      // 中雪
-      return {
-        type: 'snow',
-        options: {minSize: 3, maxSize: 7, flakeCount: 300, minSpeed: 0.5, maxSpeed: 2},
-      }
-    }
-    // 大雪或暴雪
-    return {
-      type: 'snow',
-      options: {minSize: 4, maxSize: 10, flakeCount: 600, minSpeed: 0.8, maxSpeed: 3},
-    }
-  }
-  return {type: undefined, options: {}}
 })
 
 // 指定模板引用元素类型，避免后续强制断言
@@ -76,16 +31,12 @@ const init = () => {
   }
   destroy()
   // 根据 iconCode 动态渲染雨 / 雪效果，并按强度调整参数
-  const {type, options} = parsedWeather.value
+  const {type, options} = resolveWeatherEffect(getWeather.value)
 
   if (type === 'rain') {
-    canvasContent.value = createRainEffect(weatherCanvas.value, {
-      ...options
-    })
+    canvasContent.value = createRainEffect(weatherCanvas.value, options)
   } else if (type === 'snow') {
-    canvasContent.value = createSnowEffect(weatherCanvas.value, {
-      ...options
-    })
+    canvasContent.value = createSnowEffect(weatherCanvas.value, options)
   }
 }
 
@@ -110,9 +61,9 @@ const destroy = () => {
 }
 
 
-watch(() => getWeather.value, () => {
+watch(getWeather, () => {
   init()
-}, {deep: true})
+})
 
 onUnmounted(() => {
   destroy()

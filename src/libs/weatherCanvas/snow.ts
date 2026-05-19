@@ -1,4 +1,6 @@
-/* snowEffect.ts */
+import { createCanvasLoop } from './createCanvasLoop'
+import type { CanvasSize, WeatherEffectController } from './types'
+
 export interface SnowOptions {
   /** 雪花数量 */
   flakeCount: number;       // 默认 150
@@ -7,17 +9,33 @@ export interface SnowOptions {
   /** 雪花最小 / 最大半径 (px) */
   minSize: number;          // 默认 2
   maxSize: number;          // 默认 6
-  /** 雪花最低 / 最高下落速度 (px/frame) */
+  /** 雪花最低 / 最高下落速度（以 60fps 为速度基准） */
   minSpeed: number;         // 默认 0.5
   maxSpeed: number;         // 默认 2
   /** 雪花左右摆动幅度 (px) */
   swirl: number;            // 默认 1.5
+  /** 近景雪花占比，用于强化大雪 / 暴雪层次 */
+  foregroundRatio: number;  // 默认 0
+  /** 近景雪花尺寸系数 */
+  foregroundSizeMultiplier: number;  // 默认 1.4
+  /** 近景雪花速度系数 */
+  foregroundSpeedMultiplier: number; // 默认 1.25
+  /** 是否根据视口面积补偿雪花数量 */
+  scaleCountWithViewport: boolean;   // 默认 true
+}
+
+interface SnowPixel {
+  x: number;
+  y: number;
+  size: number;
+  opacity: number;
+  color: string;
 }
 
 export const createSnowEffect = (
   canvas: HTMLCanvasElement,
   userOptions: Partial<SnowOptions> = {}
-) => {
+): WeatherEffectController<SnowOptions> => {
   /* ---------- 默认参数 ---------- */
   const options: SnowOptions = {
     flakeCount: 150,
@@ -27,101 +45,106 @@ export const createSnowEffect = (
     minSpeed: 0.5,
     maxSpeed: 2,
     swirl: 1.5,
+    foregroundRatio: 0,
+    foregroundSizeMultiplier: 1.4,
+    foregroundSpeedMultiplier: 1.25,
+    scaleCountWithViewport: true,
     ...userOptions,
   }
 
   /* ---------- 基本变量 ---------- */
-  const ctx = canvas.getContext('2d')!
+  const context = canvas.getContext('2d')
+  if (!context) {
+    throw new Error('无法创建雪天动画上下文')
+  }
+  const ctx = context
+  ctx.imageSmoothingEnabled = false
+  let canvasSize: CanvasSize = {
+    width: window.innerWidth,
+    height: window.innerHeight,
+    dpr: 1
+  }
   let flakes: Snowflake[] = []
-  let rafId = 0
-  let running = true
 
   /* ---------- 雪花类 ---------- */
   class Snowflake {
     x = 0
     y = 0
-    r = 0           // 半径
-    speed = 0       // 下落速度
-    phase = 0       // 用于左右摆动
-    fluffParts: Array<{x: number, y: number, size: number, opacity: number}> = []
+    size = 0
+    speed = 0
+    phase = 0
+    swaySpeed = 0
+    opacity = 0
+    isForeground = false
+    pixels: SnowPixel[] = []
 
     constructor(spawnRandomY = false) {
       this.reset(spawnRandomY)
     }
 
     reset(randomY = false) {
-      this.r = rand(options.minSize, options.maxSize)
-      this.x = Math.random() * canvas.width
-      this.y = randomY ? Math.random() * canvas.height : -this.r * 2
-      this.speed = rand(options.minSpeed, options.maxSpeed)
+      this.isForeground = Math.random() < options.foregroundRatio
+      const sizeMultiplier = this.isForeground ? options.foregroundSizeMultiplier : 1
+      const speedMultiplier = this.isForeground ? options.foregroundSpeedMultiplier : 1
+
+      this.size = Math.max(1, Math.round(rand(options.minSize, options.maxSize) * sizeMultiplier))
+      this.x = Math.random() * canvasSize.width
+      this.y = randomY ? Math.random() * canvasSize.height : -this.size * 3
+      this.speed = rand(options.minSpeed, options.maxSpeed) * speedMultiplier
       this.phase = Math.random() * Math.PI * 2
-      this.generateFluffParts()
+      this.swaySpeed = this.isForeground ? rand(0.002, 0.006) : rand(0.003, 0.008)
+      this.opacity = Math.min(1, rand(0.5, 0.92) + ( this.isForeground ? 0.08 : 0 ))
+      this.generatePixels()
     }
 
-    generateFluffParts() {
-      this.fluffParts = []
-      const partCount = Math.floor(this.r * 0.8) + 3
+    addPixel(x: number, y: number, size: number, opacity: number, color = '#ffffff') {
+      this.pixels.push({x, y, size, opacity, color})
+    }
 
-      for (let i = 0; i < partCount; i++) {
-        const angle = Math.random() * Math.PI * 2
-        const distance = Math.random() * this.r * 0.6
-        const partSize = Math.random() * this.r * 0.4 + this.r * 0.2
+    generatePixels() {
+      this.pixels = []
+      const unit = this.getPixelUnit()
 
-        this.fluffParts.push({
-          x: Math.cos(angle) * distance,
-          y: Math.sin(angle) * distance,
-          size: partSize,
-          opacity: Math.random() * 0.6 + 0.2
-        })
+      this.addPixel(0, 0, unit, 1)
+
+      if (this.size >= 3 && Math.random() > 0.58) {
+        this.addPixel(unit, unit, 1, 0.35, '#dff4ff')
+      }
+
+      if (this.isForeground && this.size >= 4 && Math.random() > 0.45) {
+        this.addPixel(0, unit, 1, 0.32, '#eefaff')
       }
     }
 
-    update() {
-      this.y += this.speed
-      // 左右轻微摆动 + 风力
-      this.x += Math.sin(this.phase + this.y * 0.01) * options.swirl + options.windForce
+    getPixelUnit() {
+      if (this.isForeground) {
+        if (this.size >= 7) {
+          return 3
+        }
+        return this.size >= 4 ? 2 : 1
+      }
+      return this.size >= 5 ? 2 : 1
+    }
 
-      // 边界检测
-      if (this.y - this.r > canvas.height || this.x + this.r < 0 || this.x - this.r > canvas.width) {
+    update(delta: number) {
+      this.y += this.speed * delta
+      this.x += ( Math.sin(this.phase + this.y * this.swaySpeed) * options.swirl * 0.08 + options.windForce ) * delta
+
+      const boundary = this.size * 3
+      if (this.y - boundary > canvasSize.height || this.x + boundary < 0 || this.x - boundary > canvasSize.width) {
         this.reset()
       }
     }
 
     draw() {
       ctx.save()
-      ctx.translate(this.x, this.y)
-
-      // 绘制棉絮的各个小团（使用简化渲染减少对象创建）
-      this.fluffParts.forEach(part => {
-        const currentSize = part.size
-        const currentOpacity = part.opacity * 0.7
-
-        // 内层：高亮核心
-        ctx.globalAlpha = currentOpacity
-        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
-        ctx.beginPath()
-        ctx.arc(part.x, part.y, currentSize * 0.4, 0, Math.PI * 2)
-        ctx.fill()
-
-        // 外层：柔和边缘
-        ctx.globalAlpha = currentOpacity * 0.4
-        ctx.fillStyle = 'rgba(255, 255, 255, 1)'
-        ctx.beginPath()
-        ctx.arc(part.x, part.y, currentSize, 0, Math.PI * 2)
-        ctx.fill()
+      const baseX = Math.round(this.x)
+      const baseY = Math.round(this.y)
+      this.pixels.forEach(pixel => {
+        ctx.globalAlpha = this.opacity * pixel.opacity
+        ctx.fillStyle = pixel.color
+        ctx.fillRect(baseX + pixel.x, baseY + pixel.y, pixel.size, pixel.size)
       })
-
-      // 主体光晕（保留渐变以获得柔和边缘）
-      const mainGradient = ctx.createRadialGradient(0, 0, 0, 0, 0, this.r * 1.5)
-      mainGradient.addColorStop(0, `rgba(255, 255, 255, 0.2)`)
-      mainGradient.addColorStop(0.6, `rgba(255, 255, 255, 0.05)`)
-      mainGradient.addColorStop(1, 'rgba(255, 255, 255, 0)')
-
-      ctx.fillStyle = mainGradient
-      ctx.beginPath()
-      ctx.arc(0, 0, this.r * 1.5, 0, Math.PI * 2)
-      ctx.fill()
-
       ctx.restore()
     }
   }
@@ -130,12 +153,22 @@ export const createSnowEffect = (
   const rand = (min: number, max: number) => Math.random() * ( max - min ) + min
 
   /* ---------- 初始化 ---------- */
-  ctx.fillStyle = 'rgba(255,255,255,0.9)' // 雪花颜色
-  resizeCanvas()
   initFlakes()
-  loop()
-
-  window.addEventListener('resize', resizeCanvas)
+  const canvasLoop = createCanvasLoop(canvas, {
+    autoStart: false,
+    onResize: (_, size) => {
+      canvasSize = size
+      ctx.imageSmoothingEnabled = false
+      clampFlakeCount()
+    },
+    onFrame: (_, __, frame) => {
+      flakes.forEach(f => {
+        f.update(frame.delta)
+        f.draw()
+      })
+    }
+  })
+  canvasLoop.start()
 
   /* ---------- 公开 API ---------- */
   return {
@@ -143,21 +176,10 @@ export const createSnowEffect = (
       Object.assign(options, newOpts)
       if (newOpts.flakeCount !== undefined) clampFlakeCount()
     },
-    pause() {
-      if (running) {
-        running = false
-        cancelAnimationFrame(rafId)
-      }
-    },
-    start() {
-      if (!running) {
-        running = true
-        loop()
-      }
-    },
+    pause: canvasLoop.pause,
+    start: canvasLoop.start,
     destroy() {
-      this.pause()
-      window.removeEventListener('resize', resizeCanvas)
+      canvasLoop.destroy()
       flakes = []
     },
   }
@@ -165,33 +187,33 @@ export const createSnowEffect = (
   /* ---------- 内部方法 ---------- */
   function initFlakes() {
     flakes = []
-    for (let i = 0; i < options.flakeCount; i++) {
+    const targetCount = getTargetFlakeCount()
+    for (let i = 0; i < targetCount; i++) {
       flakes.push(new Snowflake(true))
     }
   }
 
   function clampFlakeCount() {
-    if (flakes.length < options.flakeCount) {
-      for (let i = flakes.length; i < options.flakeCount; i++) flakes.push(new Snowflake())
-    } else if (flakes.length > options.flakeCount) {
-      flakes.length = options.flakeCount
+    const targetCount = getTargetFlakeCount()
+    if (flakes.length < targetCount) {
+      for (let i = flakes.length; i < targetCount; i++) flakes.push(new Snowflake())
+    } else if (flakes.length > targetCount) {
+      flakes.length = targetCount
     }
   }
 
-  function resizeCanvas() {
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
+  function getTargetFlakeCount() {
+    if (!options.scaleCountWithViewport) {
+      return options.flakeCount
+    }
+
+    return Math.round(options.flakeCount * getViewportDensityScale())
   }
 
-  function loop() {
-    if (!running) return
-    rafId = requestAnimationFrame(loop)
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-    flakes.forEach(f => {
-      f.update()
-      f.draw()
-    })
+  function getViewportDensityScale() {
+    const baseArea = 1440 * 900
+    const areaScale = canvasSize.width * canvasSize.height / baseArea
+    return Math.min(Math.max(areaScale, 0.9), 1.75)
   }
+
 }
