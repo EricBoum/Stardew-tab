@@ -173,5 +173,27 @@
     "900": "热",
     "901": "冷",
     "999": "未知"
+  },
+  "iconLibrary": {
+    "title": "图标库",
+    "chooseIcon": "选择图标",
+    "changeIcon": "更换图标",
+    "selected": "已选",
+    "searchPlaceholder": "搜索图标",
+    "all": "全部",
+    "back": "返回",
+    "noIcons": "暂无图标",
+    "category": {
+      "animalProducts": "动物产品",
+      "artifacts": "古物",
+      "crops": "作物",
+      "fish": "鱼类",
+      "menuIcons": "菜单图标",
+      "minerals": "矿物",
+      "resources": "资源",
+      "seeds": "种子",
+      "specialItems": "特殊物品",
+      "tools": "工具"
+    }
   }
 }

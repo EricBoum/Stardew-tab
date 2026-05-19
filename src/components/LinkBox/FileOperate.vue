@@ -82,6 +82,8 @@ const downLoad = async () => {
           name: secItem.name,
           url: secItem.url,
           logo: secItem.logo,
+          iconSource: secItem.iconSource,
+          builtinIconKey: secItem.builtinIconKey,
           desc: secItem.desc,
           type: secItem.type,
           bgColor: secItem.bgColor,

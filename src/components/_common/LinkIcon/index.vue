@@ -12,6 +12,7 @@ import { onBeforeUnmount, ref, watch } from 'vue'
 import { type LINK_ITEM_TYPE } from '@/libs/const/type.ts'
 import { SINGLE_LINK_TEXT_LENGTH } from '@/libs/const'
 import { getIconObjectUrl } from '@/libs/db/iconRepository'
+import { BUILTIN_ICON_MAP } from '@/libs/const/builtinIcons'
 
 const props = defineProps<{
   detail: LINK_ITEM_TYPE
@@ -36,10 +37,15 @@ const resolveIcon = async () => {
     }
   }
 
+  if (props.detail.builtinIconKey) {
+    iconSrc.value = BUILTIN_ICON_MAP.get(props.detail.builtinIconKey)?.src || ''
+    return
+  }
+
   iconSrc.value = props.detail.logo || ''
 }
 
-watch(() => [props.detail.iconId, props.detail.logo, props.detail.type, props.detail.name], resolveIcon, { immediate: true })
+watch(() => [props.detail.iconId, props.detail.builtinIconKey, props.detail.logo, props.detail.type, props.detail.name], resolveIcon, { immediate: true })
 
 onBeforeUnmount(() => {
   if (currentObjectUrl) {

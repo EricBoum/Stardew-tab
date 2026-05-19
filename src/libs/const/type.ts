@@ -5,7 +5,8 @@ export interface LINK_ITEM_TYPE {
   url: string;
   logo: string;
   iconId?: string;
-  iconSource?: 'favicon' | 'text' | 'upload';
+  builtinIconKey?: string;
+  iconSource?: 'favicon' | 'text' | 'upload' | 'builtin';
   desc?: string;
   type: 'img' | 'text';
   bgColor?: string;

@@ -173,5 +173,27 @@
     "900": "Жарко",
     "901": "Холодно",
     "999": "Неизвестно"
+  },
+  "iconLibrary": {
+    "title": "Icon Library",
+    "chooseIcon": "Choose Icon",
+    "changeIcon": "Change Icon",
+    "selected": "Selected",
+    "searchPlaceholder": "Search icons",
+    "all": "All",
+    "back": "Back",
+    "noIcons": "No icons",
+    "category": {
+      "animalProducts": "Animal Products",
+      "artifacts": "Artifacts",
+      "crops": "Crops",
+      "fish": "Fish",
+      "menuIcons": "Menu Icons",
+      "minerals": "Minerals",
+      "resources": "Resources",
+      "seeds": "Seeds",
+      "specialItems": "Special Items",
+      "tools": "Tools"
+    }
   }
 }

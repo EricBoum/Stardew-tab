@@ -21,15 +21,15 @@
       <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
     </div>
     <div>
-      <div class="flex">
-        <label class="mr-5 block pointer text-[16px] font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#ffffff]': 'text-[#ffffffb0]']" v-for="item in ICON_TYPE_LIST" :key="item.source" @click="changeIconType(item)">
+      <div class="flex flex-wrap gap-x-5">
+        <label class="block pointer text-[16px] font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#ffffff]': 'text-[#ffffffb0]']" v-for="item in ICON_TYPE_LIST" :key="item.source" @click="changeIconType(item)">
           {{ item.label }}
         </label>
       </div>
       <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
         <div class="w-[60px] h-[60px] mr-3 flex items-center justify-center icon-preview">
           <template v-if="currentIconSource !== 'text'">
-            <LinkIcon v-if="formData.logo || formData.iconId" :detail="formData" />
+            <LinkIcon v-if="formData.logo || formData.iconId || formData.builtinIconKey" :detail="formData" />
             <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -51,6 +51,11 @@
               {{ $t('common.clear') }}
             </button>
           </div>
+          <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'builtin'">
+            <p v-if="selectedBuiltinIcon" class="w-full text-[12px] leading-[16px] text-[#7B312A]">
+              {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIcon.name }}
+            </p>
+          </div>
           <div v-else class="flex">
             <div class="flex items-center text-[12px]">
               {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
@@ -62,6 +67,14 @@
         </div>
       </div>
       <StardewInput class="mt-[10px]" v-if="currentIconSource === 'favicon'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
+      <IconLibraryPicker
+        v-if="currentIconSource === 'builtin'"
+        class="mt-[10px]"
+        compact
+        :selected-key="formData.builtinIconKey"
+        max-height="220px"
+        @select="selectBuiltinIcon"
+      />
     </div>
     <div class="flex flex-col items-center justify-center space-x-4">
       <span :class="[showHint? 'opacity-100': 'opacity-0']" class="h-[20px] my-[3px] text-[#ffffff] text-[12px]">{{ $t('message.categoryFull') }}</span>
@@ -75,6 +88,7 @@
 <script setup lang="ts">
 import StardewInput from '@/components/_components/StardewInput/index.vue'
 import StardewSelect from '@/components/_components/StardewSelect/index.vue'
+import IconLibraryPicker from '@/components/_components/IconLibraryPicker/index.vue'
 import LinkIcon from '@/components/_common/LinkIcon/index.vue'
 import { computed, onMounted, ref } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
@@ -82,10 +96,12 @@ import { getLinkData, setLinkData, getCommonLinkData, setCommonLinkData } from '
 import { MAX_COMMON_NUM, MAX_CURRENT_NUM } from '@/libs/const/index.ts'
 import { useI18n } from 'vue-i18n'
 import { resolveFavicon } from '@/libs/favicon'
+import { BUILTIN_ICON_MAP, type BuiltinIcon } from '@/libs/const/builtinIcons'
 
 const { t: $t } = useI18n()
 
-type IconSource = 'favicon' | 'text'
+type IconSource = 'favicon' | 'text' | 'builtin'
+let faviconRequestId = 0
 
 interface ICON_SOURCE {
   source: IconSource,
@@ -108,6 +124,10 @@ const ICON_TYPE_LIST = computed<ICON_SOURCE[]>(() => [
   {
     source: 'text',
     label: $t('form.textIcon')
+  },
+  {
+    source: 'builtin',
+    label: $t('iconLibrary.title')
   }
 ])
 const formData = ref<LINK_ITEM_TYPE>({
@@ -116,6 +136,7 @@ const formData = ref<LINK_ITEM_TYPE>({
   name: '',
   url: '',
   logo: '',
+  builtinIconKey: '',
   iconSource: 'favicon',
   desc: '',
   type: 'img',
@@ -126,7 +147,8 @@ const typeOptions = ref<{ id: string; name: string; list: any }[]>([])
 const showMask = ref<boolean>(false) // 是否展示提交成功弹窗
 const showHint = ref<boolean>(false) // 是否展示提示信息
 const isFetchingIcon = ref<boolean>(false)
-const currentIconSource = computed<IconSource>(() => formData.value.iconSource === 'text' ? 'text' : 'favicon')
+const currentIconSource = computed<IconSource>(() => formData.value.iconSource === 'text' ? 'text' : (formData.value.iconSource === 'builtin' ? 'builtin' : 'favicon'))
+const selectedBuiltinIcon = computed(() => formData.value.builtinIconKey ? BUILTIN_ICON_MAP.get(formData.value.builtinIconKey) : undefined)
 const getUrlPlaceholder = computed(() => {
   if (currentIconSource.value !== 'text') {
     return $t('form.placeholderIconUrl')
@@ -148,6 +170,7 @@ const init = async () => {
     url: url,
     logo: '',
     iconId: '',
+    builtinIconKey: '',
     iconSource: 'favicon',
     desc: '',
     type: 'img',
@@ -211,37 +234,67 @@ const useDefaultIcon = async (forceRefresh = false): Promise<void> => {
   if (!formData.value.url || !isValidUrl(formData.value.url)) {
     return
   }
+  const requestId = ++faviconRequestId
   isFetchingIcon.value = true
   try {
     const favicon = await resolveFavicon(formData.value.url, {forceRefresh})
+    if (requestId !== faviconRequestId || currentIconSource.value !== 'favicon') {
+      return
+    }
     formData.value.logo = favicon.logo
     formData.value.iconId = favicon.iconId || ''
+    formData.value.builtinIconKey = ''
     formData.value.iconSource = 'favicon'
     formData.value.type = 'img'
   } finally {
-    isFetchingIcon.value = false
+    if (requestId === faviconRequestId) {
+      isFetchingIcon.value = false
+    }
   }
 }
 
 // 尝试获取网站favicon
 const fetchFavicon = async (): Promise<void> => {
-  if (formData.value.url && isValidUrl(formData.value.url)) {
+  if (currentIconSource.value === 'favicon' && formData.value.url && isValidUrl(formData.value.url)) {
     await useDefaultIcon()
   }
 }
 
 // 修改图标类型
 const changeIconType = (item: ICON_SOURCE): void => {
+  if (item.source !== 'favicon') {
+    faviconRequestId += 1
+    isFetchingIcon.value = false
+  }
   formData.value.iconSource = item.source
   formData.value.type = item.source === 'text' ? 'text' : 'img'
   if (item.source === 'favicon') {
     formData.value.iconId = ''
+    formData.value.builtinIconKey = ''
+  }
+  if (item.source === 'builtin') {
+    formData.value.logo = ''
+    formData.value.iconId = ''
+  }
+  if (item.source === 'text') {
+    formData.value.logo = ''
+    formData.value.iconId = ''
+    formData.value.builtinIconKey = ''
   }
 }
 
 const clearIcon = () => {
   formData.value.logo = ''
   formData.value.iconId = ''
+  formData.value.builtinIconKey = ''
+}
+
+const selectBuiltinIcon = (icon: BuiltinIcon) => {
+  formData.value.builtinIconKey = icon.key
+  formData.value.logo = ''
+  formData.value.iconId = ''
+  formData.value.type = 'img'
+  formData.value.iconSource = 'builtin'
 }
 
 onMounted(() => {

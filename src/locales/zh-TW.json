@@ -173,5 +173,27 @@
     "900": "熱",
     "901": "冷",
     "999": "未知"
+  },
+  "iconLibrary": {
+    "title": "圖示庫",
+    "chooseIcon": "選擇圖示",
+    "changeIcon": "更換圖示",
+    "selected": "已選",
+    "searchPlaceholder": "搜尋圖示",
+    "all": "全部",
+    "back": "返回",
+    "noIcons": "暫無圖示",
+    "category": {
+      "animalProducts": "動物產品",
+      "artifacts": "古物",
+      "crops": "作物",
+      "fish": "魚類",
+      "menuIcons": "選單圖示",
+      "minerals": "礦物",
+      "resources": "資源",
+      "seeds": "種子",
+      "specialItems": "特殊物品",
+      "tools": "工具"
+    }
   }
 }

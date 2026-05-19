@@ -26,15 +26,15 @@
           </div>
 
           <div class="mb-5">
-            <div class="flex">
-              <label class="mr-5 block pointer text-sm font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#4e3623]': 'text-[#A19187]']" v-for="item in ICON_SOURCE_LIST" :key="item.source" @click="changeIconSource(item.source)">
+            <div class="flex flex-wrap gap-x-5">
+              <label class="block pointer text-sm font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#4e3623]': 'text-[#A19187]']" v-for="item in ICON_SOURCE_LIST" :key="item.source" @click="changeIconSource(item.source)">
                 {{ $t(item.label) }}
               </label>
             </div>
             <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
               <div class="w-[60px] h-[60px] mr-3 flex items-center justify-center icon-preview">
                 <template v-if="currentIconSource !== 'text'">
-                  <LinkIcon v-if="formData.logo || formData.iconId" :detail="formData" />
+                  <LinkIcon v-if="formData.logo || formData.iconId || formData.builtinIconKey" :detail="formData" />
                   <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -71,6 +71,11 @@
                   </button>
                   <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="handleUpload">
                 </div>
+                <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'builtin'">
+                  <p v-if="selectedBuiltinIcon" class="w-full text-[12px] leading-[16px] text-[#7B312A]">
+                    {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIcon.name }}
+                  </p>
+                </div>
                 <div v-else class="flex">
                   <div class="flex items-center text-[12px]">
                     {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
@@ -82,6 +87,13 @@
               </div>
             </div>
             <StardewInput class="mt-[10px]" v-if="currentIconSource === 'favicon'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
+            <IconLibraryPicker
+              v-if="currentIconSource === 'builtin'"
+              class="mt-[10px]"
+              :selected-key="formData.builtinIconKey"
+              max-height="260px"
+              @select="selectBuiltinIcon"
+            />
           </div>
 
           <div class="flex justify-center space-x-4">
@@ -100,16 +112,18 @@
 import StardewDialog from '@/components/_components/StardewDialog/index.vue'
 import StardewInput from '@/components/_components/StardewInput/index.vue'
 import PixelIconDialog from '@/components/_components/PixelIconDialog/index.vue'
+import IconLibraryPicker from '@/components/_components/IconLibraryPicker/index.vue'
 import LinkIcon from '@/components/_common/LinkIcon/index.vue'
 import { computed, ref, useTemplateRef } from 'vue'
 import type { LINK_ITEM_TYPE } from '@/libs/const/type.ts'
 import { useI18n } from 'vue-i18n'
 import { getIconBlob, saveIconBlob } from '@/libs/db/iconRepository'
 import { resolveFavicon } from '@/libs/favicon'
+import { BUILTIN_ICON_MAP, type BuiltinIcon } from '@/libs/const/builtinIcons'
 
 const { t } = useI18n()
 
-type IconSource = 'favicon' | 'text' | 'upload'
+type IconSource = 'favicon' | 'text' | 'upload' | 'builtin'
 
 interface ICON_SOURCE {
   source: IconSource,
@@ -119,6 +133,7 @@ interface ICON_SOURCE {
 const emit = defineEmits([ 'on-commit' ])
 const PixelIconDialogRef = useTemplateRef('PixelIconDialogRef')
 const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
+let faviconRequestId = 0
 const ICON_SOURCE_LIST: ICON_SOURCE[] = [
   {
     source: 'favicon',
@@ -131,6 +146,10 @@ const ICON_SOURCE_LIST: ICON_SOURCE[] = [
   {
     source: 'upload',
     label: 'pixelIcon.uploadIcon'
+  },
+  {
+    source: 'builtin',
+    label: 'iconLibrary.title'
   }
 ]
 const formData = ref<LINK_ITEM_TYPE>({
@@ -139,6 +158,7 @@ const formData = ref<LINK_ITEM_TYPE>({
   name: '',
   url: '',
   logo: '',
+  builtinIconKey: '',
   iconSource: 'favicon',
   desc: '',
   type: 'img',
@@ -149,6 +169,7 @@ const visible = ref<boolean>(false) // 弹窗显示状态
 const isEdit = ref<boolean>(false) // 是否编辑状态
 const isFetchingIcon = ref<boolean>(false)
 const currentIconSource = computed<IconSource>(() => formData.value.iconSource || (formData.value.type === 'text' ? 'text' : 'favicon'))
+const selectedBuiltinIcon = computed(() => formData.value.builtinIconKey ? BUILTIN_ICON_MAP.get(formData.value.builtinIconKey) : undefined)
 const getUrlPlaceholder = computed(() => {
   if (currentIconSource.value !== 'text') {
     return t('form.placeholderIconUrl')
@@ -158,7 +179,7 @@ const getUrlPlaceholder = computed(() => {
 })
 
 const normalizeLinkIconSource = (item: LINK_ITEM_TYPE): LINK_ITEM_TYPE => {
-  const iconSource = item.iconSource || (item.type === 'text' ? 'text' : (item.iconId && !item.logo ? 'upload' : 'favicon'))
+  const iconSource = item.iconSource || (item.type === 'text' ? 'text' : (item.builtinIconKey ? 'builtin' : (item.iconId && !item.logo ? 'upload' : 'favicon')))
   return {
     ...item,
     iconSource,
@@ -180,6 +201,7 @@ const show = (item?: LINK_ITEM_TYPE) => {
       url: '',
       logo: '',
       iconId: '',
+      builtinIconKey: '',
       iconSource: 'favicon',
       desc: '',
       type: 'img',
@@ -196,6 +218,7 @@ const hide = () => {
 const clearIcon = () => {
   formData.value.logo = ''
   formData.value.iconId = ''
+  formData.value.builtinIconKey = ''
 }
 
 // 校验URL
@@ -228,21 +251,28 @@ const useDefaultIcon = async (forceRefresh = false): Promise<void> => {
   if (!formData.value.url || !isValidUrl(formData.value.url)) {
     return
   }
+  const requestId = ++faviconRequestId
   isFetchingIcon.value = true
   try {
     const favicon = await resolveFavicon(formData.value.url, {forceRefresh})
+    if (requestId !== faviconRequestId || currentIconSource.value !== 'favicon') {
+      return
+    }
     formData.value.logo = favicon.logo
     formData.value.iconId = favicon.iconId || ''
+    formData.value.builtinIconKey = ''
     formData.value.iconSource = 'favicon'
     formData.value.type = 'img'
   } finally {
-    isFetchingIcon.value = false
+    if (requestId === faviconRequestId) {
+      isFetchingIcon.value = false
+    }
   }
 }
 
 // 尝试获取网站favicon
 const fetchFavicon = async (): Promise<void> => {
-  if (formData.value.url && isValidUrl(formData.value.url)) {
+  if (currentIconSource.value === 'favicon' && formData.value.url && isValidUrl(formData.value.url)) {
     await useDefaultIcon()
   }
 }
@@ -250,16 +280,31 @@ const fetchFavicon = async (): Promise<void> => {
 // 修改图标来源
 const changeIconSource = (source: IconSource): void => {
   const previousSource = currentIconSource.value
+  if (source !== 'favicon') {
+    faviconRequestId += 1
+    isFetchingIcon.value = false
+  }
   formData.value.iconSource = source
   formData.value.type = source === 'text' ? 'text' : 'img'
   if (source === 'favicon') {
     formData.value.iconId = ''
+    formData.value.builtinIconKey = ''
   }
   if (source === 'upload') {
     formData.value.logo = ''
+    formData.value.builtinIconKey = ''
     if (previousSource !== 'upload') {
       formData.value.iconId = ''
     }
+  }
+  if (source === 'builtin') {
+    formData.value.logo = ''
+    formData.value.iconId = ''
+  }
+  if (source === 'text') {
+    formData.value.logo = ''
+    formData.value.iconId = ''
+    formData.value.builtinIconKey = ''
   }
 }
 
@@ -277,6 +322,7 @@ const handleUpload = async (event: Event) => {
   formData.value.iconSource = 'upload'
   formData.value.type = 'img'
   formData.value.logo = ''
+  formData.value.builtinIconKey = ''
   formData.value.iconId = await saveIconBlob(file)
 }
 
@@ -293,8 +339,17 @@ const openUploadEditor = async () => {
 const applyPixelIcon = ({iconId}: { iconId: string }) => {
   formData.value.iconId = iconId
   formData.value.logo = ''
+  formData.value.builtinIconKey = ''
   formData.value.type = 'img'
   formData.value.iconSource = 'upload'
+}
+
+const selectBuiltinIcon = (icon: BuiltinIcon) => {
+  formData.value.builtinIconKey = icon.key
+  formData.value.logo = ''
+  formData.value.iconId = ''
+  formData.value.type = 'img'
+  formData.value.iconSource = 'builtin'
 }
 
 defineExpose({
