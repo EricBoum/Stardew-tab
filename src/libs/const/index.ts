@@ -5,6 +5,7 @@ import Spring from '@/assets/image/season/Spring.png'
 import Summer from '@/assets/image/season/Summer.png'
 import Fall from '@/assets/image/season/Fall.png'
 import Winter from '@/assets/image/season/Winter.png'
+import type { WeatherIconKey } from './weatherMap'
 
 export interface SEARCH_ITEM {
   name: string;
@@ -39,11 +40,11 @@ export interface INFORMATION {
   };
   weather: {
     today: {
-      iconKey: 'Sunny' | 'Rainy' | 'Snowy' | 'Stormy' | 'Windy' | 'Default';
+      iconKey: WeatherIconKey;
       weatherKey: string;
     };
     tomorrow: {
-      iconKey: 'Sunny' | 'Rainy' | 'Snowy' | 'Stormy' | 'Windy' | 'Default';
+      iconKey: WeatherIconKey;
       weatherKey: string;
     };
   }
@@ -85,4 +86,4 @@ export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
 
 export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
 
-export const VERSION = '1.3.0' // 版本号
+export const VERSION = '2.0.1' // 版本号

@@ -17,7 +17,7 @@
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
     <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[60px] group">
-      <img class="w-full h-full" :src="getTomorrowWeather" alt="">
+      <img class="w-full h-full" :src="getTomorrowWeather" :alt="getTomorrowWeatherText">
       <StardewTips placement="bottom-end">
         <template #default>
           <SimpleInfo :detail="{title: t('weather.tomorrow'), content: getTomorrowWeatherText}" />
@@ -81,13 +81,13 @@ const weatherImagesTomorrow = import.meta.glob('@/assets/image/weather/*.gif', {
 const getTodayWeather = computed(() => {
   const iconKey = props.information.weather.today.iconKey
   const key = `/src/assets/image/weather/${ iconKey }.png`
-  return weatherImages[key]
+  return weatherImages[key] || weatherImages['/src/assets/image/weather/Default.png']
 })
 // 获取明天天气
 const getTomorrowWeather = computed(() => {
   const iconKey = props.information.weather.tomorrow.iconKey
   const key = `/src/assets/image/weather/${ iconKey }_tm.gif`
-  return weatherImagesTomorrow[key]
+  return weatherImagesTomorrow[key] || weatherImagesTomorrow['/src/assets/image/weather/Default_tm.gif']
 })
 // 获取今天天气文本
 const getTodayWeatherText = computed(() => {
