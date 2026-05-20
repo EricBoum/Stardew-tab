@@ -96,7 +96,14 @@
   "weather": {
     "today": "오늘 날씨",
     "tomorrow": "내일 날씨",
-    "default": "알 수 없음"
+    "default": "알 수 없음",
+    "locationLoading": "위치 가져오는 중",
+    "locationPromptTitle": "날씨를 위해 위치 켜기",
+    "locationPromptContent": "위치 권한을 허용해야 날씨가 표시됩니다.",
+    "locationPromptDeniedContent": "위치 권한이 차단되었습니다. 브라우저 또는 확장 프로그램 권한에서 켠 뒤 다시 시도하세요.",
+    "locationPromptEnable": "허용",
+    "locationPromptLater": "나중에",
+    "locationPromptNever": "숨기기"
   },
   "season": {
     "spring": "봄",
@@ -108,7 +115,13 @@
     "title": "기본 설정",
     "language": "언어",
     "showBottomBar": "하단 바 표시",
-    "showBattery": "배터리 표시"
+    "showBattery": "배터리 표시",
+    "weatherLocation": "날씨 위치",
+    "weatherLocationAction": "위치 허용",
+    "weatherLocationPrivacyTitle": "개인정보",
+    "weatherLocationPrivacy": "위치는 현지 날씨를 가져오는 데만 사용되며 다른 용도로 사용되지 않습니다.",
+    "weatherPermissionAuthorizedShort": "허용됨",
+    "weatherPermissionUnauthorizedShort": "미허용"
   },
   "weatherCode": {
     "100": "맑음",
@@ -175,25 +188,25 @@
     "999": "알 수 없음"
   },
   "iconLibrary": {
-    "title": "Icon Library",
-    "chooseIcon": "Choose Icon",
-    "changeIcon": "Change Icon",
-    "selected": "Selected",
-    "searchPlaceholder": "Search icons",
-    "all": "All",
-    "back": "Back",
-    "noIcons": "No icons",
+    "title": "아이콘 라이브러리",
+    "chooseIcon": "아이콘 선택",
+    "changeIcon": "아이콘 변경",
+    "selected": "선택됨",
+    "searchPlaceholder": "아이콘 검색",
+    "all": "전체",
+    "back": "뒤로",
+    "noIcons": "아이콘 없음",
     "category": {
-      "animalProducts": "Animal Products",
-      "artifacts": "Artifacts",
-      "crops": "Crops",
-      "fish": "Fish",
-      "menuIcons": "Menu Icons",
-      "minerals": "Minerals",
-      "resources": "Resources",
-      "seeds": "Seeds",
-      "specialItems": "Special Items",
-      "tools": "Tools"
+      "animalProducts": "동물 생산품",
+      "artifacts": "유물",
+      "crops": "작물",
+      "fish": "물고기",
+      "menuIcons": "메뉴 아이콘",
+      "minerals": "광물",
+      "resources": "자원",
+      "seeds": "씨앗",
+      "specialItems": "특수 아이템",
+      "tools": "도구"
     }
   }
 }

@@ -96,7 +96,14 @@
   "weather": {
     "today": "Bugünün Havası",
     "tomorrow": "Yarının Havası",
-    "default": "Varsayılan"
+    "default": "Varsayılan",
+    "locationLoading": "Konum alınıyor",
+    "locationPromptTitle": "Hava için konumu aç",
+    "locationPromptContent": "Konum izni verilene kadar hava durumu kapalı kalır.",
+    "locationPromptDeniedContent": "Konum engellendi. Tarayıcı veya uzantı izinlerinden açıp tekrar deneyin.",
+    "locationPromptEnable": "İzin ver",
+    "locationPromptLater": "Sonra",
+    "locationPromptNever": "Gizle"
   },
   "season": {
     "spring": "İlkbahar",
@@ -108,7 +115,13 @@
     "title": "Temel Ayarlar",
     "language": "Dil",
     "showBottomBar": "Alt Çubuğu Göster",
-    "showBattery": "Pil Durumunu Göster"
+    "showBattery": "Pil Durumunu Göster",
+    "weatherLocation": "Hava konumu",
+    "weatherLocationAction": "Konuma izin ver",
+    "weatherLocationPrivacyTitle": "Gizlilik",
+    "weatherLocationPrivacy": "Konum yalnızca yerel hava durumunu almak için kullanılır, başka hiçbir amaçla kullanılmaz.",
+    "weatherPermissionAuthorizedShort": "İzinli",
+    "weatherPermissionUnauthorizedShort": "İzinsiz"
   },
   "weatherCode": {
     "100": "Güneşli",
@@ -175,25 +188,25 @@
     "999": "Bilinmiyor"
   },
   "iconLibrary": {
-    "title": "Icon Library",
-    "chooseIcon": "Choose Icon",
-    "changeIcon": "Change Icon",
-    "selected": "Selected",
-    "searchPlaceholder": "Search icons",
-    "all": "All",
-    "back": "Back",
-    "noIcons": "No icons",
+    "title": "İkon Kitaplığı",
+    "chooseIcon": "İkon seç",
+    "changeIcon": "İkon değiştir",
+    "selected": "Seçili",
+    "searchPlaceholder": "İkon ara",
+    "all": "Tümü",
+    "back": "Geri",
+    "noIcons": "İkon yok",
     "category": {
-      "animalProducts": "Animal Products",
-      "artifacts": "Artifacts",
-      "crops": "Crops",
-      "fish": "Fish",
-      "menuIcons": "Menu Icons",
-      "minerals": "Minerals",
-      "resources": "Resources",
-      "seeds": "Seeds",
-      "specialItems": "Special Items",
-      "tools": "Tools"
+      "animalProducts": "Hayvansal ürünler",
+      "artifacts": "Eserler",
+      "crops": "Mahsuller",
+      "fish": "Balıklar",
+      "menuIcons": "Menü ikonları",
+      "minerals": "Mineraller",
+      "resources": "Kaynaklar",
+      "seeds": "Tohumlar",
+      "specialItems": "Özel eşyalar",
+      "tools": "Araçlar"
     }
   }
 }

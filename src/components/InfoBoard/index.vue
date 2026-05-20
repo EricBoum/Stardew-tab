@@ -27,7 +27,48 @@
     <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px] pointer" @click="handleToSetting">
       <img class="w-full h-full" src="@/assets/image/setting.png" alt="">
     </div>
-    <OperateDialog ref="OperateDialogRef"/>
+    <div
+      v-if="showLocationPrompt"
+      class="absolute top-[190px] right-0 w-[268px] p-3 bg-[#efbd73] text-[#4e3623] shadow-[4px_5px_0_rgba(79,45,24,0.35)] stardew-border stardew-font"
+    >
+      <div class="absolute -top-[10px] right-5 w-4 h-4 border-t-[3px] border-l-[3px] border-[#5f2e16] bg-[#efbd73] rotate-45"></div>
+      <p class="m-0 mb-1.5 text-base leading-5 font-bold">
+        {{ t('weather.locationPromptTitle') }}
+      </p>
+      <p class="m-0 text-[13px] leading-[18px]">
+        {{ getLocationPromptContent }}
+      </p>
+      <div class="grid grid-cols-3 items-stretch gap-1.5 mt-2.5">
+        <button
+          type="button"
+          class="min-w-0 min-h-7 px-1.5 py-[2px] border-2 border-[#6f3a1c] rounded bg-[#a7d86f] text-[#4e3623] text-[11px] leading-[14px] text-center break-words shadow-[inset_-2px_-2px_0_#6e9b43] cursor-pointer hover:bg-[#b8e680] active:translate-y-px active:shadow-[inset_2px_2px_0_#6e9b43] disabled:cursor-default disabled:opacity-75"
+          :disabled="isWeatherLocationDisabled"
+          @click="handleRequestWeatherLocation"
+        >
+          {{ props.weatherLocationLoading ? t('weather.locationLoading') : t('weather.locationPromptEnable') }}
+        </button>
+        <button
+          type="button"
+          class="min-w-0 min-h-7 px-1.5 py-[2px] border-2 border-[#6f3a1c] rounded bg-[#f8d18a] text-[#4e3623] text-[11px] leading-[14px] text-center break-words shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+          @click="handleCloseLocationPrompt"
+        >
+          {{ t('weather.locationPromptLater') }}
+        </button>
+        <button
+          type="button"
+          class="min-w-0 min-h-7 px-1.5 py-[2px] border-2 border-[#6f3a1c] rounded bg-[#f8d18a] text-[#4e3623] text-[11px] leading-[14px] text-center break-words shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+          @click="handleHideLocationPrompt"
+        >
+          {{ t('weather.locationPromptNever') }}
+        </button>
+      </div>
+    </div>
+    <OperateDialog
+      ref="OperateDialogRef"
+      :weather-permission-status="props.weatherPermissionStatus"
+      :weather-location-loading="props.weatherLocationLoading"
+      @request-weather-location="handleRequestWeatherLocation"
+    />
   </div>
 </template>
 
@@ -35,17 +76,35 @@
 import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import OperateDialog from './OperateDialog.vue'
-import { computed, useTemplateRef } from 'vue'
-import { type INFORMATION, type SEASON_ITEM, SEASON, type SEASON_TYPE } from '@/libs/const/index.ts'
+import { computed, onMounted, shallowRef, useTemplateRef } from 'vue'
+import {
+  type INFORMATION,
+  type SEASON_ITEM,
+  SEASON,
+  type SEASON_TYPE,
+  WEATHER_LOCATION_PROMPT_HIDDEN_KEY
+} from '@/libs/const/index.ts'
 import { useI18n } from 'vue-i18n'
+import type { WeatherLocationStatus, WeatherPermissionStatus } from '@/libs/weather'
+import { useStorage } from '@/libs/storage'
 
 const { t } = useI18n()
+const { getStorage, setStorage } = useStorage()
 
 const props = defineProps<{
-  information: INFORMATION
+  information: INFORMATION;
+  weatherLocationStatus: WeatherLocationStatus;
+  weatherPermissionStatus: WeatherPermissionStatus;
+  weatherLocationLoading: boolean;
+}>()
+
+const emit = defineEmits<{
+  requestWeatherLocation: [];
 }>()
 
 const OperateDialogRef = useTemplateRef('OperateDialogRef')
+const locationPromptHidden = shallowRef<boolean>(false)
+const locationPromptClosed = shallowRef<boolean>(false)
 
 // 根据当前时间返回刻度
 const getPointerRotate = computed(() => {
@@ -105,10 +164,50 @@ const getTomorrowWeatherText = computed(() => {
   }
   return t('weather.default')
 })
+// 是否显示定位提示窗
+const showLocationPrompt = computed(() => {
+  return !locationPromptHidden.value &&
+    !locationPromptClosed.value &&
+    props.weatherPermissionStatus !== 'granted' &&
+    !['idle', 'success'].includes(props.weatherLocationStatus)
+})
+
+// 定位提示窗内容
+const getLocationPromptContent = computed(() => {
+  if (props.weatherLocationStatus === 'permission-denied') {
+    return t('weather.locationPromptDeniedContent')
+  }
+  return t('weather.locationPromptContent')
+})
+
+const isWeatherLocationDisabled = computed(() => {
+  return props.weatherLocationLoading || props.weatherPermissionStatus !== 'prompt'
+})
+
 // 打开设置弹窗
 const handleToSetting = () => {
   OperateDialogRef.value?.show()
 }
+// 请求浏览器定位授权
+const handleRequestWeatherLocation = () => {
+  if (isWeatherLocationDisabled.value) {
+    return
+  }
+  emit('requestWeatherLocation')
+}
+// 关闭本次提示
+const handleCloseLocationPrompt = () => {
+  locationPromptClosed.value = true
+}
+// 不再自动显示提示
+const handleHideLocationPrompt = async () => {
+  locationPromptHidden.value = true
+  await setStorage(WEATHER_LOCATION_PROMPT_HIDDEN_KEY, true)
+}
+
+onMounted(async () => {
+  locationPromptHidden.value = await getStorage<boolean>(WEATHER_LOCATION_PROMPT_HIDDEN_KEY) || false
+})
 </script>
 
 <style lang="less" scoped>

@@ -85,5 +85,6 @@ export const LINK_LIST_KEY: string = 'LINK_LIST' // 快捷链接缓存key
 export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
 
 export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
+export const WEATHER_LOCATION_PROMPT_HIDDEN_KEY = 'WEATHER_LOCATION_PROMPT_HIDDEN'
 
 export const VERSION = '2.1.1' // 版本号

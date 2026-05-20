@@ -96,7 +96,14 @@
   "weather": {
     "today": "今天天氣",
     "tomorrow": "明天天氣",
-    "default": "預設"
+    "default": "預設",
+    "locationLoading": "正在取得定位",
+    "locationPromptTitle": "開啟定位取得天氣",
+    "locationPromptContent": "授權定位後才能取得天氣。",
+    "locationPromptDeniedContent": "定位權限已關閉，請在瀏覽器或擴充功能權限中開啟後重試。",
+    "locationPromptEnable": "授權",
+    "locationPromptLater": "稍後",
+    "locationPromptNever": "不提示"
   },
   "season": {
     "spring": "春天",
@@ -108,7 +115,13 @@
     "title": "基礎設定",
     "language": "語言",
     "showBottomBar": "是否顯示底部欄",
-    "showBattery": "是否顯示電量"
+    "showBattery": "是否顯示電量",
+    "weatherLocation": "天氣定位",
+    "weatherLocationAction": "取得定位授權",
+    "weatherLocationPrivacyTitle": "隱私說明",
+    "weatherLocationPrivacy": "定位僅用於取得本地天氣，不會作其他用途。",
+    "weatherPermissionAuthorizedShort": "已授權",
+    "weatherPermissionUnauthorizedShort": "未授權"
   },
   "weatherCode": {
     "100": "晴",

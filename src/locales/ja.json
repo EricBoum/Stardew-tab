@@ -96,7 +96,14 @@
   "weather": {
     "today": "今日の天気",
     "tomorrow": "明日の天気",
-    "default": "不明"
+    "default": "不明",
+    "locationLoading": "位置情報を取得中",
+    "locationPromptTitle": "位置情報で天気を表示",
+    "locationPromptContent": "位置情報を許可するまで天気は表示されません。",
+    "locationPromptDeniedContent": "位置情報がブロックされています。ブラウザまたは拡張機能の権限で有効にしてから再試行してください。",
+    "locationPromptEnable": "許可",
+    "locationPromptLater": "後で",
+    "locationPromptNever": "非表示"
   },
   "season": {
     "spring": "春",
@@ -108,7 +115,13 @@
     "title": "基本設定",
     "language": "言語",
     "showBottomBar": "下部バーを表示",
-    "showBattery": "バッテリーを表示"
+    "showBattery": "バッテリーを表示",
+    "weatherLocation": "天気の位置情報",
+    "weatherLocationAction": "位置情報を許可",
+    "weatherLocationPrivacyTitle": "プライバシー",
+    "weatherLocationPrivacy": "位置情報は地域の天気取得にのみ使用し、他の目的には使用しません。",
+    "weatherPermissionAuthorizedShort": "許可済み",
+    "weatherPermissionUnauthorizedShort": "未許可"
   },
   "weatherCode": {
     "100": "晴れ",
@@ -175,25 +188,25 @@
     "999": "不明"
   },
   "iconLibrary": {
-    "title": "Icon Library",
-    "chooseIcon": "Choose Icon",
-    "changeIcon": "Change Icon",
-    "selected": "Selected",
-    "searchPlaceholder": "Search icons",
-    "all": "All",
-    "back": "Back",
-    "noIcons": "No icons",
+    "title": "アイコンライブラリ",
+    "chooseIcon": "アイコンを選択",
+    "changeIcon": "アイコンを変更",
+    "selected": "選択中",
+    "searchPlaceholder": "アイコンを検索",
+    "all": "すべて",
+    "back": "戻る",
+    "noIcons": "アイコンなし",
     "category": {
-      "animalProducts": "Animal Products",
-      "artifacts": "Artifacts",
-      "crops": "Crops",
-      "fish": "Fish",
-      "menuIcons": "Menu Icons",
-      "minerals": "Minerals",
-      "resources": "Resources",
-      "seeds": "Seeds",
-      "specialItems": "Special Items",
-      "tools": "Tools"
+      "animalProducts": "動物製品",
+      "artifacts": "発掘品",
+      "crops": "作物",
+      "fish": "魚",
+      "menuIcons": "メニューアイコン",
+      "minerals": "鉱物",
+      "resources": "資源",
+      "seeds": "種",
+      "specialItems": "特別なアイテム",
+      "tools": "道具"
     }
   }
 }

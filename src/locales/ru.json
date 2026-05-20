@@ -96,7 +96,14 @@
   "weather": {
     "today": "Сегодняшняя погода",
     "tomorrow": "Завтрашняя погода",
-    "default": "Неизвестно"
+    "default": "Неизвестно",
+    "locationLoading": "Получение геолокации",
+    "locationPromptTitle": "Включите геолокацию для погоды",
+    "locationPromptContent": "Погода будет отключена, пока вы не разрешите геолокацию.",
+    "locationPromptDeniedContent": "Геолокация заблокирована. Включите её в браузере или разрешениях расширения и повторите попытку.",
+    "locationPromptEnable": "Разрешить",
+    "locationPromptLater": "Позже",
+    "locationPromptNever": "Скрыть"
   },
   "season": {
     "spring": "Весна",
@@ -108,7 +115,13 @@
     "title": "Основные настройки",
     "language": "Язык",
     "showBottomBar": "Показать нижнюю панель",
-    "showBattery": "Показать батарею"
+    "showBattery": "Показать батарею",
+    "weatherLocation": "Геолокация погоды",
+    "weatherLocationAction": "Разрешить геолокацию",
+    "weatherLocationPrivacyTitle": "Конфиденциальность",
+    "weatherLocationPrivacy": "Геолокация используется только для местной погоды и ни для чего другого.",
+    "weatherPermissionAuthorizedShort": "Разрешено",
+    "weatherPermissionUnauthorizedShort": "Нет доступа"
   },
   "weatherCode": {
     "100": "Ясно",
@@ -175,25 +188,25 @@
     "999": "Неизвестно"
   },
   "iconLibrary": {
-    "title": "Icon Library",
-    "chooseIcon": "Choose Icon",
-    "changeIcon": "Change Icon",
-    "selected": "Selected",
-    "searchPlaceholder": "Search icons",
-    "all": "All",
-    "back": "Back",
-    "noIcons": "No icons",
+    "title": "Библиотека иконок",
+    "chooseIcon": "Выбрать иконку",
+    "changeIcon": "Сменить иконку",
+    "selected": "Выбрано",
+    "searchPlaceholder": "Поиск иконок",
+    "all": "Все",
+    "back": "Назад",
+    "noIcons": "Нет иконок",
     "category": {
-      "animalProducts": "Animal Products",
-      "artifacts": "Artifacts",
-      "crops": "Crops",
-      "fish": "Fish",
-      "menuIcons": "Menu Icons",
-      "minerals": "Minerals",
-      "resources": "Resources",
-      "seeds": "Seeds",
-      "specialItems": "Special Items",
-      "tools": "Tools"
+      "animalProducts": "Животные продукты",
+      "artifacts": "Артефакты",
+      "crops": "Культуры",
+      "fish": "Рыба",
+      "menuIcons": "Иконки меню",
+      "minerals": "Минералы",
+      "resources": "Ресурсы",
+      "seeds": "Семена",
+      "specialItems": "Особые предметы",
+      "tools": "Инструменты"
     }
   }
 }

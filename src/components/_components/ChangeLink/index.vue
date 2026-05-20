@@ -75,7 +75,7 @@
                     </div>
                     <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'builtin'">
                       <p v-if="selectedBuiltinIcon" class="w-full text-[12px] leading-[16px] text-[#7B312A]">
-                        {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIcon.name }}
+                        {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIconName }}
                       </p>
                     </div>
                     <div v-else class="flex">
@@ -126,8 +126,9 @@ import { useI18n } from 'vue-i18n'
 import { getIconBlob, saveIconBlob } from '@/libs/db/iconRepository'
 import { resolveFavicon } from '@/libs/favicon'
 import { BUILTIN_ICON_MAP, type BuiltinIcon } from '@/libs/const/builtinIcons'
+import { getBuiltinIconDisplayName } from '@/libs/iconLibraryI18n'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 type IconSource = 'favicon' | 'text' | 'upload' | 'builtin'
 
@@ -176,6 +177,7 @@ const isEdit = ref<boolean>(false) // 是否编辑状态
 const isFetchingIcon = ref<boolean>(false)
 const currentIconSource = computed<IconSource>(() => formData.value.iconSource || (formData.value.type === 'text' ? 'text' : 'favicon'))
 const selectedBuiltinIcon = computed(() => formData.value.builtinIconKey ? BUILTIN_ICON_MAP.get(formData.value.builtinIconKey) : undefined)
+const selectedBuiltinIconName = computed(() => selectedBuiltinIcon.value ? getBuiltinIconDisplayName(selectedBuiltinIcon.value, t, te) : '')
 const getUrlPlaceholder = computed(() => {
   if (currentIconSource.value !== 'text') {
     return t('form.placeholderIconUrl')

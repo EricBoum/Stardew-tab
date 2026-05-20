@@ -96,7 +96,14 @@
   "weather": {
     "today": "Today's Weather",
     "tomorrow": "Tomorrow's Weather",
-    "default": "Default"
+    "default": "Default",
+    "locationLoading": "Getting location",
+    "locationPromptTitle": "Enable location for weather",
+    "locationPromptContent": "Weather is off until location permission is allowed.",
+    "locationPromptDeniedContent": "Location is blocked. Enable it in browser or extension permissions, then try again.",
+    "locationPromptEnable": "Allow",
+    "locationPromptLater": "Later",
+    "locationPromptNever": "Hide"
   },
   "season": {
     "spring": "Spring",
@@ -108,7 +115,13 @@
     "title": "Basic Settings",
     "language": "Language",
     "showBottomBar": "Show Bottom Bar",
-    "showBattery": "Show Battery"
+    "showBattery": "Show Battery",
+    "weatherLocation": "Weather Location",
+    "weatherLocationAction": "Allow Location",
+    "weatherLocationPrivacyTitle": "Privacy",
+    "weatherLocationPrivacy": "Location is used only to fetch local weather and never for anything else.",
+    "weatherPermissionAuthorizedShort": "Allowed",
+    "weatherPermissionUnauthorizedShort": "Not Allowed"
   },
   "weatherCode": {
     "100": "Sunny",

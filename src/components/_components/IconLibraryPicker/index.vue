@@ -53,6 +53,7 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { BUILTIN_ICON_CATEGORIES, BUILTIN_ICONS, type BuiltinIcon } from '@/libs/const/builtinIcons'
+import { getBuiltinIconDisplayName } from '@/libs/iconLibraryI18n'
 
 withDefaults(defineProps<{
   selectedKey?: string
@@ -75,7 +76,7 @@ const emit = defineEmits<{
   (event: 'close'): void
 }>()
 
-const { t: $t } = useI18n()
+const { t: $t, te } = useI18n()
 
 const CATEGORY_LABEL_KEYS: Record<string, string> = {
   'animal-products': 'iconLibrary.category.animalProducts',
@@ -103,11 +104,23 @@ const categories = computed(() => [
 
 const filteredIcons = computed(() => {
   const keyword = searchText.value.trim().toLowerCase()
-  return BUILTIN_ICONS.filter((icon) => {
+  return BUILTIN_ICONS.reduce<BuiltinIcon[]>((icons, icon) => {
     const matchesCategory = activeCategory.value === 'all' || icon.category === activeCategory.value
-    const matchesSearch = !keyword || icon.name.toLowerCase().includes(keyword) || icon.key.toLowerCase().includes(keyword)
-    return matchesCategory && matchesSearch
-  })
+    const displayName = getBuiltinIconDisplayName(icon, $t, te)
+    const matchesSearch = !keyword ||
+      displayName.toLowerCase().includes(keyword) ||
+      icon.name.toLowerCase().includes(keyword) ||
+      icon.key.toLowerCase().includes(keyword)
+
+    if (matchesCategory && matchesSearch) {
+      icons.push({
+        ...icon,
+        name: displayName
+      })
+    }
+
+    return icons
+  }, [])
 })
 </script>
 

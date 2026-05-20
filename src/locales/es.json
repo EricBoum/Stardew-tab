@@ -96,7 +96,14 @@
   "weather": {
     "today": "Clima de hoy",
     "tomorrow": "Clima de mañana",
-    "default": "Predeterminado"
+    "default": "Predeterminado",
+    "locationLoading": "Obteniendo ubicación",
+    "locationPromptTitle": "Activa ubicación para el clima",
+    "locationPromptContent": "El clima estará desactivado hasta permitir la ubicación.",
+    "locationPromptDeniedContent": "La ubicación está bloqueada. Actívala en el navegador o la extensión e inténtalo de nuevo.",
+    "locationPromptEnable": "Permitir",
+    "locationPromptLater": "Luego",
+    "locationPromptNever": "Ocultar"
   },
   "season": {
     "spring": "Primavera",
@@ -108,7 +115,13 @@
     "title": "Configuraciones básicas",
     "language": "Idioma",
     "showBottomBar": "Mostrar barra inferior",
-    "showBattery": "Mostrar batería"
+    "showBattery": "Mostrar batería",
+    "weatherLocation": "Ubicación del clima",
+    "weatherLocationAction": "Permitir ubicación",
+    "weatherLocationPrivacyTitle": "Privacidad",
+    "weatherLocationPrivacy": "La ubicación solo se usa para obtener el clima local y no para otros fines.",
+    "weatherPermissionAuthorizedShort": "Autorizado",
+    "weatherPermissionUnauthorizedShort": "Sin autorizar"
   },
   "weatherCode": {
     "100": "Soleado",
@@ -175,25 +188,25 @@
     "999": "Desconocido"
   },
   "iconLibrary": {
-    "title": "Icon Library",
-    "chooseIcon": "Choose Icon",
-    "changeIcon": "Change Icon",
-    "selected": "Selected",
-    "searchPlaceholder": "Search icons",
-    "all": "All",
-    "back": "Back",
-    "noIcons": "No icons",
+    "title": "Biblioteca de iconos",
+    "chooseIcon": "Elegir icono",
+    "changeIcon": "Cambiar icono",
+    "selected": "Seleccionado",
+    "searchPlaceholder": "Buscar iconos",
+    "all": "Todo",
+    "back": "Atrás",
+    "noIcons": "Sin iconos",
     "category": {
-      "animalProducts": "Animal Products",
-      "artifacts": "Artifacts",
-      "crops": "Crops",
-      "fish": "Fish",
-      "menuIcons": "Menu Icons",
-      "minerals": "Minerals",
-      "resources": "Resources",
-      "seeds": "Seeds",
-      "specialItems": "Special Items",
-      "tools": "Tools"
+      "animalProducts": "Productos animales",
+      "artifacts": "Artefactos",
+      "crops": "Cultivos",
+      "fish": "Peces",
+      "menuIcons": "Iconos de menú",
+      "minerals": "Minerales",
+      "resources": "Recursos",
+      "seeds": "Semillas",
+      "specialItems": "Objetos especiales",
+      "tools": "Herramientas"
     }
   }
 }

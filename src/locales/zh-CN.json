@@ -96,7 +96,14 @@
   "weather": {
     "today": "今天天气",
     "tomorrow": "明天天气",
-    "default": "默认"
+    "default": "默认",
+    "locationLoading": "正在获取定位",
+    "locationPromptTitle": "开启定位获取天气",
+    "locationPromptContent": "授权定位后才能获取天气。",
+    "locationPromptDeniedContent": "定位权限已关闭，请在浏览器或扩展权限中开启后重试。",
+    "locationPromptEnable": "授权",
+    "locationPromptLater": "稍后",
+    "locationPromptNever": "不提示"
   },
   "season": {
     "spring": "春天",
@@ -108,7 +115,13 @@
     "title": "基础设置",
     "language": "语言",
     "showBottomBar": "是否显示底部栏",
-    "showBattery": "是否显示电量"
+    "showBattery": "是否显示电量",
+    "weatherLocation": "天气定位",
+    "weatherLocationAction": "获取位置授权",
+    "weatherLocationPrivacyTitle": "隐私说明",
+    "weatherLocationPrivacy": "定位仅用于获取本地天气，不会作其他用途。",
+    "weatherPermissionAuthorizedShort": "已授权",
+    "weatherPermissionUnauthorizedShort": "未授权"
   },
   "weatherCode": {
     "100": "晴",

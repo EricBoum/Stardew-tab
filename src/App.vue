@@ -3,7 +3,13 @@
     <!--天气动效-->
     <Weather ref="WeatherRef" :information="information" />
     <!--信息看板-->
-    <InfoBoard :information="information" />
+    <InfoBoard
+      :information="information"
+      :weather-location-status="weatherLocationStatus"
+      :weather-permission-status="weatherPermissionStatus"
+      :weather-location-loading="weatherLocationLoading"
+      @request-weather-location="handleRequestWeatherLocation"
+    />
     <!--输入框-->
     <SearchInput :information="information" />
     <!--快捷导航栏-->
@@ -24,9 +30,16 @@ import LinkBox from '@/components/LinkBox/index.vue'
 import Weather from '@/components/Weather/index.vue'
 import MorningBg from '@/assets/image/bg/bg.jpg'
 import NightBg from '@/assets/image/bg/bg_night.png'
-import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed } from 'vue'
+import { ref, reactive, onMounted, onUnmounted, useTemplateRef, computed, shallowRef } from 'vue'
 import { type INFORMATION } from '@/libs/const/index.ts'
-import { getWeatherData } from '@/libs/weather'
+import {
+  getWeatherData,
+  getWeatherLocationStatus,
+  getWeatherPermissionStatus,
+  requestBrowserWeatherLocation,
+  type WeatherLocationStatus,
+  type WeatherPermissionStatus
+} from '@/libs/weather'
 import { useI18n } from 'vue-i18n'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
 
@@ -38,6 +51,9 @@ const NavigationRef = useTemplateRef('NavigationRef')
 const WeatherRef = useTemplateRef('WeatherRef')
 const timer = ref<number | null>(null)
 const linkBoxShow = ref<boolean>(false)
+const weatherLocationStatus = shallowRef<WeatherLocationStatus>('idle')
+const weatherPermissionStatus = shallowRef<WeatherPermissionStatus>('unknown')
+const weatherLocationLoading = shallowRef<boolean>(false)
 const information = reactive<INFORMATION>({
   season: '',
   week: '',
@@ -73,6 +89,7 @@ const showBottomLink = computed(() => {
 // 初始化
 const init = async (): Promise<void> => {
   startTime() // 开始时间
+  queryWeatherPermissionStatus()
   getWeather() // 获取天气
   await initSystemSettings() // 初始化系统设置
 }
@@ -131,11 +148,47 @@ const getWeek = (day: number): void => {
   information.week = t(`week.${weekKeys[day]}`)
 }
 // 获取天气
-const getWeather = async (): Promise<any> => {
+const getWeather = async (): Promise<void> => {
+  if (weatherLocationLoading.value) {
+    return
+  }
+  weatherLocationLoading.value = true
   try {
-    information.weather = await getWeatherData()
+    const weatherResult = await getWeatherData()
+    information.weather = weatherResult.data
+    weatherLocationStatus.value = weatherResult.locationStatus
   } catch (error) {
+    weatherLocationStatus.value = getWeatherLocationStatus(error)
     console.log(error)
+  } finally {
+    weatherLocationLoading.value = false
+  }
+}
+// 查询浏览器定位授权状态
+const queryWeatherPermissionStatus = async (): Promise<void> => {
+  weatherPermissionStatus.value = await getWeatherPermissionStatus()
+}
+// 手动触发浏览器定位授权；授权成功后用真实定位刷新一次天气
+const handleRequestWeatherLocation = async (): Promise<void> => {
+  if (weatherLocationLoading.value) {
+    return
+  }
+  weatherLocationLoading.value = true
+  try {
+    const locationResult = await requestBrowserWeatherLocation()
+    weatherPermissionStatus.value = locationResult.permissionStatus
+    information.weather = locationResult.weatherResult.data
+    weatherLocationStatus.value = locationResult.weatherResult.locationStatus
+  } catch (error) {
+    const locationStatus = getWeatherLocationStatus(error)
+    weatherLocationStatus.value = locationStatus
+    if (locationStatus === 'permission-denied') {
+      weatherPermissionStatus.value = 'denied'
+    }
+    console.log(error)
+  } finally {
+    await queryWeatherPermissionStatus()
+    weatherLocationLoading.value = false
   }
 }
 // 打开linkBox弹窗
