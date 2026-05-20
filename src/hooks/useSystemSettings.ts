@@ -7,12 +7,14 @@ import { getDefaultLocale } from '@/locales'
 
 const { getStorage, setStorage } = useStorage()
 
-// 全局共享的响应式状态
-const systemSettings = ref<SYSTEM_SETTING>({
-  language: 'en',
+const createDefaultSystemSettings = (language = 'en'): SYSTEM_SETTING => ({
+  language,
   bottomLinkShow: true,
   batteryShow: true
 })
+
+// 全局共享的响应式状态
+const systemSettings = ref<SYSTEM_SETTING>(createDefaultSystemSettings())
 
 let isInitialized = false
 
@@ -24,16 +26,17 @@ export function useSystemSettings() {
     if (isInitialized) return
 
     const storageData = await getStorage(SYSTEM_SETTING_KEY)
+    const defaultLang = await getDefaultLocale()
+    const defaultSettings = createDefaultSystemSettings(defaultLang)
     if (storageData && Object.keys(storageData).length) {
-      systemSettings.value = storageData as SYSTEM_SETTING
-    } else {
-      // 首次使用，检测浏览器语言
-      const defaultLang = await getDefaultLocale()
+      const storedSettings = storageData as Partial<SYSTEM_SETTING>
       systemSettings.value = {
-        language: defaultLang,
-        bottomLinkShow: true,
-        batteryShow: true
+        language: storedSettings.language ?? defaultSettings.language,
+        bottomLinkShow: storedSettings.bottomLinkShow ?? defaultSettings.bottomLinkShow,
+        batteryShow: storedSettings.batteryShow ?? defaultSettings.batteryShow
       }
+    } else {
+      systemSettings.value = defaultSettings
     }
     locale.value = systemSettings.value.language as any
     isInitialized = true

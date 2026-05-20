@@ -16,9 +16,6 @@ body {
     --stardew-scrollbar-thumb-light: #F4C46E;
     --stardew-scrollbar-thumb-dark: #8E5F40;
 }
-* {
-    scrollbar-gutter: stable;
-}
 @supports (-moz-appearance: none) {
     * {
         scrollbar-color: var(--stardew-scrollbar-thumb) var(--stardew-scrollbar-track);
