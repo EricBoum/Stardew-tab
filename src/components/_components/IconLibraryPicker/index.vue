@@ -29,7 +29,7 @@
       :placeholder="$t('iconLibrary.searchPlaceholder')"
     >
 
-    <div class="icon-library-grid" :style="{ maxHeight }">
+    <div class="icon-library-grid" :style="{ maxHeight, minHeight: minHeight || undefined }">
       <button
         v-for="icon in filteredIcons"
         :key="icon.key"
@@ -60,12 +60,14 @@ withDefaults(defineProps<{
   showHeader?: boolean
   showBack?: boolean
   maxHeight?: string
+  minHeight?: string
 }>(), {
   selectedKey: '',
   compact: false,
   showHeader: false,
   showBack: false,
-  maxHeight: '240px'
+  maxHeight: '240px',
+  minHeight: ''
 })
 
 const emit = defineEmits<{
@@ -184,6 +186,7 @@ const filteredIcons = computed(() => {
 .icon-library-grid {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-content: flex-start;
   gap: 6px;
   overflow-y: auto;
   padding-right: 2px;

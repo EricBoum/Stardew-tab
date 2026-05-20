@@ -4,79 +4,81 @@
       <img class="w-[50px] mb-[20px]" src="@/assets/image/star.png" alt="">
       {{ $t('message.addSuccess') }}
     </div>
-    <div class="mb-2">
-      <label class="form-label">{{ $t('form.name') }}</label>
-      <StardewInput v-model="formData.name" :placeholder="$t('form.placeholderName')" />
-    </div>
-    <div class="mb-2">
-      <label class="form-label">{{ $t('common.category') }}</label>
-      <StardewSelect v-model="formData.parentId" :options="typeOptions" :placeholder="$t('form.placeholderSelectCategory')" />
-    </div>
-    <div class="mb-2">
-      <label class="form-label">{{ $t('form.url') }}</label>
-      <StardewInput v-model="formData.url" :placeholder="$t('form.placeholderUrl')" @blur="fetchFavicon" />
-    </div>
-    <div class="mb-2">
-      <label class="form-label">{{ $t('form.description') }}</label>
-      <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
-    </div>
-    <div>
-      <div class="flex flex-wrap gap-x-5">
-        <label class="block pointer text-[16px] font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#ffffff]': 'text-[#ffffffb0]']" v-for="item in ICON_TYPE_LIST" :key="item.source" @click="changeIconType(item)">
-          {{ item.label }}
-        </label>
+    <div class="popup-content">
+      <div class="popup-form-row">
+        <label class="form-label">{{ $t('form.name') }}</label>
+        <StardewInput v-model="formData.name" :placeholder="$t('form.placeholderName')" />
       </div>
-      <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
-        <div class="w-[60px] h-[60px] mr-3 flex items-center justify-center icon-preview">
-          <template v-if="currentIconSource !== 'text'">
-            <LinkIcon v-if="formData.logo || formData.iconId || formData.builtinIconKey" :detail="formData" />
-            <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full text-gray-400">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          </template>
-          <template v-else>
-            <div class="w-full h-full flex items-center justify-center rounded-full" :style="{ backgroundColor: formData.bgColor, color: formData.textColor }">
-              {{ formData.name.substring(0, 3) }}
-            </div>
-          </template>
-        </div>
-        <div class="flex-1">
-          <div class="flex space-x-2" v-if="currentIconSource === 'favicon'">
-            <button type="button" @click="useDefaultIcon(true)" :disabled="isFetchingIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
-              {{ isFetchingIcon ? $t('pixelIcon.fetchingIcon') : $t('dialog.getIcon') }}
-            </button>
-            <button type="button" @click="clearIcon" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
-              {{ $t('common.clear') }}
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'builtin'">
-            <p v-if="selectedBuiltinIcon" class="w-full text-[12px] leading-[16px] text-[#7B312A]">
-              {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIcon.name }}
-            </p>
-          </div>
-          <div v-else class="flex">
-            <div class="flex items-center text-[12px]">
-              {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
-            </div>
-            <div class="flex items-center text-[12px] ml-5">
-              {{ $t('form.text') }}：<input type="color" v-model="formData.textColor">
-            </div>
-          </div>
-        </div>
+      <div class="popup-form-row">
+        <label class="form-label">{{ $t('common.category') }}</label>
+        <StardewSelect v-model="formData.parentId" :options="typeOptions" :placeholder="$t('form.placeholderSelectCategory')" />
       </div>
-      <StardewInput class="mt-[10px]" v-if="currentIconSource === 'favicon'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
-      <IconLibraryPicker
-        v-if="currentIconSource === 'builtin'"
-        class="mt-[10px]"
-        compact
-        :selected-key="formData.builtinIconKey"
-        max-height="220px"
-        @select="selectBuiltinIcon"
-      />
+      <div class="popup-form-row">
+        <label class="form-label">{{ $t('form.url') }}</label>
+        <StardewInput v-model="formData.url" :placeholder="$t('form.placeholderUrl')" @blur="fetchFavicon" />
+      </div>
+      <div class="popup-form-row">
+        <label class="form-label">{{ $t('form.description') }}</label>
+        <StardewInput v-model="formData.desc" type="textarea" rows="2" :placeholder="$t('form.placeholderDesc')" />
+      </div>
+      <div class="popup-icon-section">
+        <div class="flex flex-wrap gap-x-5">
+          <label class="block pointer text-[16px] font-medium mb-1" :class="[currentIconSource === item.source ? 'text-[#ffffff]': 'text-[#ffffffb0]']" v-for="item in ICON_TYPE_LIST" :key="item.source" @click="changeIconType(item)">
+            {{ item.label }}
+          </label>
+        </div>
+        <div class="flex items-center bg-[#f7f1df] p-2 stardew-input-container">
+          <div class="w-[60px] h-[60px] mr-3 flex items-center justify-center icon-preview">
+            <template v-if="currentIconSource !== 'text'">
+              <LinkIcon v-if="formData.logo || formData.iconId || formData.builtinIconKey" :detail="formData" />
+              <div v-else class="w-full h-full flex items-center justify-center bg-gray-200 rounded-full text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            </template>
+            <template v-else>
+              <div class="w-full h-full flex items-center justify-center rounded-full" :style="{ backgroundColor: formData.bgColor, color: formData.textColor }">
+                {{ formData.name.substring(0, 3) }}
+              </div>
+            </template>
+          </div>
+          <div class="flex-1">
+            <div class="flex space-x-2" v-if="currentIconSource === 'favicon'">
+              <button type="button" @click="useDefaultIcon(true)" :disabled="isFetchingIcon" class="text-sm bg-[#CF802F] hover:bg-[#DF9040] text-white px-3 py-1 stardew-small-button pointer">
+                {{ isFetchingIcon ? $t('pixelIcon.fetchingIcon') : $t('dialog.getIcon') }}
+              </button>
+              <button type="button" @click="clearIcon" class="text-sm bg-[#B86646] hover:bg-[#C87656] text-white px-3 py-1 stardew-small-button pointer">
+                {{ $t('common.clear') }}
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-2" v-else-if="currentIconSource === 'builtin'">
+              <p v-if="selectedBuiltinIcon" class="w-full text-[12px] leading-[16px] text-[#7B312A]">
+                {{ $t('iconLibrary.selected') }}：{{ selectedBuiltinIcon.name }}
+              </p>
+            </div>
+            <div v-else class="flex">
+              <div class="flex items-center text-[12px]">
+                {{ $t('form.background') }}：<input type="color" v-model="formData.bgColor">
+              </div>
+              <div class="flex items-center text-[12px] ml-5">
+                {{ $t('form.text') }}：<input type="color" v-model="formData.textColor">
+              </div>
+            </div>
+          </div>
+        </div>
+        <StardewInput class="mt-[10px]" v-if="currentIconSource === 'favicon'" v-model="formData.logo" :placeholder="getUrlPlaceholder" />
+        <IconLibraryPicker
+          v-if="currentIconSource === 'builtin'"
+          class="popup-icon-library mt-[10px]"
+          compact
+          :selected-key="formData.builtinIconKey"
+          max-height="220px"
+          @select="selectBuiltinIcon"
+        />
+      </div>
     </div>
-    <div class="flex flex-col items-center justify-center space-x-4">
+    <div class="popup-actions flex flex-col items-center justify-center space-x-4">
       <span :class="[showHint? 'opacity-100': 'opacity-0']" class="h-[20px] my-[3px] text-[#ffffff] text-[12px]">{{ $t('message.categoryFull') }}</span>
       <button type="button" @click="save" class="stardew-button w-1/2">
         {{ $t('common.save') }}
@@ -316,6 +318,27 @@ onMounted(() => {
     font-weight: 500;
     margin-bottom: 0.25rem;
   }
+}
+.popup-content {
+  padding-bottom: 76px;
+  padding-right: 4px;
+}
+.popup-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  width: 400px;
+  padding: 4px 24px 8px;
+  background: linear-gradient(to top, rgba(80, 48, 44, 0.75), rgba(80, 48, 44, 0));
+  box-sizing: border-box;
+}
+.popup-form-row {
+  margin-bottom: 8px;
+}
+.popup-icon-section {
+  padding-bottom: 4px;
 }
 .close-box {
   .dialog-close-button();

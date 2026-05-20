@@ -10,6 +10,46 @@ body {
 }
 :root {
     --text-color: #50302C;
+    --stardew-scrollbar-track: #7A4A2B;
+    --stardew-scrollbar-track-shadow: #552E2B;
+    --stardew-scrollbar-thumb: #CF802F;
+    --stardew-scrollbar-thumb-light: #F4C46E;
+    --stardew-scrollbar-thumb-dark: #8E5F40;
+}
+* {
+    scrollbar-gutter: stable;
+}
+@supports (-moz-appearance: none) {
+    * {
+        scrollbar-color: var(--stardew-scrollbar-thumb) var(--stardew-scrollbar-track);
+        scrollbar-width: auto;
+    }
+}
+*::-webkit-scrollbar {
+    width: 14px;
+    height: 14px;
+    background: var(--stardew-scrollbar-track-shadow);
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track-piece {
+    background: var(--stardew-scrollbar-track);
+    border: 2px solid var(--stardew-scrollbar-track-shadow);
+    box-shadow: inset 2px 2px 0 rgba(255, 213, 135, 0.18), inset -2px -2px 0 rgba(0, 0, 0, 0.22);
+}
+*::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--stardew-scrollbar-thumb-light) 0 18%, var(--stardew-scrollbar-thumb) 18% 78%, var(--stardew-scrollbar-thumb-dark) 78% 100%);
+    border: 2px solid var(--stardew-scrollbar-track-shadow);
+    border-radius: 2px;
+    box-shadow: inset 2px 2px 0 var(--stardew-scrollbar-thumb-light), inset -2px -2px 0 var(--stardew-scrollbar-thumb-dark);
+}
+*::-webkit-scrollbar-thumb:hover {
+    background: #DF9040;
+}
+*::-webkit-scrollbar-thumb:active {
+    background: #B86646;
+}
+*::-webkit-scrollbar-corner {
+    background: var(--stardew-scrollbar-track-shadow);
 }
 .text-mouse {
     cursor: url("@/assets/image/cursor/text.png"), auto;
