@@ -103,7 +103,7 @@
     "locationPromptDeniedContent": "La position est bloquée. Activez-la dans le navigateur ou l’extension, puis réessayez.",
     "locationPromptEnable": "Autoriser",
     "locationPromptLater": "Plus tard",
-    "locationPromptNever": "Masquer"
+    "locationPromptNever": "Ne plus afficher"
   },
   "season": {
     "spring": "Printemps",

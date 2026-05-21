@@ -103,7 +103,7 @@
     "locationPromptDeniedContent": "定位權限已關閉，請在瀏覽器或擴充功能權限中開啟後重試。",
     "locationPromptEnable": "授權",
     "locationPromptLater": "稍後",
-    "locationPromptNever": "不提示"
+    "locationPromptNever": "不再提示"
   },
   "season": {
     "spring": "春天",
