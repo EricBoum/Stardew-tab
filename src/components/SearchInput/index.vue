@@ -7,20 +7,21 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios'
 import SpecialInput from './SpecialInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
 import { ref, watch, onMounted, computed } from 'vue'
 import { type INFORMATION, SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
 import { useStorage } from '@/libs/storage'
+import { getSearchSuggestions, type SearchSuggestionItem } from '@/libs/searchSuggestions'
 
 const props = defineProps<{
   information: INFORMATION
 }>()
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
-const quickJumpList = ref<Array<any>>([])
+const quickJumpList = ref<SearchSuggestionItem[]>([])
+let suggestionRequestId = 0
 
 // 获取阴影
 const getShadow = computed(() => {
@@ -43,43 +44,17 @@ const toSearch = (e: { title: string } = {title: ''}): void => {
     window.open(`${ engineValue.value.url }${ encodeURIComponent(keyWords) }`)
   }
 }
-const getQuickJumpList = (): void => {
-  if (!inputValue.value) {
+const getQuickJumpList = async (): Promise<void> => {
+  const keyword = inputValue.value.trim()
+  const requestId = ++suggestionRequestId
+  if (!keyword) {
     quickJumpList.value = []
     return
   }
-  // 暂时只支持百度搜索推荐
-  BaiduSuggest()
-}
 
-const BaiduSuggest = async (): Promise<void> => {
-  if (!inputValue.value) {
-    quickJumpList.value = []
-    return
-  }
-  try {
-    const proxyUrl = 'https://suggestion.baidu.com/su'
-    const temp = {
-      p: 3,
-      ie: 'UTF-8',
-      wd: inputValue.value,
-      cb: 'window.baidu.sug'
-    }
-    const res = await axios.get(proxyUrl, {
-      params: temp,
-      timeout: 3000
-    })
-    const match = res.data.match(/window.baidu.sug\(([\s\S]*?)\)/)
-    let json = {s: []}
-
-    if (match && match[1]) {
-      const fixed = match[1].replace(/(\w+):/g, '"$1":') // 把 q: → "q":
-      json = JSON.parse(fixed)
-    }
-    quickJumpList.value = ( json.s || [] ).map((item: string) => ( {title: item} ))
-  } catch (error) {
-    console.error('获取百度搜索建议失败:', error)
-    quickJumpList.value = []
+  const suggestions = await getSearchSuggestions(engineValue.value.name, keyword)
+  if (requestId === suggestionRequestId && keyword === inputValue.value.trim()) {
+    quickJumpList.value = suggestions
   }
 }
 
@@ -97,6 +72,7 @@ watch(inputValue, () => {
 watch(engineValue, () => {
   // 将默认搜索引擎存入本地
   useStorage().setStorage('engine', engineValue.value)
+  getQuickJumpList()
 })
 </script>
 
