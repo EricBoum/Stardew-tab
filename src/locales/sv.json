@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "Plats är blockerad. Aktivera den i webbläsarens eller tilläggets behörigheter och försök igen.",
     "locationPromptEnable": "Tillåt",
     "locationPromptLater": "Senare",
-    "locationPromptNever": "Visa inte igen"
+    "locationPromptNever": "Visa inte igen",
+    "locationPromptFailedContent": "Kunde inte hämta din plats. Kontrollera webbläsarens platsbehörighet och försök igen."
   },
   "season": {
     "spring": "Vår",

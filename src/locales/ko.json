@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "위치 권한이 차단되었습니다. 브라우저 또는 확장 프로그램 권한에서 켠 뒤 다시 시도하세요.",
     "locationPromptEnable": "허용",
     "locationPromptLater": "나중에",
-    "locationPromptNever": "다시 표시하지 않기"
+    "locationPromptNever": "다시 표시하지 않기",
+    "locationPromptFailedContent": "위치를 가져오지 못했습니다. 브라우저 위치 권한을 확인한 뒤 다시 시도하세요."
   },
   "season": {
     "spring": "봄",

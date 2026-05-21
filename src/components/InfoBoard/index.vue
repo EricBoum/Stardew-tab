@@ -38,6 +38,12 @@
       <p class="m-0 text-[13px] leading-[18px]">
         {{ getLocationPromptContent }}
       </p>
+      <p
+        v-if="getLocationPromptNoticeText"
+        class="m-0 mt-2 px-2 py-1 border-2 border-[#8f3d27] bg-[#f8d18a] text-[#7b312a] text-[12px] leading-[16px]"
+      >
+        {{ getLocationPromptNoticeText }}
+      </p>
       <div class="grid grid-cols-3 items-stretch gap-1.5 mt-2.5">
         <button
           type="button"
@@ -65,6 +71,7 @@
     </div>
     <OperateDialog
       ref="OperateDialogRef"
+      :weather-location-status="props.weatherLocationStatus"
       :weather-permission-status="props.weatherPermissionStatus"
       :weather-location-loading="props.weatherLocationLoading"
       @request-weather-location="handleRequestWeatherLocation"
@@ -177,11 +184,20 @@ const getLocationPromptContent = computed(() => {
   if (props.weatherLocationStatus === 'permission-denied') {
     return t('weather.locationPromptDeniedContent')
   }
+
   return t('weather.locationPromptContent')
 })
 
+const getLocationPromptNoticeText = computed(() => {
+  if (props.weatherLocationStatus === 'failed') {
+    return t('weather.locationPromptFailedContent')
+  }
+
+  return ''
+})
+
 const isWeatherLocationDisabled = computed(() => {
-  return props.weatherLocationLoading || props.weatherPermissionStatus !== 'prompt'
+  return props.weatherLocationLoading || props.weatherPermissionStatus === 'granted'
 })
 
 // 打开设置弹窗

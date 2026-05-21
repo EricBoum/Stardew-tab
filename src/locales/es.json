@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "La ubicación está bloqueada. Actívala en el navegador o la extensión e inténtalo de nuevo.",
     "locationPromptEnable": "Permitir",
     "locationPromptLater": "Luego",
-    "locationPromptNever": "No volver a mostrar"
+    "locationPromptNever": "No volver a mostrar",
+    "locationPromptFailedContent": "No se pudo obtener tu ubicación. Revisa el permiso de ubicación del navegador e inténtalo de nuevo."
   },
   "season": {
     "spring": "Primavera",

@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "定位权限已关闭，请在浏览器或扩展权限中开启后重试。",
     "locationPromptEnable": "授权",
     "locationPromptLater": "稍后",
-    "locationPromptNever": "不再提示"
+    "locationPromptNever": "不再提示",
+    "locationPromptFailedContent": "获取定位失败，请检查浏览器定位权限后重试。"
   },
   "season": {
     "spring": "春天",

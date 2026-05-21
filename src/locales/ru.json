@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "Геолокация заблокирована. Включите её в браузере или разрешениях расширения и повторите попытку.",
     "locationPromptEnable": "Разрешить",
     "locationPromptLater": "Позже",
-    "locationPromptNever": "Больше не показывать"
+    "locationPromptNever": "Больше не показывать",
+    "locationPromptFailedContent": "Не удалось получить геолокацию. Проверьте разрешение в браузере и попробуйте снова."
   },
   "season": {
     "spring": "Весна",

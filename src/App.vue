@@ -174,6 +174,7 @@ const handleRequestWeatherLocation = async (): Promise<void> => {
     return
   }
   weatherLocationLoading.value = true
+  weatherLocationStatus.value = 'permission-prompt'
   try {
     const locationResult = await requestBrowserWeatherLocation()
     weatherPermissionStatus.value = locationResult.permissionStatus

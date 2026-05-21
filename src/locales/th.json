@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "ตำแหน่งถูกบล็อก โปรดเปิดในเบราว์เซอร์หรือสิทธิ์ของส่วนขยาย แล้วลองอีกครั้ง",
     "locationPromptEnable": "อนุญาต",
     "locationPromptLater": "ภายหลัง",
-    "locationPromptNever": "ไม่ต้องแสดงอีก"
+    "locationPromptNever": "ไม่ต้องแสดงอีก",
+    "locationPromptFailedContent": "ไม่สามารถรับตำแหน่งได้ โปรดตรวจสอบสิทธิ์ตำแหน่งของเบราว์เซอร์แล้วลองอีกครั้ง"
   },
   "season": {
     "spring": "ฤดูใบไม้ผลิ",

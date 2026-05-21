@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "Konum engellendi. Tarayıcı veya uzantı izinlerinden açıp tekrar deneyin.",
     "locationPromptEnable": "İzin ver",
     "locationPromptLater": "Sonra",
-    "locationPromptNever": "Bir daha gösterme"
+    "locationPromptNever": "Bir daha gösterme",
+    "locationPromptFailedContent": "Konum alınamadı. Tarayıcı konum iznini kontrol edip tekrar deneyin."
   },
   "season": {
     "spring": "İlkbahar",

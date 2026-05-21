@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "Lokalizacja jest zablokowana. Włącz ją w przeglądarce lub uprawnieniach rozszerzenia i spróbuj ponownie.",
     "locationPromptEnable": "Zezwól",
     "locationPromptLater": "Później",
-    "locationPromptNever": "Nie pokazuj ponownie"
+    "locationPromptNever": "Nie pokazuj ponownie",
+    "locationPromptFailedContent": "Nie udało się pobrać lokalizacji. Sprawdź uprawnienie lokalizacji w przeglądarce i spróbuj ponownie."
   },
   "season": {
     "spring": "Wiosna",

@@ -49,6 +49,12 @@
           </button>
         </div>
       </div>
+      <p
+        v-if="getWeatherLocationNoticeText"
+        class="mt-2 ml-[140px] mb-0 px-2 py-1 border-2 border-[#8f3d27] bg-[#f8d18a] text-[#7b312a] text-xs leading-[16px]"
+      >
+        {{ getWeatherLocationNoticeText }}
+      </p>
     </div>
   </StardewDialog>
 </template>
@@ -63,9 +69,10 @@ import { ref, computed } from 'vue'
 import { LanguageList, type LanguageItem } from '@/locales'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
 import { useI18n } from 'vue-i18n'
-import type { WeatherPermissionStatus } from '@/libs/weather'
+import type { WeatherLocationStatus, WeatherPermissionStatus } from '@/libs/weather'
 
 const props = defineProps<{
+  weatherLocationStatus: WeatherLocationStatus;
   weatherPermissionStatus: WeatherPermissionStatus;
   weatherLocationLoading: boolean;
 }>()
@@ -95,7 +102,7 @@ const showWeatherPermissionButton = computed(() => {
 })
 
 const isWeatherPermissionButtonDisabled = computed(() => {
-  return props.weatherLocationLoading || props.weatherPermissionStatus !== 'prompt'
+  return props.weatherLocationLoading || props.weatherPermissionStatus === 'granted'
 })
 
 const getWeatherPermissionBadgeText = computed(() => {
@@ -108,6 +115,18 @@ const getWeatherPermissionDotClass = computed(() => {
   return props.weatherPermissionStatus === 'granted'
     ? 'bg-[#4f9b43]'
     : 'bg-[#c7472d]'
+})
+
+const getWeatherLocationNoticeText = computed(() => {
+  if (props.weatherLocationStatus === 'permission-denied') {
+    return t('weather.locationPromptDeniedContent')
+  }
+
+  if (props.weatherLocationStatus === 'failed') {
+    return t('weather.locationPromptFailedContent')
+  }
+
+  return ''
 })
 
 const show = async () => {

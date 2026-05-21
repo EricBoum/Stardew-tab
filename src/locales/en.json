@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "Location is blocked. Enable it in browser or extension permissions, then try again.",
     "locationPromptEnable": "Allow",
     "locationPromptLater": "Later",
-    "locationPromptNever": "Do not show again"
+    "locationPromptNever": "Do not show again",
+    "locationPromptFailedContent": "Could not get your location. Check browser location permission and try again."
   },
   "season": {
     "spring": "Spring",

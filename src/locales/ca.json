@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "La ubicació està bloquejada. Activa-la al navegador o als permisos de l’extensió i torna-ho a provar.",
     "locationPromptEnable": "Permet",
     "locationPromptLater": "Més tard",
-    "locationPromptNever": "No ho tornis a mostrar"
+    "locationPromptNever": "No ho tornis a mostrar",
+    "locationPromptFailedContent": "No s’ha pogut obtenir la ubicació. Revisa els permisos del navegador i torna-ho a provar."
   },
   "season": {
     "spring": "Primavera",

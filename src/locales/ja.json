@@ -103,7 +103,8 @@
     "locationPromptDeniedContent": "位置情報がブロックされています。ブラウザまたは拡張機能の権限で有効にしてから再試行してください。",
     "locationPromptEnable": "許可",
     "locationPromptLater": "後で",
-    "locationPromptNever": "今後表示しない"
+    "locationPromptNever": "今後表示しない",
+    "locationPromptFailedContent": "位置情報を取得できませんでした。ブラウザの位置情報権限を確認してから再試行してください。"
   },
   "season": {
     "spring": "春",
