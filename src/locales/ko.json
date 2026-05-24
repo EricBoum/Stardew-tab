@@ -209,5 +209,10 @@
       "specialItems": "특수 아이템",
       "tools": "도구"
     }
+  },
+  "maillist": {
+    "title": "우편함",
+    "listTitle": "메일 목록",
+    "emptyText": "메일을 선택하세요"
   }
 }

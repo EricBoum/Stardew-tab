@@ -209,5 +209,10 @@
       "specialItems": "特別なアイテム",
       "tools": "道具"
     }
+  },
+  "maillist": {
+    "title": "メールボックス",
+    "listTitle": "メール一覧",
+    "emptyText": "メールを選択してください"
   }
 }

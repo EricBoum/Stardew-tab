@@ -209,5 +209,10 @@
       "specialItems": "特殊物品",
       "tools": "工具"
     }
+  },
+  "maillist": {
+    "title": "信箱",
+    "listTitle": "郵件列表",
+    "emptyText": "請選擇一封郵件"
   }
 }

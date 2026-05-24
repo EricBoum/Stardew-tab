@@ -209,5 +209,10 @@
       "specialItems": "Objets spéciaux",
       "tools": "Outils"
     }
+  },
+  "maillist": {
+    "title": "Boîte mail",
+    "listTitle": "Liste des messages",
+    "emptyText": "Sélectionnez une lettre"
   }
 }

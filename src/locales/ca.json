@@ -209,5 +209,10 @@
       "specialItems": "Objectes especials",
       "tools": "Eines"
     }
+  },
+  "maillist": {
+    "title": "Mailbox",
+    "listTitle": "Mail list",
+    "emptyText": "Select a letter"
   }
 }

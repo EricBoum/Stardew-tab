@@ -209,5 +209,10 @@
       "specialItems": "Specialföremål",
       "tools": "Verktyg"
     }
+  },
+  "maillist": {
+    "title": "Mailbox",
+    "listTitle": "Mail list",
+    "emptyText": "Select a letter"
   }
 }

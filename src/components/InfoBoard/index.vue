@@ -16,13 +16,20 @@
     <p class="info-text h-[29px] leading-[33px] bottom-[11px]">
       {{ props.information.time.hour }}<span class="flash-dot">:</span>{{ props.information.time.minute }}
     </p>
-    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[60px] group">
+    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[110px] group">
       <img class="w-full h-full" :src="getTomorrowWeather" :alt="getTomorrowWeatherText">
       <StardewTips placement="bottom-end">
         <template #default>
           <SimpleInfo :detail="{title: t('weather.tomorrow'), content: getTomorrowWeatherText}" />
         </template>
       </StardewTips>
+    </div>
+    <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[60px] pointer group" @click="handleToMail">
+      <img class="w-full h-full transition-transform group-hover:scale-110" src="@/assets/image/maillist.svg" :alt="t('maillist.title')">
+      <span
+        v-if="mailHasUnread"
+        class="absolute right-[1px] top-[1px] w-[10px] h-[10px] rounded-full border-2 border-[#5f2e16] bg-[#c7472d] shadow-[1px_1px_0_rgba(79,45,24,0.35)]"
+      ></span>
     </div>
     <div class="absolute w-[40px] h-[40px] -bottom-[50px] right-[10px] pointer" @click="handleToSetting">
       <img class="w-full h-full" src="@/assets/image/setting.png" alt="">
@@ -76,6 +83,10 @@
       :weather-location-loading="props.weatherLocationLoading"
       @request-weather-location="handleRequestWeatherLocation"
     />
+    <MailList
+      ref="MailListRef"
+      @read-state-change="handleMailReadStateChange"
+    />
   </div>
 </template>
 
@@ -83,6 +94,7 @@
 import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
 import OperateDialog from './OperateDialog.vue'
+import MailList from '@/components/MailList/index.vue'
 import { computed, onMounted, shallowRef, useTemplateRef } from 'vue'
 import {
   type INFORMATION,
@@ -110,8 +122,10 @@ const emit = defineEmits<{
 }>()
 
 const OperateDialogRef = useTemplateRef('OperateDialogRef')
+const MailListRef = useTemplateRef('MailListRef')
 const locationPromptHidden = shallowRef<boolean>(false)
 const locationPromptClosed = shallowRef<boolean>(false)
+const mailHasUnread = shallowRef<boolean>(false)
 
 // 根据当前时间返回刻度
 const getPointerRotate = computed(() => {
@@ -203,6 +217,13 @@ const isWeatherLocationDisabled = computed(() => {
 // 打开设置弹窗
 const handleToSetting = () => {
   OperateDialogRef.value?.show()
+}
+// 打开站内信弹窗
+const handleToMail = () => {
+  MailListRef.value?.show()
+}
+const handleMailReadStateChange = (hasUnread: boolean) => {
+  mailHasUnread.value = hasUnread
 }
 // 请求浏览器定位授权
 const handleRequestWeatherLocation = () => {

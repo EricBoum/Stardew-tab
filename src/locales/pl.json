@@ -209,5 +209,10 @@
       "specialItems": "Specjalne przedmioty",
       "tools": "Narzędzia"
     }
+  },
+  "maillist": {
+    "title": "Skrzynka",
+    "listTitle": "Lista wiadomości",
+    "emptyText": "Wybierz list"
   }
 }

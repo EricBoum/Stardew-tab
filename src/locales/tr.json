@@ -209,5 +209,10 @@
       "specialItems": "Özel eşyalar",
       "tools": "Araçlar"
     }
+  },
+  "maillist": {
+    "title": "Posta kutusu",
+    "listTitle": "Posta listesi",
+    "emptyText": "Bir mektup seç"
   }
 }

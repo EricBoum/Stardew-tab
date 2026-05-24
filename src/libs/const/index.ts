@@ -86,5 +86,6 @@ export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
 
 export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
 export const WEATHER_LOCATION_PROMPT_HIDDEN_KEY = 'WEATHER_LOCATION_PROMPT_HIDDEN'
+export const MAIL_LIST_READ_IDS_KEY = 'MAILBOX_READ_IDS'
 
 export const VERSION = '2.2.0' // 版本号
