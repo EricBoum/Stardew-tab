@@ -1,3 +1,9 @@
+import type { WeatherIconKey } from './weatherMap'
+
+export type WeatherDisplayMode = 'real' | 'custom'
+export type CustomWeatherIntensity = 'light' | 'medium' | 'heavy' | 'extreme'
+export type ThemeMode = 'auto' | 'day' | 'night'
+
 export interface LINK_ITEM_TYPE {
   parentId?: string | number;
   id?: string | number;
@@ -23,4 +29,8 @@ export interface SYSTEM_SETTING {
   language: string;
   bottomLinkShow: boolean;
   batteryShow: boolean;
+  themeMode: ThemeMode;
+  weatherDisplayMode: WeatherDisplayMode;
+  customWeatherIconKey: WeatherIconKey;
+  customWeatherIntensity: CustomWeatherIntensity;
 }

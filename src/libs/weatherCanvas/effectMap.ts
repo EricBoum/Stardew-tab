@@ -1,16 +1,25 @@
 import type { RainOptions } from './rain'
 import type { SnowOptions } from './snow'
+import type { CustomWeatherIntensity } from '@/libs/const/type'
 
 export type WeatherEffectConfig =
   | { type: 'rain'; options: Partial<RainOptions> }
   | { type: 'snow'; options: Partial<SnowOptions> }
   | { type: undefined; options: Record<string, never> }
 
-export const resolveWeatherEffect = (weatherCode: string): WeatherEffectConfig => {
+export const resolveWeatherEffect = (
+  weatherCode: string,
+  intensity?: CustomWeatherIntensity
+): WeatherEffectConfig => {
   const code = Number(weatherCode)
 
   if (!Number.isFinite(code)) {
     return {type: undefined, options: {}}
+  }
+
+  const intensityConfig = getIntensityWeatherEffectConfig(code, intensity)
+  if (intensityConfig) {
+    return intensityConfig
   }
 
   if (code >= 300 && code < 400) {
@@ -90,4 +99,57 @@ export const resolveWeatherEffect = (weatherCode: string): WeatherEffectConfig =
   }
 
   return {type: undefined, options: {}}
+}
+
+const getIntensityWeatherEffectConfig = (
+  code: number,
+  intensity?: CustomWeatherIntensity
+): WeatherEffectConfig | undefined => {
+  if (!intensity) {
+    return undefined
+  }
+
+  if (code >= 300 && code < 400) {
+    const optionsMap: Record<CustomWeatherIntensity, Partial<RainOptions>> = {
+      light: {dropSizeMultiplier: 0.3, rainIntensity: 150},
+      medium: {dropSizeMultiplier: 0.5, rainIntensity: 300},
+      heavy: {dropSizeMultiplier: 0.7, rainIntensity: 600},
+      extreme: {dropSizeMultiplier: 1, rainIntensity: 800},
+    }
+    return {type: 'rain', options: optionsMap[intensity]}
+  }
+
+  if (code >= 400 && code < 500) {
+    const optionsMap: Record<CustomWeatherIntensity, Partial<SnowOptions>> = {
+      light: {minSize: 1, maxSize: 3, flakeCount: 160, minSpeed: 0.35, maxSpeed: 1.05, swirl: 0.55},
+      medium: {minSize: 1, maxSize: 4, flakeCount: 280, minSpeed: 0.55, maxSpeed: 1.65, swirl: 0.65},
+      heavy: {
+        minSize: 1,
+        maxSize: 6,
+        flakeCount: 760,
+        minSpeed: 1,
+        maxSpeed: 3.05,
+        swirl: 0.75,
+        windForce: 0.08,
+        foregroundRatio: 0.16,
+        foregroundSizeMultiplier: 1.28,
+        foregroundSpeedMultiplier: 1.2,
+      },
+      extreme: {
+        minSize: 1,
+        maxSize: 7,
+        flakeCount: 1100,
+        minSpeed: 1.35,
+        maxSpeed: 3.8,
+        swirl: 0.9,
+        windForce: 0.14,
+        foregroundRatio: 0.22,
+        foregroundSizeMultiplier: 1.35,
+        foregroundSpeedMultiplier: 1.25,
+      },
+    }
+    return {type: 'snow', options: optionsMap[intensity]}
+  }
+
+  return undefined
 }

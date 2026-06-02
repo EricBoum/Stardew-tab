@@ -5,15 +5,17 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, useTemplateRef, watch, computed, onUnmounted } from 'vue'
+import { shallowRef, useTemplateRef, watch, computed, onMounted, onUnmounted } from 'vue'
 import { createRainEffect } from '@/libs/weatherCanvas/rain.ts'
 import { createSnowEffect } from '@/libs/weatherCanvas/snow.ts'
 import { resolveWeatherEffect } from '@/libs/weatherCanvas/effectMap'
 import type { WeatherEffectController } from '@/libs/weatherCanvas/types'
 import type { INFORMATION } from '@/libs/const'
+import type { CustomWeatherIntensity } from '@/libs/const/type'
 
 const props = defineProps<{
-  information: INFORMATION
+  information: INFORMATION;
+  customWeatherIntensity?: CustomWeatherIntensity;
 }>()
 
 const canvasContent = shallowRef<WeatherEffectController | null>(null)
@@ -31,7 +33,7 @@ const init = () => {
   }
   destroy()
   // 根据 iconCode 动态渲染雨 / 雪效果，并按强度调整参数
-  const {type, options} = resolveWeatherEffect(getWeather.value)
+  const {type, options} = resolveWeatherEffect(getWeather.value, props.customWeatherIntensity)
 
   if (type === 'rain') {
     canvasContent.value = createRainEffect(weatherCanvas.value, options)
@@ -61,7 +63,11 @@ const destroy = () => {
 }
 
 
-watch(getWeather, () => {
+watch([getWeather, () => props.customWeatherIntensity], () => {
+  init()
+})
+
+onMounted(() => {
   init()
 })
 

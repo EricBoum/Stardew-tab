@@ -1,17 +1,21 @@
 <template>
   <div class="flex justify-center w-screen h-screen relative overflow-hidden bg-cover bg-no-repeat bg-center" :style="getBodyBg">
     <!--天气动效-->
-    <Weather ref="WeatherRef" :information="information" />
+    <Weather
+      ref="WeatherRef"
+      :information="displayInformation"
+      :custom-weather-intensity="getCustomWeatherIntensity"
+    />
     <!--信息看板-->
     <InfoBoard
-      :information="information"
+      :information="displayInformation"
       :weather-location-status="weatherLocationStatus"
       :weather-permission-status="weatherPermissionStatus"
       :weather-location-loading="weatherLocationLoading"
       @request-weather-location="handleRequestWeatherLocation"
     />
     <!--输入框-->
-    <SearchInput :information="information" />
+    <SearchInput :information="displayInformation" :is-night-theme="isNightTheme" />
     <!--快捷导航栏-->
     <Navigation v-if="showBottomLink" ref="NavigationRef" @handleOpenLinkBox="handleOpenLinkBox" />
     <!--电量-->
@@ -42,6 +46,8 @@ import {
 } from '@/libs/weather'
 import { useI18n } from 'vue-i18n'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
+import { createCustomTodayWeather } from '@/libs/weatherCanvas/customWeather'
+import type { CustomWeatherIntensity } from '@/libs/const/type'
 
 const { t } = useI18n()
 const { systemSettings: systemDetail, init: initSystemSettings } = useSystemSettings()
@@ -75,15 +81,51 @@ const information = reactive<INFORMATION>({
   }
 })
 
-// 根据时间段切换背景
+// 根据主题模式切换背景；auto 模式沿用真实时间
+const isNightTheme = computed(() => {
+  if (systemDetail.value.themeMode === 'night') {
+    return true
+  }
+  if (systemDetail.value.themeMode === 'day') {
+    return false
+  }
+
+  return information.time.isNight
+})
 const getBodyBg = computed(() => {
   return {
-    backgroundImage: `url(${ information.time.isNight ? NightBg : MorningBg })`
+    backgroundImage: `url(${ isNightTheme.value ? NightBg : MorningBg })`
   }
 })
 // 是否显示底部工具栏
 const showBottomLink = computed(() => {
   return systemDetail.value.bottomLinkShow && !linkBoxShow.value
+})
+// 页面展示用天气：自定义模式只覆盖今日图标和动效 code，不写回真实天气缓存
+const displayWeather = computed<INFORMATION['weather']>(() => {
+  if (systemDetail.value.weatherDisplayMode === 'custom') {
+    return {
+      today: createCustomTodayWeather(systemDetail.value.customWeatherIconKey),
+      tomorrow: information.weather.tomorrow
+    }
+  }
+
+  return information.weather
+})
+const displayInformation = computed<INFORMATION>(() => {
+  return {
+    season: information.season,
+    week: information.week,
+    time: information.time,
+    weather: displayWeather.value
+  }
+})
+const getCustomWeatherIntensity = computed<CustomWeatherIntensity | undefined>(() => {
+  if (systemDetail.value.weatherDisplayMode !== 'custom') {
+    return undefined
+  }
+
+  return systemDetail.value.customWeatherIntensity
 })
 
 // 初始化

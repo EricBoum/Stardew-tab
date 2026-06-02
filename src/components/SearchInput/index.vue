@@ -16,16 +16,17 @@ import { useStorage } from '@/libs/storage'
 import { getSearchSuggestions, type SearchSuggestionItem } from '@/libs/searchSuggestions'
 
 const props = defineProps<{
-  information: INFORMATION
+  information: INFORMATION;
+  isNightTheme: boolean;
 }>()
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
 const quickJumpList = ref<SearchSuggestionItem[]>([])
 let suggestionRequestId = 0
 
-// 获取阴影
+// 保留原有搜索框样式，只让原本的夜间阴影跟随主题模式
 const getShadow = computed(() => {
-  return props.information.time.isNight
+  return props.isNightTheme
 })
 
 const toSearch = (e: { title: string } = {title: ''}): void => {

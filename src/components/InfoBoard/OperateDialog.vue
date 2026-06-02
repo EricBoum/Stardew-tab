@@ -1,6 +1,6 @@
 <template>
   <StardewDialog v-model="visible">
-    <div class="site-dialog bg-[#EFBD73] p-6 w-[500px] max-w-[90vw] relative stardew-border stardew-font">
+    <div class="site-dialog bg-[#EFBD73] p-6 w-[640px] max-w-[94vw] relative stardew-border stardew-font">
       <div class="close-box" @click="hide">
         <img src="@/assets/image/link/close.png" :alt="$t('common.close')">
       </div>
@@ -18,6 +18,62 @@
       <div class="flex items-center text mt-2">
         <span class="w-[120px] select-none mr-[20px]">{{ $t('settings.showBattery') }}</span>
         <StardewSwitch v-model="systemDetail.batteryShow" />
+      </div>
+      <div class="flex items-start text mt-4">
+        <span class="w-[120px] select-none mr-[20px] pt-1">{{ $t('settings.themeMode') }}</span>
+        <div class="grid min-w-0 flex-1 grid-cols-3 gap-2">
+          <button
+            v-for="option in themeModeOptions"
+            :key="option.id"
+            type="button"
+            class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+            :class="systemDetail.themeMode === option.id ? 'bg-[#f6d26f]' : 'bg-[#f8d18a]'"
+            @click="systemDetail.themeMode = option.id"
+          >
+            {{ option.name }}
+          </button>
+        </div>
+      </div>
+      <div class="flex items-start text mt-4">
+        <span class="w-[120px] select-none mr-[20px] pt-1">{{ $t('settings.weatherDisplayMode') }}</span>
+        <div class="flex min-w-0 flex-1 flex-col gap-3">
+          <div class="grid grid-cols-2 gap-2">
+            <button
+              v-for="option in weatherDisplayModeOptions"
+              :key="option.id"
+              type="button"
+              class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+              :class="systemDetail.weatherDisplayMode === option.id ? 'bg-[#f6d26f]' : 'bg-[#f8d18a]'"
+              @click="systemDetail.weatherDisplayMode = option.id"
+            >
+              {{ option.name }}
+            </button>
+          </div>
+          <div v-if="systemDetail.weatherDisplayMode === 'custom'" class="space-y-3">
+            <div>
+              <div class="mb-2 text-sm leading-[18px] text-[#4e3623]">
+                {{ $t('settings.customWeatherIcon') }}
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <button
+                  v-for="option in CUSTOM_WEATHER_OPTIONS"
+                  :key="option.iconKey"
+                  type="button"
+                  class="flex min-h-[58px] flex-col items-center justify-center border-2 border-[#6f3a1c] bg-[#f8d18a] px-1.5 py-1 text-xs leading-[14px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+                  :class="systemDetail.customWeatherIconKey === option.iconKey ? 'outline outline-2 outline-[#5f2e16] bg-[#f6d26f]' : ''"
+                  @click="systemDetail.customWeatherIconKey = option.iconKey"
+                >
+                  <img class="size-8 object-contain image-render-pixel" :src="getWeatherIconSrc(option.iconKey)" :alt="getCustomWeatherIconText(option.labelKey)">
+                  <span class="mt-0.5 max-w-full truncate">{{ getCustomWeatherIconText(option.labelKey) }}</span>
+                </button>
+              </div>
+            </div>
+            <div v-if="showCustomWeatherIntensity" class="flex items-center">
+              <span class="w-[120px] select-none mr-[20px]">{{ $t('settings.customWeatherIntensity') }}</span>
+              <StardewSelect class="w-[200px]" v-model="systemDetail.customWeatherIntensity" :options="customWeatherIntensityOptions" />
+            </div>
+          </div>
+        </div>
       </div>
       <div class="flex items-start text mt-2">
         <span class="w-[120px] select-none mr-[20px] flex items-center">
@@ -70,6 +126,11 @@ import { LanguageList, type LanguageItem } from '@/locales'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
 import { useI18n } from 'vue-i18n'
 import type { WeatherLocationStatus, WeatherPermissionStatus } from '@/libs/weather'
+import {
+  CUSTOM_WEATHER_INTENSITIES,
+  CUSTOM_WEATHER_OPTIONS
+} from '@/libs/weatherCanvas/customWeather'
+import type { WeatherIconKey } from '@/libs/const/weatherMap'
 
 const props = defineProps<{
   weatherLocationStatus: WeatherLocationStatus;
@@ -92,6 +153,28 @@ const getOptions = computed(() => {
     id: item.value
   }))
 })
+const weatherDisplayModeOptions = computed(() => [
+  {name: t('settings.weatherDisplayReal'), id: 'real' as const},
+  {name: t('settings.weatherDisplayCustom'), id: 'custom' as const}
+])
+const themeModeOptions = computed(() => [
+  {name: t('settings.themeModeAuto'), id: 'auto' as const},
+  {name: t('settings.themeModeDay'), id: 'day' as const},
+  {name: t('settings.themeModeNight'), id: 'night' as const}
+])
+const customWeatherIntensityOptions = computed(() => {
+  return CUSTOM_WEATHER_INTENSITIES.map((item) => ({
+    name: t(`settings.weatherIntensity${ item.charAt(0).toUpperCase() }${ item.slice(1) }`),
+    id: item
+  }))
+})
+const showCustomWeatherIntensity = computed(() => {
+  return systemDetail.value.customWeatherIconKey !== 'Sunny'
+})
+const weatherImages = import.meta.glob('@/assets/image/weather/*.png', {
+  eager: true,
+  import: 'default'
+}) as Record<string, string>
 
 const getWeatherLocationButtonText = computed(() => {
   return props.weatherLocationLoading ? t('weather.locationLoading') : t('settings.weatherLocationAction')
@@ -143,6 +226,12 @@ const handleRequestWeatherLocation = () => {
     return
   }
   emit('requestWeatherLocation')
+}
+const getWeatherIconSrc = (iconKey: WeatherIconKey): string => {
+  return weatherImages[`/src/assets/image/weather/${ iconKey }.png`] || weatherImages['/src/assets/image/weather/Default.png']
+}
+const getCustomWeatherIconText = (labelKey: string): string => {
+  return t(labelKey)
 }
 
 defineExpose({

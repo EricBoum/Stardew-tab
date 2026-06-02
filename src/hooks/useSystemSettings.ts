@@ -4,14 +4,22 @@ import { SYSTEM_SETTING_KEY } from '@/libs/const'
 import type { SYSTEM_SETTING } from '@/libs/const/type'
 import { useI18n } from 'vue-i18n'
 import { getDefaultLocale } from '@/locales'
+import { CUSTOM_WEATHER_OPTIONS } from '@/libs/weatherCanvas/customWeather'
 
 const { getStorage, setStorage } = useStorage()
 
 const createDefaultSystemSettings = (language = 'en'): SYSTEM_SETTING => ({
   language,
   bottomLinkShow: true,
-  batteryShow: true
+  batteryShow: true,
+  themeMode: 'auto',
+  weatherDisplayMode: 'real',
+  customWeatherIconKey: 'Rainy',
+  customWeatherIntensity: 'medium'
 })
+const normalizeCustomWeatherIconKey = (iconKey: SYSTEM_SETTING['customWeatherIconKey'] | undefined): SYSTEM_SETTING['customWeatherIconKey'] => {
+  return CUSTOM_WEATHER_OPTIONS.find(item => item.iconKey === iconKey)?.iconKey ?? createDefaultSystemSettings().customWeatherIconKey
+}
 
 // 全局共享的响应式状态
 const systemSettings = ref<SYSTEM_SETTING>(createDefaultSystemSettings())
@@ -33,7 +41,11 @@ export function useSystemSettings() {
       systemSettings.value = {
         language: storedSettings.language ?? defaultSettings.language,
         bottomLinkShow: storedSettings.bottomLinkShow ?? defaultSettings.bottomLinkShow,
-        batteryShow: storedSettings.batteryShow ?? defaultSettings.batteryShow
+        batteryShow: storedSettings.batteryShow ?? defaultSettings.batteryShow,
+        themeMode: storedSettings.themeMode ?? defaultSettings.themeMode,
+        weatherDisplayMode: storedSettings.weatherDisplayMode ?? defaultSettings.weatherDisplayMode,
+        customWeatherIconKey: normalizeCustomWeatherIconKey(storedSettings.customWeatherIconKey),
+        customWeatherIntensity: storedSettings.customWeatherIntensity ?? defaultSettings.customWeatherIntensity
       }
     } else {
       systemSettings.value = defaultSettings

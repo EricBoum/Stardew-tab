@@ -38,6 +38,9 @@ export const WEATHER_ICON_MAP: Record<string, WeatherInfo> = {
   '152': { iconKey: 'Cloudy' },
   '153': { iconKey: 'Cloudy' },
 
+  // ========== 风系列 ==========
+  '200': { iconKey: 'Windy' },
+
   // ========== 雨系列 ==========
   '300': { iconKey: 'Rainy' },
   '301': { iconKey: 'Rainy' },
