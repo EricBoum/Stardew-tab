@@ -3,6 +3,7 @@ import type { WeatherIconKey } from './weatherMap'
 export type WeatherDisplayMode = 'real' | 'custom'
 export type CustomWeatherIntensity = 'light' | 'medium' | 'heavy' | 'extreme'
 export type ThemeMode = 'auto' | 'day' | 'night'
+export type SearchOpenMode = 'newTab' | 'currentTab'
 
 export interface LINK_ITEM_TYPE {
   parentId?: string | number;
@@ -30,6 +31,7 @@ export interface SYSTEM_SETTING {
   bottomLinkShow: boolean;
   batteryShow: boolean;
   themeMode: ThemeMode;
+  searchOpenMode: SearchOpenMode;
   weatherDisplayMode: WeatherDisplayMode;
   customWeatherIconKey: WeatherIconKey;
   customWeatherIntensity: CustomWeatherIntensity;

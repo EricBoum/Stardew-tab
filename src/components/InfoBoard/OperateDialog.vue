@@ -9,7 +9,7 @@
       </h3>
       <div class="flex items-center text mt-2">
         <span class="w-[120px] select-none mr-[20px]">{{ $t('settings.language') }}</span>
-        <StardewSelect class="w-[200px]" v-model="systemDetail.language" :options="getOptions" />
+        <StardewSelect class="w-[200px] pointer" v-model="systemDetail.language" :options="getOptions" />
       </div>
       <div class="flex items-center text mt-2">
         <span class="w-[120px] select-none mr-[20px]">{{ $t('settings.showBottomBar') }}</span>
@@ -20,13 +20,28 @@
         <StardewSwitch v-model="systemDetail.batteryShow" />
       </div>
       <div class="flex items-start text mt-4">
+        <span class="w-[120px] select-none mr-[20px] pt-1">{{ $t('settings.searchOpenMode') }}</span>
+        <div class="grid min-w-0 flex-1 grid-cols-2 gap-2">
+          <button
+            v-for="option in searchOpenModeOptions"
+            :key="option.id"
+            type="button"
+            class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+            :class="systemDetail.searchOpenMode === option.id ? 'bg-[#f6d26f]' : 'bg-[#f8d18a]'"
+            @click="systemDetail.searchOpenMode = option.id"
+          >
+            {{ option.name }}
+          </button>
+        </div>
+      </div>
+      <div class="flex items-start text mt-4">
         <span class="w-[120px] select-none mr-[20px] pt-1">{{ $t('settings.themeMode') }}</span>
         <div class="grid min-w-0 flex-1 grid-cols-3 gap-2">
           <button
             v-for="option in themeModeOptions"
             :key="option.id"
             type="button"
-            class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+            class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
             :class="systemDetail.themeMode === option.id ? 'bg-[#f6d26f]' : 'bg-[#f8d18a]'"
             @click="systemDetail.themeMode = option.id"
           >
@@ -42,7 +57,7 @@
               v-for="option in weatherDisplayModeOptions"
               :key="option.id"
               type="button"
-              class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+              class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
               :class="systemDetail.weatherDisplayMode === option.id ? 'bg-[#f6d26f]' : 'bg-[#f8d18a]'"
               @click="systemDetail.weatherDisplayMode = option.id"
             >
@@ -59,7 +74,7 @@
                   v-for="option in CUSTOM_WEATHER_OPTIONS"
                   :key="option.iconKey"
                   type="button"
-                  class="flex min-h-[58px] flex-col items-center justify-center border-2 border-[#6f3a1c] bg-[#f8d18a] px-1.5 py-1 text-xs leading-[14px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+                  class="flex min-h-[58px] flex-col items-center justify-center border-2 border-[#6f3a1c] bg-[#f8d18a] px-1.5 py-1 text-xs leading-[14px] text-[#4e3623] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
                   :class="systemDetail.customWeatherIconKey === option.iconKey ? 'outline outline-2 outline-[#5f2e16] bg-[#f6d26f]' : ''"
                   @click="systemDetail.customWeatherIconKey = option.iconKey"
                 >
@@ -70,7 +85,7 @@
             </div>
             <div v-if="showCustomWeatherIntensity" class="flex items-center">
               <span class="w-[120px] select-none mr-[20px]">{{ $t('settings.customWeatherIntensity') }}</span>
-              <StardewSelect class="w-[200px]" v-model="systemDetail.customWeatherIntensity" :options="customWeatherIntensityOptions" />
+              <StardewSelect class="w-[200px] pointer" v-model="systemDetail.customWeatherIntensity" :options="customWeatherIntensityOptions" />
             </div>
           </div>
         </div>
@@ -79,7 +94,7 @@
         <span class="w-[120px] select-none mr-[20px] flex items-center">
           {{ $t('settings.weatherLocation') }}
           <span class="relative group inline-flex ml-1">
-            <span class="w-4 h-4 inline-flex items-center justify-center border-2 border-[#6f3a1c] rounded-full bg-[#f8d18a] text-[#4e3623] text-xs leading-none cursor-help">?</span>
+            <span class="w-4 h-4 inline-flex items-center justify-center border-2 border-[#6f3a1c] rounded-full bg-[#f8d18a] text-[#4e3623] text-xs leading-none pointer">?</span>
             <StardewTips placement="top-start">
               <template #default>
                 <SimpleInfo :detail="{title: $t('settings.weatherLocationPrivacyTitle'), content: $t('settings.weatherLocationPrivacy')}" />
@@ -97,7 +112,7 @@
           <button
             v-if="showWeatherPermissionButton"
             type="button"
-            class="min-h-7 px-2.5 py-[2px] border-2 border-[#6f3a1c] rounded bg-[#f8d18a] text-[#4e3623] text-sm leading-[18px] shadow-[inset_-2px_-2px_0_#c98b45] cursor-pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45] disabled:cursor-default disabled:opacity-75"
+            class="min-h-7 px-2.5 py-[2px] border-2 border-[#6f3a1c] rounded bg-[#f8d18a] text-[#4e3623] text-sm leading-[18px] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45] disabled:cursor-default disabled:opacity-75"
             :disabled="isWeatherPermissionButtonDisabled"
             @click="handleRequestWeatherLocation"
           >
@@ -161,6 +176,10 @@ const themeModeOptions = computed(() => [
   {name: t('settings.themeModeAuto'), id: 'auto' as const},
   {name: t('settings.themeModeDay'), id: 'day' as const},
   {name: t('settings.themeModeNight'), id: 'night' as const}
+])
+const searchOpenModeOptions = computed(() => [
+  {name: t('settings.searchOpenNewTab'), id: 'newTab' as const},
+  {name: t('settings.searchOpenCurrentTab'), id: 'currentTab' as const}
 ])
 const customWeatherIntensityOptions = computed(() => {
   return CUSTOM_WEATHER_INTENSITIES.map((item) => ({

@@ -13,6 +13,7 @@ const createDefaultSystemSettings = (language = 'en'): SYSTEM_SETTING => ({
   bottomLinkShow: true,
   batteryShow: true,
   themeMode: 'auto',
+  searchOpenMode: 'newTab',
   weatherDisplayMode: 'real',
   customWeatherIconKey: 'Rainy',
   customWeatherIntensity: 'medium'
@@ -43,6 +44,7 @@ export function useSystemSettings() {
         bottomLinkShow: storedSettings.bottomLinkShow ?? defaultSettings.bottomLinkShow,
         batteryShow: storedSettings.batteryShow ?? defaultSettings.batteryShow,
         themeMode: storedSettings.themeMode ?? defaultSettings.themeMode,
+        searchOpenMode: storedSettings.searchOpenMode ?? defaultSettings.searchOpenMode,
         weatherDisplayMode: storedSettings.weatherDisplayMode ?? defaultSettings.weatherDisplayMode,
         customWeatherIconKey: normalizeCustomWeatherIconKey(storedSettings.customWeatherIconKey),
         customWeatherIntensity: storedSettings.customWeatherIntensity ?? defaultSettings.customWeatherIntensity

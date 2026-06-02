@@ -14,11 +14,13 @@ import { ref, watch, onMounted, computed } from 'vue'
 import { type INFORMATION, SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
 import { useStorage } from '@/libs/storage'
 import { getSearchSuggestions, type SearchSuggestionItem } from '@/libs/searchSuggestions'
+import { useSystemSettings } from '@/hooks/useSystemSettings'
 
 const props = defineProps<{
   information: INFORMATION;
   isNightTheme: boolean;
 }>()
+const { systemSettings: systemDetail } = useSystemSettings()
 const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
 const inputValue = ref<string>('')
 const quickJumpList = ref<SearchSuggestionItem[]>([])
@@ -34,16 +36,30 @@ const toSearch = (e: { title: string } = {title: ''}): void => {
   if (!keyWords) {
     return
   }
+  const searchUrl = engineValue.value.name === 'Default'
+    ? `https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`
+    : `${ engineValue.value.url }${ encodeURIComponent(keyWords) }`
   if (engineValue.value.name === 'Default') {
     if (chrome.search?.query) {
-      chrome.search.query({text: keyWords, disposition: 'NEW_TAB'})
+      chrome.search.query({
+        text: keyWords,
+        disposition: systemDetail.value.searchOpenMode === 'currentTab' ? 'CURRENT_TAB' : 'NEW_TAB'
+      })
     } else {
       // 兼容Firefox fallback 跳转百度
-      window.open(`https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`)
+      openSearchUrl(searchUrl)
     }
   } else {
-    window.open(`${ engineValue.value.url }${ encodeURIComponent(keyWords) }`)
+    openSearchUrl(searchUrl)
   }
+}
+const openSearchUrl = (url: string): void => {
+  if (systemDetail.value.searchOpenMode === 'currentTab') {
+    window.location.href = url
+    return
+  }
+
+  window.open(url)
 }
 const getQuickJumpList = async (): Promise<void> => {
   const keyword = inputValue.value.trim()
