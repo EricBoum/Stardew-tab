@@ -1,6 +1,6 @@
 <template>
   <div :class="['SearchInput transition-[0.3s] w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative', getShadow && 'shadow-[0_5px_40px_5px_rgba(255,255,200,0.4)]']">
-    <EngineSelection v-model="engineValue" :information="information" />
+    <EngineSelection :model-value="selectedEngine" :engines="engines" @update:model-value="onSelectEngine" />
     <SpecialInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />
   </div>
@@ -11,17 +11,19 @@ import SpecialInput from './SpecialInput.vue'
 import EngineSelection from './EngineSelection.vue'
 import QuickJump from './QuickJump.vue'
 import { ref, watch, onMounted, computed } from 'vue'
-import { type INFORMATION, SEARCH_ENGINES, type SEARCH_ITEM } from '@/libs/const/index.ts'
-import { useStorage } from '@/libs/storage'
+import { type INFORMATION } from '@/libs/const/index.ts'
+import type { SearchEngine } from '@/libs/const/type'
+import { buildSearchUrl } from '@/libs/searchEngines'
 import { getSearchSuggestions, type SearchSuggestionItem } from '@/libs/searchSuggestions'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
+import { useSearchEngines } from '@/hooks/useSearchEngines'
 
 const props = defineProps<{
   information: INFORMATION;
   isNightTheme: boolean;
 }>()
 const { systemSettings: systemDetail } = useSystemSettings()
-const engineValue = ref<SEARCH_ITEM>(SEARCH_ENGINES[0])
+const { engines, selectedEngine, init: initEngines, setSelected } = useSearchEngines()
 const inputValue = ref<string>('')
 const quickJumpList = ref<SearchSuggestionItem[]>([])
 let suggestionRequestId = 0
@@ -33,25 +35,23 @@ const getShadow = computed(() => {
 
 const toSearch = (e: { title: string } = {title: ''}): void => {
   const keyWords = ( e.title || inputValue.value ).trim()
-  if (!keyWords) {
+  const engine = selectedEngine.value
+  if (!keyWords || !engine) {
     return
   }
-  const searchUrl = engineValue.value.name === 'Default'
-    ? `https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`
-    : `${ engineValue.value.url }${ encodeURIComponent(keyWords) }`
-  if (engineValue.value.name === 'Default') {
+  // Default（chromeSearch）委托浏览器默认引擎；Firefox 无此 API 时兜底跳百度
+  if (engine.kind === 'chromeSearch') {
     if (chrome.search?.query) {
       chrome.search.query({
         text: keyWords,
         disposition: systemDetail.value.searchOpenMode === 'currentTab' ? 'CURRENT_TAB' : 'NEW_TAB'
       })
     } else {
-      // 兼容Firefox fallback 跳转百度
-      openSearchUrl(searchUrl)
+      openSearchUrl(`https://www.baidu.com/s?wd=${ encodeURIComponent(keyWords) }`)
     }
-  } else {
-    openSearchUrl(searchUrl)
+    return
   }
+  openSearchUrl(buildSearchUrl(engine, keyWords))
 }
 const openSearchUrl = (url: string): void => {
   if (systemDetail.value.searchOpenMode === 'currentTab') {
@@ -69,26 +69,26 @@ const getQuickJumpList = async (): Promise<void> => {
     return
   }
 
-  const suggestions = await getSearchSuggestions(engineValue.value.name, keyword)
+  const provider = selectedEngine.value?.suggestionProvider ?? 'auto'
+  const suggestions = await getSearchSuggestions(provider, keyword)
   if (requestId === suggestionRequestId && keyword === inputValue.value.trim()) {
     quickJumpList.value = suggestions
   }
 }
 
-onMounted(async () => {
-  // 获取本地存储的用户默认选择的搜索引擎
-  const storageEngine = await useStorage().getStorage('engine')
-  if (storageEngine) {
-    engineValue.value = storageEngine
-  }
+const onSelectEngine = (engine: SearchEngine) => {
+  // 只持久化选中 id，编辑引擎定义即时生效
+  setSelected(engine.id)
+}
+
+onMounted(() => {
+  initEngines()
 })
 
 watch(inputValue, () => {
   getQuickJumpList()
 })
-watch(engineValue, () => {
-  // 将默认搜索引擎存入本地
-  useStorage().setStorage('engine', engineValue.value)
+watch(selectedEngine, () => {
   getQuickJumpList()
 })
 </script>

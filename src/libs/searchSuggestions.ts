@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { SYSTEM_SETTING_KEY } from '@/libs/const'
-import type { SYSTEM_SETTING } from '@/libs/const/type'
+import type { SYSTEM_SETTING, SuggestionProvider } from '@/libs/const/type'
 import { useStorage } from '@/libs/storage'
 
 export interface SearchSuggestionItem {
   title: string;
 }
 
-type SuggestionProvider = 'baidu' | 'google'
+// 实际发起请求的来源（auto/none 会被解析成其中之一或跳过）
+type ResolvedSuggestionProvider = 'baidu' | 'google'
 
 const SUGGESTION_TIMEOUT = 3000
 const SUGGESTION_LIMIT = 10
@@ -53,13 +54,18 @@ const isSimplifiedChineseBrowserLanguage = (): boolean => {
   )
 }
 
-const getProvidersByEngine = (engineName: string): SuggestionProvider[] => {
-  if (engineName === 'Baidu') {
+// auto 按浏览器语言选百度/Google；显式指定则直接用；none 返回空表示不请求
+const resolveProviders = (provider: SuggestionProvider): ResolvedSuggestionProvider[] => {
+  if (provider === 'none') {
+    return []
+  }
+  if (provider === 'baidu') {
     return [ 'baidu' ]
   }
-  if (engineName === 'Google') {
+  if (provider === 'google') {
     return [ 'google' ]
   }
+  // auto
   if (isSimplifiedChineseBrowserLanguage()) {
     return [ 'baidu' ]
   }
@@ -101,7 +107,7 @@ const getGoogleSuggestions = async (keyword: string): Promise<SearchSuggestionIt
 }
 
 const getSuggestionsByProvider = async (
-  provider: SuggestionProvider,
+  provider: ResolvedSuggestionProvider,
   keyword: string
 ): Promise<SearchSuggestionItem[]> => {
   if (provider === 'baidu') {
@@ -111,7 +117,7 @@ const getSuggestionsByProvider = async (
 }
 
 export const getSearchSuggestions = async (
-  engineName: string,
+  provider: SuggestionProvider,
   keyword: string
 ): Promise<SearchSuggestionItem[]> => {
   const normalizedKeyword = keyword.trim()
@@ -119,14 +125,14 @@ export const getSearchSuggestions = async (
     return []
   }
 
-  for (const provider of getProvidersByEngine(engineName)) {
+  for (const resolved of resolveProviders(provider)) {
     try {
-      const suggestions = await getSuggestionsByProvider(provider, normalizedKeyword)
+      const suggestions = await getSuggestionsByProvider(resolved, normalizedKeyword)
       if (suggestions.length) {
         return suggestions
       }
     } catch (error) {
-      console.error(`Failed to get ${ provider } search suggestions:`, error)
+      console.error(`Failed to get ${ resolved } search suggestions:`, error)
     }
   }
   return []

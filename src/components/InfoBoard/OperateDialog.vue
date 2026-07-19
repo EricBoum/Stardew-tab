@@ -34,6 +34,16 @@
           </button>
         </div>
       </div>
+      <div class="flex items-center text mt-4">
+        <span class="w-[120px] select-none mr-[20px]">{{ $t('engine.settingLabel') }}</span>
+        <button
+          type="button"
+          class="min-h-8 border-2 border-[#6f3a1c] px-3 py-1.5 text-sm leading-[18px] text-[#4e3623] bg-[#f8d18a] shadow-[inset_-2px_-2px_0_#c98b45] pointer hover:bg-[#ffe0a3] active:translate-y-px active:shadow-[inset_2px_2px_0_#c98b45]"
+          @click="openEngineManager"
+        >
+          {{ $t('engine.manage') }}
+        </button>
+      </div>
       <div class="flex items-start text mt-4">
         <span class="w-[120px] select-none mr-[20px] pt-1">{{ $t('settings.themeMode') }}</span>
         <div class="grid min-w-0 flex-1 grid-cols-3 gap-2">
@@ -127,6 +137,7 @@
         {{ getWeatherLocationNoticeText }}
       </p>
     </div>
+    <EngineManager ref="EngineManagerRef" />
   </StardewDialog>
 </template>
 
@@ -136,7 +147,8 @@ import StardewSelect from '@/components/_components/StardewSelect/index.vue'
 import StardewSwitch from '@/components/_components/StardewSwitch/index.vue'
 import StardewTips from '@/components/_components/StardewTips/index.vue'
 import SimpleInfo from '@/components/_common/SimpleInfo/index.vue'
-import { ref, computed } from 'vue'
+import EngineManager from '@/components/SearchInput/EngineManager.vue'
+import { ref, computed, useTemplateRef } from 'vue'
 import { LanguageList, type LanguageItem } from '@/locales'
 import { useSystemSettings } from '@/hooks/useSystemSettings'
 import { useI18n } from 'vue-i18n'
@@ -161,6 +173,11 @@ const { t } = useI18n()
 const { systemSettings: systemDetail, init: initSystemSettings } = useSystemSettings()
 
 const visible = ref<boolean>(false)
+const EngineManagerRef = useTemplateRef('EngineManagerRef')
+
+const openEngineManager = () => {
+  EngineManagerRef.value?.show()
+}
 
 const getOptions = computed(() => {
   return LanguageList.map((item: LanguageItem) => ({

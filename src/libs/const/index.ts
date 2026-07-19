@@ -6,6 +6,7 @@ import Summer from '@/assets/image/season/Summer.png'
 import Fall from '@/assets/image/season/Fall.png'
 import Winter from '@/assets/image/season/Winter.png'
 import type { WeatherIconKey } from './weatherMap'
+import type { SearchEngine } from './type'
 
 export interface SEARCH_ITEM {
   name: string;
@@ -26,6 +27,46 @@ export const SEARCH_ENGINES: SEARCH_ITEM[] = [
     name: 'Google',
     url: 'https://www.google.com/search?q=',
     logo: GoogleLogo
+  }
+]
+
+// 内置引擎 logo 的稳定映射：种子引擎不持久化打包后的 hash URL，运行时按 key 解析
+export const BUILTIN_ENGINE_LOGO_MAP: Record<string, string> = {
+  Default: DefaultEngin,
+  Baidu: BaiduLogo,
+  Google: GoogleLogo
+}
+
+// 种子引擎：首次运行写入存储。Default 受保护（不可删除、走 chrome.search），百度/Google 之后可增删改
+export const SEED_SEARCH_ENGINES: SearchEngine[] = [
+  {
+    id: 'default',
+    name: 'Default',
+    searchUrl: '',
+    suggestionProvider: 'auto',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Default',
+    isBuiltin: true,
+    protected: true,
+    kind: 'chromeSearch'
+  },
+  {
+    id: 'baidu',
+    name: 'Baidu',
+    searchUrl: 'https://www.baidu.com/s?wd=%s',
+    suggestionProvider: 'baidu',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Baidu',
+    isBuiltin: true
+  },
+  {
+    id: 'google',
+    name: 'Google',
+    searchUrl: 'https://www.google.com/search?q=%s',
+    suggestionProvider: 'google',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Google',
+    isBuiltin: true
   }
 ]
 
@@ -86,5 +127,10 @@ export const SINGLE_LINK_TEXT_LENGTH = 3 // 单个链接显示文字长度
 
 export const SYSTEM_SETTING_KEY = 'SYSTEM_SETTING' //
 export const WEATHER_LOCATION_PROMPT_HIDDEN_KEY = 'WEATHER_LOCATION_PROMPT_HIDDEN'
+
+export const SEARCH_ENGINE_LIST_KEY = 'SEARCH_ENGINE_LIST' // 搜索引擎列表缓存key
+export const SEARCH_ENGINE_SELECTED_ID_KEY = 'SEARCH_ENGINE_SELECTED_ID' // 选中引擎id缓存key
+export const LEGACY_ENGINE_KEY = 'engine' // 旧版整对象存储的引擎key（迁移用）
+export const MAX_SEARCH_ENGINE_NUM = 12 // 最大搜索引擎数量
 
 export const VERSION = '2.2.2' // 版本号
