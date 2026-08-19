@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "Av",
     "icon": "Ikon",
+    "show": "Visa",
+    "hide": "Dölj",
     "errorName": "Ange sökmotorns namn",
     "errorUrl": "Ange en giltig sök-URL"
   },

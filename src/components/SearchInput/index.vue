@@ -1,6 +1,6 @@
 <template>
   <div :class="['SearchInput transition-[0.3s] w-1/2 h-[50px] mt-[29vh] bg-[#EFBD73] relative', getShadow && 'shadow-[0_5px_40px_5px_rgba(255,255,200,0.4)]']">
-    <EngineSelection :model-value="selectedEngine" :engines="engines" @update:model-value="onSelectEngine" />
+    <EngineSelection :model-value="selectedEngine" :engines="visibleEngines" @update:model-value="onSelectEngine" />
     <SpecialInput v-model="inputValue" @stardewEnter="toSearch" />
     <QuickJump :list="quickJumpList" @jump="toSearch" />
   </div>
@@ -23,7 +23,7 @@ const props = defineProps<{
   isNightTheme: boolean;
 }>()
 const { systemSettings: systemDetail } = useSystemSettings()
-const { engines, selectedEngine, init: initEngines, setSelected } = useSearchEngines()
+const { visibleEngines, selectedEngine, init: initEngines, setSelected } = useSearchEngines()
 const inputValue = ref<string>('')
 const quickJumpList = ref<SearchSuggestionItem[]>([])
 let suggestionRequestId = 0

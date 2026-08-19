@@ -15,7 +15,8 @@ export interface SearchEngine {
   logo?: string;                    // iconSource==='favicon' 时的外链图标 URL
   iconId?: string;                  // iconSource==='favicon'|'upload' 时 IndexedDB 图标仓储 id
   isBuiltin?: boolean;              // 内置种子引擎标记
-  protected?: boolean;              // 仅 Default：不可删除
+  protected?: boolean;              // 仅 Default：受保护的浏览器默认引擎标记
+  hidden?: boolean;                 // 隐藏后不在搜索框引擎选择器中展示
   kind?: 'chromeSearch';            // 仅 Default：走 chrome.search.query
 }
 

@@ -1,15 +1,26 @@
 import { useStorage } from '@/libs/storage'
 import {
   BUILTIN_ENGINE_LOGO_MAP,
+  ADDITIONAL_SEARCH_ENGINES,
   LEGACY_ENGINE_KEY,
   SEARCH_ENGINE_LIST_KEY,
   SEARCH_ENGINE_SELECTED_ID_KEY,
   SEED_SEARCH_ENGINES,
+  MAX_VISIBLE_SEARCH_ENGINE_NUM,
   type SEARCH_ITEM
 } from '@/libs/const'
 import type { SearchEngine } from '@/libs/const/type'
+import {
+  applyPresetIconsToEmptyFaviconEngines,
+  mergeMissingSearchEnginePresets,
+  normalizeVisibleSearchEngines,
+  resolveSelectedSearchEngineId
+} from '@/libs/searchEngineRules'
 
 const { getStorage, setStorage } = useStorage()
+
+const SEARCH_ENGINE_PRESET_VERSION_KEY = 'SEARCH_ENGINE_PRESET_VERSION'
+const CURRENT_SEARCH_ENGINE_PRESET_VERSION = 3
 
 const clone = <T>(data: T): T => JSON.parse(JSON.stringify(data)) as T
 
@@ -38,17 +49,43 @@ const ensureProtectedEngine = (list: SearchEngine[]): SearchEngine[] => {
   return [ clone(defaultSeed), ...list ]
 }
 
+export const normalizeSearchEngineList = (list: SearchEngine[]): SearchEngine[] => {
+  const protectedList = ensureProtectedEngine(clone(list))
+  return normalizeVisibleSearchEngines(protectedList, MAX_VISIBLE_SEARCH_ENGINE_NUM)
+}
+
 // 读取引擎列表：首次运行时种子写入并迁移旧选中项
 export const getSearchEngines = async (): Promise<SearchEngine[]> => {
   const stored = await getStorage<SearchEngine[]>(SEARCH_ENGINE_LIST_KEY)
 
   if (Array.isArray(stored) && stored.length) {
-    return ensureProtectedEngine(clone(stored))
+    const presetVersion = await getStorage<number>(SEARCH_ENGINE_PRESET_VERSION_KEY)
+    const shouldMigratePresets = (presetVersion ?? 0) < CURRENT_SEARCH_ENGINE_PRESET_VERSION
+    const protectedStored = ensureProtectedEngine(clone(stored))
+    const migrated = shouldMigratePresets
+      ? applyPresetIconsToEmptyFaviconEngines(
+          mergeMissingSearchEnginePresets(
+            protectedStored,
+            ADDITIONAL_SEARCH_ENGINES,
+            MAX_VISIBLE_SEARCH_ENGINE_NUM
+          ),
+          ADDITIONAL_SEARCH_ENGINES
+        )
+      : protectedStored
+    const normalized = normalizeSearchEngineList(migrated)
+    if (shouldMigratePresets || JSON.stringify(normalized) !== JSON.stringify(stored)) {
+      await setStorage(SEARCH_ENGINE_LIST_KEY, normalized)
+    }
+    if (shouldMigratePresets) {
+      await setStorage(SEARCH_ENGINE_PRESET_VERSION_KEY, CURRENT_SEARCH_ENGINE_PRESET_VERSION)
+    }
+    return normalized
   }
 
   // 首次运行：种子写入
-  const seeds = cloneSeedEngines()
+  const seeds = normalizeSearchEngineList(cloneSeedEngines())
   await setStorage(SEARCH_ENGINE_LIST_KEY, seeds)
+  await setStorage(SEARCH_ENGINE_PRESET_VERSION_KEY, CURRENT_SEARCH_ENGINE_PRESET_VERSION)
 
   // 迁移旧的选中引擎
   const legacy = await getStorage<SEARCH_ITEM>(LEGACY_ENGINE_KEY)
@@ -59,16 +96,17 @@ export const getSearchEngines = async (): Promise<SearchEngine[]> => {
 }
 
 export const saveSearchEngines = async (list: SearchEngine[]): Promise<void> => {
-  await setStorage(SEARCH_ENGINE_LIST_KEY, ensureProtectedEngine(clone(list)))
+  await setStorage(SEARCH_ENGINE_LIST_KEY, normalizeSearchEngineList(list))
 }
 
 // 读取选中引擎 id，若已失效则回退到列表首项
 export const getSelectedEngineId = async (list: SearchEngine[]): Promise<string> => {
   const storedId = await getStorage<string>(SEARCH_ENGINE_SELECTED_ID_KEY)
-  if (storedId && list.some(item => item.id === storedId)) {
-    return storedId
+  const fallbackId = resolveSelectedSearchEngineId(list, storedId ?? '')
+    || SEED_SEARCH_ENGINES[0].id
+  if (fallbackId === storedId) {
+    return fallbackId
   }
-  const fallbackId = list[0]?.id ?? SEED_SEARCH_ENGINES[0].id
   await setStorage(SEARCH_ENGINE_SELECTED_ID_KEY, fallbackId)
   return fallbackId
 }

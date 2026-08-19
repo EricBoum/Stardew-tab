@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "オフ",
     "icon": "アイコン",
+    "show": "表示",
+    "hide": "非表示",
     "errorName": "エンジン名を入力してください",
     "errorUrl": "有効な検索URLを入力してください"
   },

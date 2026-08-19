@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "끄기",
     "icon": "아이콘",
+    "show": "표시",
+    "hide": "숨기기",
     "errorName": "엔진 이름을 입력하세요",
     "errorUrl": "유효한 검색 URL을 입력하세요"
   },

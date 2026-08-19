@@ -1,6 +1,10 @@
 import DefaultEngin from '@/assets/image/search-engine/defaultEngin.png'
 import BaiduLogo from '@/assets/image/search-engine/baidu.png'
 import GoogleLogo from '@/assets/image/search-engine/google.png'
+import BingLogo from '@/assets/image/search-engine/bing.png'
+import DuckDuckGoLogo from '@/assets/image/search-engine/DuckDuckGo.png'
+import YahooLogo from '@/assets/image/search-engine/Yahoo.png'
+import YandexLogo from '@/assets/image/search-engine/Yandex.png'
 import Spring from '@/assets/image/season/Spring.png'
 import Summer from '@/assets/image/season/Summer.png'
 import Fall from '@/assets/image/season/Fall.png'
@@ -34,10 +38,58 @@ export const SEARCH_ENGINES: SEARCH_ITEM[] = [
 export const BUILTIN_ENGINE_LOGO_MAP: Record<string, string> = {
   Default: DefaultEngin,
   Baidu: BaiduLogo,
-  Google: GoogleLogo
+  Google: GoogleLogo,
+  Bing: BingLogo,
+  DuckDuckGo: DuckDuckGoLogo,
+  Yahoo: YahooLogo,
+  Yandex: YandexLogo
 }
 
-// 种子引擎：首次运行写入存储。Default 受保护（不可删除、走 chrome.search），百度/Google 之后可增删改
+// 后续版本新增的预设引擎：已有用户升级时只追加缺失项，不恢复用户主动删除的旧预设
+export const ADDITIONAL_SEARCH_ENGINES: SearchEngine[] = [
+  {
+    id: 'bing',
+    name: 'Bing',
+    searchUrl: 'https://www.bing.com/search?q=%s',
+    suggestionProvider: 'google',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Bing',
+    isBuiltin: true,
+    hidden: true
+  },
+  {
+    id: 'duckduckgo',
+    name: 'DuckDuckGo',
+    searchUrl: 'https://duckduckgo.com/?q=%s',
+    suggestionProvider: 'auto',
+    iconSource: 'builtin',
+    builtinLogoKey: 'DuckDuckGo',
+    isBuiltin: true,
+    hidden: true
+  },
+  {
+    id: 'yahoo',
+    name: 'Yahoo',
+    searchUrl: 'https://search.yahoo.com/search?p=%s',
+    suggestionProvider: 'google',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Yahoo',
+    isBuiltin: true,
+    hidden: true
+  },
+  {
+    id: 'yandex',
+    name: 'Yandex',
+    searchUrl: 'https://yandex.com/search/?text=%s',
+    suggestionProvider: 'google',
+    iconSource: 'builtin',
+    builtinLogoKey: 'Yandex',
+    isBuiltin: true,
+    hidden: true
+  }
+]
+
+// 种子引擎：首次运行写入存储。Default 受保护（不可删除、走 chrome.search），其他引擎之后可增删改
 export const SEED_SEARCH_ENGINES: SearchEngine[] = [
   {
     id: 'default',
@@ -67,7 +119,8 @@ export const SEED_SEARCH_ENGINES: SearchEngine[] = [
     iconSource: 'builtin',
     builtinLogoKey: 'Google',
     isBuiltin: true
-  }
+  },
+  ...ADDITIONAL_SEARCH_ENGINES
 ]
 
 export interface INFORMATION {
@@ -131,6 +184,6 @@ export const WEATHER_LOCATION_PROMPT_HIDDEN_KEY = 'WEATHER_LOCATION_PROMPT_HIDDE
 export const SEARCH_ENGINE_LIST_KEY = 'SEARCH_ENGINE_LIST' // 搜索引擎列表缓存key
 export const SEARCH_ENGINE_SELECTED_ID_KEY = 'SEARCH_ENGINE_SELECTED_ID' // 选中引擎id缓存key
 export const LEGACY_ENGINE_KEY = 'engine' // 旧版整对象存储的引擎key（迁移用）
-export const MAX_SEARCH_ENGINE_NUM = 12 // 最大搜索引擎数量
+export const MAX_VISIBLE_SEARCH_ENGINE_NUM = 12 // 最多同时显示的搜索引擎数量
 
 export const VERSION = '2.2.2' // 版本号

@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "Kapalı",
     "icon": "Simge",
+    "show": "Göster",
+    "hide": "Gizle",
     "errorName": "Lütfen motor adını girin",
     "errorUrl": "Lütfen geçerli bir arama URL'si girin"
   },

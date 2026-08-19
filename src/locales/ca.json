@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "Desactivat",
     "icon": "Icona",
+    "show": "Mostrar",
+    "hide": "Amaga",
     "errorName": "Introduïu el nom del motor",
     "errorUrl": "Introduïu una URL de cerca vàlida"
   },

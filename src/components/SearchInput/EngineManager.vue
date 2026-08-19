@@ -21,11 +21,11 @@
           <div
             v-for="item in engineList"
             :key="item.id"
-            class="flex items-center gap-3 border-2 border-[#6f3a1c] bg-[#f8d18a] px-3 py-2 shadow-[inset_-2px_-2px_0_#c98b45]"
+            :class="['flex items-center gap-3 border-2 border-[#6f3a1c] bg-[#f8d18a] px-3 py-2 shadow-[inset_-2px_-2px_0_#c98b45]', item.hidden && 'engine-row-hidden']"
           >
             <span class="engine-drag-handle select-none text-[#7b312a] cursor-move leading-none">⠿</span>
             <div class="w-[34px] h-[34px] shrink-0">
-              <LinkIcon :detail="toIconDetail(item)" />
+              <LinkIcon class="engine-icon-preview" :detail="toIconDetail(item)" />
             </div>
             <div class="min-w-0 flex-1">
               <div class="truncate text-[#4e3623]">{{ item.name }}</div>
@@ -35,22 +35,23 @@
               {{ $t('common.edit') }}
             </button>
             <button
-              v-if="!item.protected"
               type="button"
-              class="engine-mini-btn engine-mini-btn--danger"
-              @click="askDelete(item)"
+              class="engine-mini-btn"
+              :class="item.hidden ? '' : 'engine-mini-btn--danger'"
+              :disabled="item.hidden ? visibleEngineCount >= MAX_VISIBLE_SEARCH_ENGINE_NUM : visibleEngineCount <= 1"
+              @click="toggleHidden(item)"
             >
-              {{ $t('common.delete') }}
+              {{ item.hidden ? $t('engine.show') : $t('engine.hide') }}
             </button>
           </div>
         </VueDraggable>
         <button
           type="button"
           class="stardew-button w-full mt-3 disabled:opacity-55"
-          :disabled="engineList.length >= MAX_SEARCH_ENGINE_NUM"
+          :disabled="visibleEngineCount >= MAX_VISIBLE_SEARCH_ENGINE_NUM"
           @click="openAdd"
         >
-          {{ engineList.length >= MAX_SEARCH_ENGINE_NUM ? $t('engine.reachLimit') : $t('engine.add') }}
+          {{ visibleEngineCount >= MAX_VISIBLE_SEARCH_ENGINE_NUM ? $t('engine.reachLimit') : $t('engine.add') }}
         </button>
       </template>
 
@@ -77,7 +78,7 @@
             <label class="engine-label">{{ $t('engine.icon') }}</label>
             <div class="flex items-center gap-3 bg-[#f7f1df] p-2 border-2 border-[#CF802F] border-l-[#8E5F40] border-b-[#8E5F40]">
               <div class="w-[48px] h-[48px] shrink-0 flex items-center justify-center">
-                <LinkIcon :detail="toIconDetail(form)" />
+                <LinkIcon class="engine-icon-preview" :detail="toIconDetail(form)" />
               </div>
               <div class="flex flex-wrap gap-2">
                 <button type="button" class="engine-mini-btn" :disabled="isFetchingIcon || !isValidUrl(form.searchUrl)" @click="fetchFavicon">
@@ -103,7 +104,6 @@
         </div>
       </template>
     </div>
-    <ConfirmBox ref="ConfirmBoxRef" @on-commit="confirmDelete" />
   </StardewDialog>
 </template>
 
@@ -111,14 +111,14 @@
 import StardewDialog from '@/components/_components/StardewDialog/index.vue'
 import StardewInput from '@/components/_components/StardewInput/index.vue'
 import StardewSelect from '@/components/_components/StardewSelect/index.vue'
-import ConfirmBox from '@/components/_components/ConfirmBox/index.vue'
 import LinkIcon from '@/components/_common/LinkIcon/index.vue'
 import { ref, computed, useTemplateRef } from 'vue'
 import { VueDraggable } from 'vue-draggable-plus'
 import { useI18n } from 'vue-i18n'
 import type { SearchEngine, SuggestionProvider, LINK_ITEM_TYPE } from '@/libs/const/type'
-import { MAX_SEARCH_ENGINE_NUM } from '@/libs/const'
+import { MAX_VISIBLE_SEARCH_ENGINE_NUM } from '@/libs/const'
 import { resolveEngineLogo, createEngineId } from '@/libs/searchEngines'
+import { hasConfiguredSearchEngineIcon } from '@/libs/searchEngineRules'
 import { useSearchEngines } from '@/hooks/useSearchEngines'
 import { resolveFavicon } from '@/libs/favicon'
 import { saveIconBlob } from '@/libs/db/iconRepository'
@@ -133,8 +133,6 @@ const editingId = ref<string>('')
 const formError = ref<string>('')
 const isFetchingIcon = ref<boolean>(false)
 const fileInputRef = useTemplateRef<HTMLInputElement>('fileInputRef')
-const ConfirmBoxRef = useTemplateRef('ConfirmBoxRef')
-const pendingDeleteId = ref<string>('')
 let faviconRequestId = 0
 
 const createEmptyForm = (): SearchEngine => ({
@@ -147,6 +145,7 @@ const createEmptyForm = (): SearchEngine => ({
   iconId: ''
 })
 const form = ref<SearchEngine>(createEmptyForm())
+const visibleEngineCount = computed(() => engineList.value.filter(item => !item.hidden).length)
 
 const providerOptions = computed(() => [
   {name: $t('engine.providerAuto'), id: 'auto'},
@@ -188,6 +187,9 @@ const persist = async () => {
 }
 
 const openAdd = () => {
+  if (visibleEngineCount.value >= MAX_VISIBLE_SEARCH_ENGINE_NUM) {
+    return
+  }
   editingId.value = ''
   form.value = createEmptyForm()
   formError.value = ''
@@ -205,22 +207,20 @@ const backToList = () => {
   mode.value = 'list'
 }
 
-const askDelete = (item: SearchEngine) => {
-  pendingDeleteId.value = item.id
-  ConfirmBoxRef.value?.show()
-}
-const confirmDelete = async () => {
-  engineList.value = engineList.value.filter(item => item.id !== pendingDeleteId.value)
-  pendingDeleteId.value = ''
+const toggleHidden = async (item: SearchEngine) => {
+  if (!item.hidden && visibleEngineCount.value <= 1) {
+    return
+  }
+  if (item.hidden && visibleEngineCount.value >= MAX_VISIBLE_SEARCH_ENGINE_NUM) {
+    return
+  }
+  item.hidden = !item.hidden
   await persist()
 }
 
 // 自动抓取 favicon（URL 失焦时，仅在当前无图标时触发）
 const autoFetchFavicon = async () => {
-  if (form.value.iconSource === 'upload' && form.value.iconId) {
-    return
-  }
-  if (form.value.iconId || form.value.logo) {
+  if (hasConfiguredSearchEngineIcon(form.value)) {
     return
   }
   await fetchFavicon()
@@ -294,6 +294,10 @@ const saveForm = async () => {
       engineList.value[index] = payload
     }
   } else {
+    if (visibleEngineCount.value >= MAX_VISIBLE_SEARCH_ENGINE_NUM) {
+      mode.value = 'list'
+      return
+    }
     payload.id = createEngineId()
     engineList.value.push(payload)
   }
@@ -339,5 +343,14 @@ defineExpose({
 }
 .engine-ghost {
   opacity: 0.5;
+}
+.engine-row-hidden {
+  opacity: 0.55;
+}
+.engine-icon-preview :deep(img) {
+  height: 100%;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
 }
 </style>

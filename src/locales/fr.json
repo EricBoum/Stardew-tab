@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "Désactivé",
     "icon": "Icône",
+    "show": "Afficher",
+    "hide": "Masquer",
     "errorName": "Veuillez saisir le nom du moteur",
     "errorUrl": "Veuillez saisir une URL de recherche valide"
   },

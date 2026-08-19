@@ -3,10 +3,10 @@
     <li
       v-for="item in engines"
       :key="item.id"
-      :class="['w-[30px]', 'h-[30px]', 'mr-[15px]', 'transition-[3s]', modelValue?.id === item.id ? 'opacity-100' : 'opacity-30']"
+      :class="['engine-selection-item', 'transition-[3s]', modelValue?.id === item.id ? 'opacity-100' : 'opacity-30']"
       @click="chooseEngine(item)"
     >
-      <img class="w-full h-full object-contain pointer" :src="iconSrcMap[item.id] || ''" :alt="item.name">
+      <img class="engine-selection-icon pointer" :src="iconSrcMap[item.id] || ''" :alt="item.name">
     </li>
   </ul>
 </template>
@@ -66,5 +66,16 @@ const chooseEngine = (item: SearchEngine) => {
 </script>
 
 <style lang="less" scoped>
-
+.engine-selection-item {
+  height: 30px;
+  margin-right: 15px;
+  flex: 0 0 auto;
+}
+.engine-selection-icon {
+  display: block;
+  height: 30px;
+  width: auto;
+  max-width: 48px;
+  object-fit: contain;
+}
 </style>

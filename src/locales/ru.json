@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "Выкл.",
     "icon": "Иконка",
+    "show": "Показать",
+    "hide": "Скрыть",
     "errorName": "Введите название системы",
     "errorUrl": "Введите корректный URL поиска"
   },

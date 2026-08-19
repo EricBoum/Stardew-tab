@@ -228,6 +228,8 @@
     "providerGoogle": "Google",
     "providerNone": "关闭",
     "icon": "图标",
+    "show": "显示",
+    "hide": "隐藏",
     "errorName": "请输入引擎名称",
     "errorUrl": "请输入有效的搜索地址"
   },
