@@ -186,4 +186,4 @@ export const SEARCH_ENGINE_SELECTED_ID_KEY = 'SEARCH_ENGINE_SELECTED_ID' // 选�
 export const LEGACY_ENGINE_KEY = 'engine' // 旧版整对象存储的引擎key（迁移用）
 export const MAX_VISIBLE_SEARCH_ENGINE_NUM = 12 // 最多同时显示的搜索引擎数量
 
-export const VERSION = '2.2.2' // 版本号
+export const VERSION = '2.3.0' // 版本号
